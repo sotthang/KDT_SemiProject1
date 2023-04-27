@@ -3,15 +3,32 @@ from .forms import CustomUserCreationForm, CustomUserChangeForm, CustomPasswordC
 from django.contrib.auth import get_user_model
 from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth import login as auth_login
+from django.contrib.auth import logout as auth_logout
+
 
 # Create your views here.
 
 def login(request):
-    return render(request, 'accounts/login.html')
+    if request.method == 'POST':
+        form = LoginForm(request, request.POST)
+        if form.is_valid():
+            auth_login(request, form.get_user())
+            return redirect('articles:index')
+        
+    else:
+        form = LoginForm()
+    
+    context = {
+        'form': form,
+    }
+    return render(request, 'accounts/login.html', context)
 
 
+@login_required
 def logout(request):
-    return render(request, 'accounts/login.html')
+    auth_logout(request)
+    return redirect('articles:index')
 
 
 def signup(request):
