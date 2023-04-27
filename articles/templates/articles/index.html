@@ -2,4 +2,12 @@
 
 {% block content %}
 <h1>index</h1>
+<hr>
+{% for article in articles %}
+  <div>
+    <h3><a href="{% url 'articles:detail' article.pk %}">{{ article.title }}</a></h3>
+    <p>작성자 - <a href="{% url 'accounts:profile' article.user %}">{{ article.user }}</a></p>
+  </div>
+  <hr>
+{% endfor %}
 {% endblock content %}
