@@ -2,4 +2,14 @@
 
 {% block content %}
 <h1>detail</h1>
+<h4><b>{{article.pk}}. {{article.title}}</b></h4>
+<p>{{article.user}}</p>
+
+{% if article.image %}
+<img src="{{article.image.url}}" alt="">
+{% endif %}
+
+<p>{{article.created_at}}</p>
+<p>{{article.updated_at}}</p>
+
 {% endblock content %}
