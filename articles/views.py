@@ -17,8 +17,14 @@ def index(request):
 
 def detail(request, article_pk):
     article = Article.objects.get(pk=article_pk)
+    comments = article.comment_set.all()
+    comment_form = CommentForm()
+    form = CommentForm(request.POST, instance=article)
     context = {
         'article': article,
+        'comments': comments,
+        'comment_form': comment_form,
+        'form': form,
     }
     return render(request, 'articles/detail.html', context)
 
@@ -63,9 +69,13 @@ def update(request, article_pk):
                 return redirect('articles:detail', article.pk)
         else:
             form = ArticleForm(instance=article)
-            
     else:
         return redirect('articles:index')
+    context = {
+        'article': article,
+        'form': form,
+    }
+    return render(request, 'articles/update.html', context)
 
 
 @login_required
