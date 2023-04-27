@@ -1,5 +1,7 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
+from .models import Article, Comment
+from .forms import ArticleForm, CommentForm
 
 # Create your views here.
 
@@ -28,15 +30,40 @@ def update(request, article_pk):
 
 @login_required
 def comment_create(request, article_pk):
-    return redirect('articles:detail')
+    if request.method == "POST":
+        article = Article.objects.get(pk=article_pk)
+        comment_form = CommentForm(request.POST)
+        if comment_form.is_valid():
+            comment = comment_form.save(commit=False)
+            comment.article = article
+            comment.user = request.user
+            comment.save()
+        return redirect('articles:detail', article.pk)
 
 
 @login_required
 def comment_delete(request, article_pk, comment_pk):
+    if request.method == "POST":
+        comment = Comment.objects.get(pk=comment_pk)
+        if request.user == comment.user:
+            comment.delete()
     return redirect('articles:detail', article_pk)
 
 
 @login_required
 def comment_update(request, article_pk, comment_pk):
-    return render(request, 'update.html')
+    comment = Comment.objects.get(pk=comment_pk)
+    article = Article.objects.get(pk=article_pk)
+    if request.method == 'POST':
+        form = CommentForm(request.POST, instance=comment)
+        if form.is_valid():
+            form.save()
+            return redirect('articles:detail', article.pk)
+    else:
+        form = CommentForm(instance=comment)
+    context = {
+        'comment': comment,
+        'form': form,
+    }
+    return render(request, 'update.html', context)
 
