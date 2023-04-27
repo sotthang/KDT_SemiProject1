@@ -1,23 +1,20 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import login as auth_login, logout as auth_logout
 from django.contrib.auth.decorators import login_required
-from .forms import CustomUserCreationForm, CustomUserChangeForm, CustomPasswordChangeForm, LoginForm
 from django.contrib.auth import get_user_model
 from django.contrib.auth import update_session_auth_hash
-from django.contrib.auth.decorators import login_required
-from django.contrib.auth import login as auth_login
-from django.contrib.auth import logout as auth_logout
-
+from .forms import CustomUserCreationForm, CustomUserChangeForm, CustomPasswordChangeForm, LoginForm
 
 # Create your views here.
 
 def login(request):
+    if request.user.is_authenticated:
+        return redirect('accounts:index')
     if request.method == 'POST':
         form = LoginForm(request, request.POST)
         if form.is_valid():
             auth_login(request, form.get_user())
             return redirect('articles:index')
-        
     else:
         form = LoginForm()
     
