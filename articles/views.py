@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
-from .models import Article, Comment, Review, ReviewComment
+from .models import Article, Comment, Review, ReviewComment, Emote
 from .forms import ArticleForm, CommentForm, ReviewForm, ReviewCommentForm
 import json
 
@@ -17,18 +17,43 @@ def index(request):
     return render(request, 'articles/index.html', context)
 
 
+EMOTIONS = [
+    {'label': '좋아요', 'value': 1},
+    {'label': '재밌어요', 'value': 2},
+    {'label': '그냥그래요', 'value': 3},
+]
+
+
 def detail(request, article_pk):
     article = Article.objects.get(pk=article_pk)
     reviews = Review.objects.filter(article=article_pk)
     comments = article.comment_set.all()
     comment_form = CommentForm()
     form = CommentForm(request.POST, instance=article)
+    emotions = []
+    for emotion in EMOTIONS:
+        label = emotion['label']
+        value = emotion['value']
+        count = Emote.objects.filter(article=article, emotion=value).count()
+        if request.user.is_authenticated:
+            exist = Emote.objects.filter(article=article, emotion=value, user=request.user)
+        else:
+            exist = False
+        emotions.append(
+            {
+                'label': label,
+                'value': value,
+                'count': count,
+                'exist': exist,
+            }
+        )
     context = {
         'article': article,
         'comments': comments,
         'comment_form': comment_form,
         'form': form,
         'reviews': reviews,
+        'emotions': emotions,
     }
     return render(request, 'articles/detail.html', context)
 
@@ -127,12 +152,29 @@ def review_detail(request, review_pk):
     comments = review.reviewcomment_set.all()
     comment_form = ReviewCommentForm()
     update_form = ReviewCommentForm()
-
+    emotions = []
+    for emotion in EMOTIONS:
+        label = emotion['label']
+        value = emotion['value']
+        count = Emote.objects.filter(review=review, emotion=value).count()
+        if request.user.is_authenticated:
+            exist = Emote.objects.filter(review=review, emotion=value, user=request.user)
+        else:
+            exist = False
+        emotions.append(
+            {
+                'label': label,
+                'value': value,
+                'count': count,
+                'exist': exist,
+            }
+        )
     context = {
         'review': review,
         'comments': comments,
         'comment_form': comment_form,
         'update_form': update_form,
+        'emotions': emotions,
     }
     return render(request, 'reviews/review_detail.html', context)
 
@@ -226,3 +268,24 @@ def review_comment_update(request, review_pk, comment_pk):
     }
 
     return JsonResponse(context)
+
+
+@login_required
+def emotes(request, pk, emotion, page):
+    if 'Article' in page:
+        article = Article.objects.get(pk=pk)
+        filter_query = Emote.objects.filter(article=article, user=request.user, emotion=emotion)
+        if filter_query.exists():
+            filter_query.delete()
+        else:
+            Emote.objects.create(article=article, user=request.user, emotion=emotion)
+        return redirect('articles:detail', pk)
+    elif 'Review' in page:
+        review = Review.objects.get(pk=pk)
+        filter_query = Emote.objects.filter(review=review, user=request.user, emotion=emotion)
+        if filter_query.exists():
+            filter_query.delete()
+        else:
+            Emote.objects.create(review=review, user=request.user, emotion=emotion)
+        return redirect('articles:review_detail', pk)
+

@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block content %}
 <h1>Review detail</h1>
@@ -11,11 +12,29 @@
 
 <p>{{review.created_at}}</p>
 <p>{{review.updated_at}}</p>
-<form action="{% url 'articles:review_comment_create' review.pk %}" method="POST">
-  {% csrf_token %}
-  {{comment_form.as_p}}
-  <input type="submit">
-</form>
+
+<p>이 여행지에 대한 의견을 남겨주세요</p>
+  <div class="d-flex text-center">
+    {% for emotion in emotions %}
+    <div class="m-3">
+      {% if request.user.is_authenticated %}
+      {{ emotion.queryset }}
+        <form action="{% url 'articles:emotes' review.pk emotion.value review %}" method="POST">
+          {% csrf_token %}
+          {% if emotion.exsit %}
+            <input type="image" src="{% static 'emotions/' %}{{ emotion.value }}.png" value="{{ emotion.label }} 취소" style="width: 32px; height: 32px;"> 취소하기
+          {% else %}
+            <input type="image" src="{% static 'emotions/' %}{{ emotion.value }}.png" value="{{ emotion.label }}" style="width: 32px; height: 32px;">
+          {% endif %}
+        </form>
+      {% else %}
+        <button value="{{ emotion.label }}" disabled>{{ emotion.label }}</button>
+      {% endif %}
+      {{ emotion.count }}
+    </div>
+    {% endfor %}
+  </div>
+
 {% for comment in comments %}
   <p id="comment-content-{{comment.pk}}">{{comment.content}}</p>
   <div>
@@ -35,11 +54,13 @@
   </div>
 {% endfor %}
 
-<a href="{% url 'articles:review_update' review.pk %}" class="p-2"><button type="button" class="btn btn-primary">수정하기</button></a>
-<form action="{% url 'articles:review_delete' review.pk %}" METHOD="POST" class="p-2">
-  {% csrf_token %}
-  <button type="submit" value="DELETE" class="btn btn-danger">삭제하기</button>
-</form>
+{% if request.user == review.user %}
+  <a href="{% url 'articles:review_update' review.pk %}" class="p-2"><button type="button" class="btn btn-primary">수정하기</button></a>
+  <form action="{% url 'articles:review_delete' review.pk %}" METHOD="POST" class="p-2">
+    {% csrf_token %}
+    <button type="submit" value="DELETE" class="btn btn-danger">삭제하기</button>
+  </form>
+{% endif %}
 
   <script>
     const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value
@@ -92,9 +113,5 @@
       })
     })
   </script>
-
-
-
-
 
 {% endblock content %}

@@ -45,5 +45,5 @@ class ReviewComment(models.Model):
 class Emote(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     emotion = models.CharField(max_length=50)
-    article = models.ForeignKey(Article, on_delete=models.CASCADE)
-    review = models.ForeignKey(Review, on_delete=models.CASCADE) 
+    article = models.ForeignKey(Article, null=True, on_delete=models.CASCADE)
+    review = models.ForeignKey(Review, null=True, on_delete=models.CASCADE)
