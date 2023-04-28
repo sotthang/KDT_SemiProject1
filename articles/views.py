@@ -126,12 +126,13 @@ def review_detail(request, review_pk):
     review = Review.objects.get(pk=review_pk)
     comments = review.reviewcomment_set.all()
     comment_form = ReviewCommentForm()
-    form = ReviewCommentForm(request.POST, instance=review)
+    update_form = ReviewCommentForm()
+
     context = {
         'review': review,
         'comments': comments,
         'comment_form': comment_form,
-        'form': form,
+        'update_form': update_form,
     }
     return render(request, 'reviews/review_detail.html', context)
 
