@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>Review detail</h1>
+<h4><b>{{review.pk}}. {{review.title}}</b></h4>
+<p>{{review.user}}</p>
+
+{% if review.image %}
+<img src="{{review.image.url}}" alt="">
+{% endif %}
+
+<p>{{review.created_at}}</p>
+<p>{{review.updated_at}}</p>
+
+{% endblock content %}

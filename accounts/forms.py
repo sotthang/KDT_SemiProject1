@@ -41,12 +41,12 @@ class LoginForm(AuthenticationForm):
         label='아이디',
         label_suffix='',
         required=True,
-        widget=forms.TextInput(attrs={'class':'form-control'}),
+        widget=forms.TextInput(attrs={'class':'form-control', 'style':'width: 250px'}),
     )
     password = forms.CharField(
         label='비밀번호',
         label_suffix='',
-        widget=forms.PasswordInput(attrs={'class':'form-control'}),
+        widget=forms.PasswordInput(attrs={'class':'form-control', 'style':'width: 250px'}),
     )
 
 
@@ -55,18 +55,18 @@ class CustomPasswordChangeForm(PasswordChangeForm):
         label='기존 비밀번호',
         label_suffix='',
         required=True,
-        widget=forms.PasswordInput(attrs={'class':'form-control'}),
+        widget=forms.PasswordInput(attrs={'class':'form-control', 'style':'width: 250px'}),
     )
     new_password1 = forms.CharField(
         label='새로운 비밀번호',
         label_suffix='',
         required=True,
-        widget=forms.PasswordInput(attrs={'class':'form-control'}),
+        widget=forms.PasswordInput(attrs={'class':'form-control', 'style':'width: 250px'}),
     )
     new_password2 = forms.CharField(
         label='새로운 비밀번호 확인',
         label_suffix='',
         required=True,
-        widget=forms.PasswordInput(attrs={'class':'form-control'}),
+        widget=forms.PasswordInput(attrs={'class':'form-control', 'style':'width: 250px'}),
     )
 
