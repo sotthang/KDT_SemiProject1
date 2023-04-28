@@ -12,4 +12,11 @@
 <p>{{review.created_at}}</p>
 <p>{{review.updated_at}}</p>
 
+<a href="{% url 'articles:review_update' review.pk %}" class="p-2"><button type="button" class="btn btn-primary">수정하기</button></a>
+<form action="{% url 'articles:review_delete' review.pk %}" METHOD="POST" class="p-2">
+  {% csrf_token %}
+  <button type="submit" value="DELETE" class="btn btn-danger">삭제하기</button>
+</form>
+
+
 {% endblock content %}
