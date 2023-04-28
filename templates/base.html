@@ -7,14 +7,16 @@
     <title>Travel Makers</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
     <link rel="icon" href="{% static '/img/favicon/favicon.ico' %}">
-    <link rel="stylesheet" href="{% static '/img/favicon/base_style.css' %}">
+    <link rel="stylesheet" href="{% static '/CSS/base_style.css' %}">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
   </head>
   <body class="container">
     {% comment %} navbar {% endcomment %}
     <nav class="navbar navbar-expand-lg bg-body-tertiary sticky-top">
       <div class="container-fluid">
-        <a class="navbar-brand" href="{% url 'articles:index' %}">🛫<img src="{% static '/img/favicon/logo.png' %}" alt="logo" style="width:200px; height:20px"></a>
+        <div>
+          <a class="navbar-brand" href="{% url 'articles:index' %}">🛫<img src="{% static '/img/favicon/logo.png' %}" alt="logo" style="width:12rem; height:1.1rem;"></a>
+        </div>
 
         {% comment %} search box {% endcomment %}
         <div class="search_box">
@@ -84,6 +86,13 @@
       {% block content %}{% endblock content %}
     </div>
 
+    {% comment %} top button {% endcomment %}
+    <div class="btn">
+      <div class="moveTopBtn">
+        <i class="bi bi-arrow-up"></i>
+      </div>
+    </div>
+
     {% comment %} footer {% endcomment %}
     <footer>
       <div class="inner">
@@ -98,6 +107,7 @@
       </div>
     </footer>
 
+    <script type="text/javascript" src="/static/JS/base_script.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js" integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN" crossorigin="anonymous"></script>
   </body>
 </html>
