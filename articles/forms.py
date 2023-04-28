@@ -55,21 +55,22 @@ class CommentForm(forms.ModelForm):
         
         
 class ReviewForm(forms.ModelForm):
-    model = Review
-    exclude = ('user', 'emote_users')
-    labels = {
-            'title': '제목',
-            'content': '내용',
-            'image': '이미지',    
-            'score': '별점',
+    class Meta:
+        model = Review
+        exclude = ('user', 'emote_users', 'article',)
+        labels = {
+                'title': '제목',
+                'content': '내용',
+                'image': '이미지',    
+                'score': '별점',
 
 
+            }
+        widgets = {
+            'title': forms.TextInput(attrs={'class':'form-control',}),
+            'content': forms.Textarea(attrs={'class':'form-control', 'rows':'5',}),
+            'score': forms.NumberInput(attrs={'class':'form-control',}),
         }
-    widgets = {
-        'title': forms.TextInput(attrs={'class':'form-control',}),
-        'content': forms.Textarea(attrs={'class':'form-control', 'rows':'5',}),
-        'score': forms.NumberInput(attrs={'class':'form-control',}),
-    }
     
 
 class ReviewCommentForm(forms.ModelForm):
