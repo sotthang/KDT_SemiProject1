@@ -4,6 +4,7 @@ from django.http import JsonResponse
 from .models import Article, Comment, Review, ReviewComment
 from .forms import ArticleForm, CommentForm, ReviewForm, ReviewCommentForm
 import json
+
 # Create your views here.
 
 def index(request):
@@ -124,8 +125,9 @@ def comment_update(request, article_pk, comment_pk):
 def review_detail(request, review_pk):
     review = Review.objects.get(pk=review_pk)
     comments = review.reviewcomment_set.all()
-    comment_form = CommentForm()
-    update_form = CommentForm()
+    comment_form = ReviewCommentForm()
+    update_form = ReviewCommentForm()
+
     context = {
         'review': review,
         'comments': comments,
@@ -155,6 +157,39 @@ def review_create(request, article_pk):
     }
 
     return render(request, 'reviews/review_create.html', context)
+    
+@login_required
+def review_delete(request, review_pk):    
+    review = Review.objects.get(pk=review_pk)
+    article_pk = review.article.pk
+    if review.user == request.user:
+        review.delete()
+    
+    return redirect('articles:detail', article_pk)
+
+
+@login_required
+def review_update(request, review_pk):
+    review = Review.objects.get(pk=review_pk)
+    article_pk = review.article.pk
+
+    if request.user == review.user:
+        if request.method == 'POST':
+            form = ReviewForm(request.POST, request.FILES, instance=review)
+            if form.is_valid():
+                form.save()
+                return redirect('articles:detail', article_pk)
+        else:
+            form = ReviewForm(instance=review)
+    else:
+        return redirect('articles:detail', article_pk)
+        
+    context = {
+        'review': review,
+        'form': form,
+    }
+    return render(request, 'reviews/review_update.html', context)
+
 
 @login_required
 def review_comment_create(request, review_pk):
@@ -189,4 +224,5 @@ def review_comment_update(request, review_pk, comment_pk):
     context = {
         'content': comment.content,
     }
+
     return JsonResponse(context)
