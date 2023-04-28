@@ -2,6 +2,7 @@ from django import forms
 from .models import Article, Comment, Review, ReviewComment, Emote
 
 
+
 class ArticleForm(forms.ModelForm):
     CATEGORY_CHOICES = [
         ('숙소','숙소'),
@@ -87,3 +88,4 @@ class EmoteForm(forms.ModelForm):
         model = Emote
         fields = ('emotion',)
         
+
