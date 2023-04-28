@@ -1,8 +1,9 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
-from .models import Article, Comment, Review
-from .forms import ArticleForm, CommentForm, ReviewForm
-
+from django.http import JsonResponse
+from .models import Article, Comment, Review, ReviewComment
+from .forms import ArticleForm, CommentForm, ReviewForm, ReviewCommentForm
+import json
 # Create your views here.
 
 def index(request):
@@ -154,3 +155,38 @@ def review_create(request, article_pk):
     }
 
     return render(request, 'reviews/review_create.html', context)
+
+@login_required
+def review_comment_create(request, review_pk):
+    review = Review.objects.get(pk=review_pk)
+    form = ReviewCommentForm(request.POST)
+    if form.is_valid():
+        comment = form.save(commit=False)
+        comment.review = review
+        comment.user = request.user
+        comment.save()
+        return redirect('articles:review_detail', review.pk)
+    
+@login_required
+def review_comment_delete(request, review_pk, comment_pk):
+    comment = ReviewComment.objects.get(pk=comment_pk)
+    
+    if request.user == comment.user:
+        comment.delete()
+        
+    return redirect('articles:review_detail', review_pk)
+
+@login_required
+def review_comment_update(request, review_pk, comment_pk):
+    comment = ReviewComment.objects.get(pk=comment_pk)
+    if request.user == comment.user:
+        if request.method == 'POST':
+            r = list(request.POST.keys())
+            js = json.loads(r[0])
+            comment.content = js['content']
+            comment.save()
+            
+    context = {
+        'content': comment.content,
+    }
+    return JsonResponse(context)
