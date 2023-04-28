@@ -76,6 +76,11 @@ body {
     transform: scaleX(1);
 }
 
+.text_signup {
+    text-decoration: none;
+    color: #3a3a3a;
+}
+
 .topBtn {
     display: flex;
     position: fixed;
