@@ -26,9 +26,22 @@
   <input type="submit" value="댓글 작성">
 </form>
 <hr>
+
+리뷰 목록
+{% for review in reviews %}
+  <div>
+    <p>리뷰 제목 - {{ review.title }}</p>
+    <p>리뷰 내용 - {{ review.content }}</p>
+
+  </div>
+{% endfor %}
+
+<hr>
+
 <h3>
   댓글 목록
 </h3>
+
 {% for comment in comments %}
   <div>
     <p>댓글 번호 -
