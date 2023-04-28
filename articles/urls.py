@@ -20,5 +20,4 @@ urlpatterns = [
     path('reviews/<int:review_pk>/comments/<int:comment_pk>/delete', views.review_comment_delete, name='review_comment_delete'),
     path('reviews/<int:review_pk>/comments/<int:comment_pk>/update', views.review_comment_update, name='review_comment_update'),
 
-
 ]

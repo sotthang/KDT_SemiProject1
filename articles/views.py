@@ -5,7 +5,6 @@ from .models import Article, Comment, Review, ReviewComment
 from .forms import ArticleForm, CommentForm, ReviewForm, ReviewCommentForm
 import json
 
-
 # Create your views here.
 
 def index(request):
@@ -157,8 +156,7 @@ def review_create(request, article_pk):
     }
 
     return render(request, 'reviews/review_create.html', context)
-
-
+    
 @login_required
 def review_delete(request, review_pk):    
     review = Review.objects.get(pk=review_pk)
@@ -225,4 +223,5 @@ def review_comment_update(request, review_pk, comment_pk):
     context = {
         'content': comment.content,
     }
+
     return JsonResponse(context)
