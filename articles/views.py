@@ -1,7 +1,9 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
-from .models import Article, Comment, Review
-from .forms import ArticleForm, CommentForm, ReviewForm
+from django.http import JsonResponse
+from .models import Article, Comment, Review, ReviewComment
+from .forms import ArticleForm, CommentForm, ReviewForm, ReviewCommentForm
+import json
 
 # Create your views here.
 
@@ -122,9 +124,9 @@ def comment_update(request, article_pk, comment_pk):
 
 def review_detail(request, review_pk):
     review = Review.objects.get(pk=review_pk)
-    comments = review.comment_set.all()
-    comment_form = CommentForm()
-    form = CommentForm(request.POST, instance=review)
+    comments = review.reviewcomment_set.all()
+    comment_form = ReviewCommentForm()
+    form = ReviewCommentForm(request.POST, instance=review)
     context = {
         'review': review,
         'comments': comments,
@@ -154,3 +156,72 @@ def review_create(request, article_pk):
     }
 
     return render(request, 'reviews/review_create.html', context)
+    
+@login_required
+def review_delete(request, review_pk):    
+    review = Review.objects.get(pk=review_pk)
+    article_pk = review.article.pk
+    if review.user == request.user:
+        review.delete()
+    
+    return redirect('articles:detail', article_pk)
+
+
+@login_required
+def review_update(request, review_pk):
+    review = Review.objects.get(pk=review_pk)
+    article_pk = review.article.pk
+
+    if request.user == review.user:
+        if request.method == 'POST':
+            form = ReviewForm(request.POST, request.FILES, instance=review)
+            if form.is_valid():
+                form.save()
+                return redirect('articles:detail', article_pk)
+        else:
+            form = ReviewForm(instance=review)
+    else:
+        return redirect('articles:detail', article_pk)
+        
+    context = {
+        'review': review,
+        'form': form,
+    }
+    return render(request, 'reviews/review_update.html', context)
+
+
+@login_required
+def review_comment_create(request, review_pk):
+    review = Review.objects.get(pk=review_pk)
+    form = ReviewCommentForm(request.POST)
+    if form.is_valid():
+        comment = form.save(commit=False)
+        comment.review = review
+        comment.user = request.user
+        comment.save()
+        return redirect('articles:review_detail', review.pk)
+    
+@login_required
+def review_comment_delete(request, review_pk, comment_pk):
+    comment = ReviewComment.objects.get(pk=comment_pk)
+    
+    if request.user == comment.user:
+        comment.delete()
+        
+    return redirect('articles:review_detail', review_pk)
+
+@login_required
+def review_comment_update(request, review_pk, comment_pk):
+    comment = ReviewComment.objects.get(pk=comment_pk)
+    if request.user == comment.user:
+        if request.method == 'POST':
+            r = list(request.POST.keys())
+            js = json.loads(r[0])
+            comment.content = js['content']
+            comment.save()
+            
+    context = {
+        'content': comment.content,
+    }
+
+    return JsonResponse(context)

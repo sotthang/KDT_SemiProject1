@@ -37,8 +37,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='article',
             name='category',
-            field=models.CharField(default=1, max_length=50),
-            preserve_default=False,
+            field=models.CharField(default='체험관광', max_length=50),
         ),
         migrations.CreateModel(
             name='ReviewComment',

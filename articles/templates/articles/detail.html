@@ -30,7 +30,8 @@
 리뷰 목록
 {% for review in reviews %}
   <div>
-    <p>리뷰 제목 - {{ review.title }}</p>
+    <a href="{% url 'articles:review_detail' review.pk %}"><p>리뷰 제목 - {{ review.title }}</p></a>
+    
     <p>리뷰 내용 - {{ review.content }}</p>
 
   </div>

@@ -56,8 +56,10 @@ class CommentForm(forms.ModelForm):
         
 class ReviewForm(forms.ModelForm):
     class Meta:
+
         model = Review
         exclude = ('user', 'emote_users', 'article',)
+
         labels = {
                 'title': '제목',
                 'content': '내용',
@@ -71,7 +73,7 @@ class ReviewForm(forms.ModelForm):
             'content': forms.Textarea(attrs={'class':'form-control', 'rows':'5',}),
             'score': forms.NumberInput(attrs={'class':'form-control',}),
         }
-    
+
 
 class ReviewCommentForm(forms.ModelForm):
     class Meta:
