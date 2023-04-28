@@ -4,9 +4,11 @@
 {% endblock style %}
 
 {% block content %}
-<h1>회원가입</h1>
-<form method="post">
-  {% csrf_token %} {{ form.as_p }}
-  <input type="submit" class="btn btn-outline-success" value="가입" />
-</form>
+<div class="d-flex justify-content-center">
+  <form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <input type="submit" class="btn btn-outline-success" value="가입" />
+  </form>
+</div>
 {% endblock content %}
