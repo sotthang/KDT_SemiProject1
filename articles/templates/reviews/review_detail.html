@@ -11,5 +11,79 @@
 
 <p>{{review.created_at}}</p>
 <p>{{review.updated_at}}</p>
+<form action="{% url 'articles:review_comment_create' review.pk %}" method="POST">
+  {% csrf_token %}
+  {{comment_form.as_p}}
+  <input type="submit">
+</form>
+{% for comment in comments %}
+  <p id="comment-content-{{comment.pk}}">{{comment.content}}</p>
+  <div>
+    <div class="d-flex">
+      <form action="{% url 'articles:review_comment_delete' review.pk comment.pk %}" method="POST">
+        {% csrf_token %}
+        <input type="submit" value="댓글 삭제" class="btn btn-sm btn-outline-danger">
+      </form>
+      <input type="button" value="댓글 수정" class="comment-edit-btn btn btn-sm btn-outline-primary" data-review-id="{{ review.pk }}" data-comment-id="{{ comment.pk }}">
+    </div>
+    <form class="comment-edit-form my-3" id="comment-edit-form-{{ comment.pk }}" data-review-id="{{ review.pk }}" data-comment-id="{{ comment.pk }}" hidden>
+      {% csrf_token %}
+      {{update_form.as_p}}
+      <input type="submit" value="수정" class="update btn btn-sm btn-outline-primary">
+      <input type="button" value="취소" class="cancel btn btn-sm btn-outline-secondary" data-comment-id="{{ comment.pk }}">
+    </form>
+  </div>
+{% endfor %}
 
+  <script>
+    const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value
+    // 댓글 수정
+    const commentUpdates = document.querySelectorAll('.comment-edit-btn')
+
+    commentUpdates.forEach((comment) => {
+      comment.addEventListener('click', (event) => {
+        const commentId = event.target.dataset.commentId
+        const commentUpdateDiv = document.querySelector(`#comment-edit-form-${commentId}`)
+        const contentTextArea = document.querySelector(`#comment-edit-form-${commentId}>p>textarea`)
+        commentUpdateDiv.hidden = false
+        contentTextArea.value = document.querySelector(`#comment-content-${commentId}`).textContent
+      })
+    })
+    
+    const commentUpdateConfirms = document.querySelectorAll('.comment-edit-form')
+    commentUpdateConfirms.forEach((updateBtn) => {
+      updateBtn.addEventListener('submit', (event) => {
+        event.preventDefault()
+        const reviewId = event.target.dataset.reviewId
+        const commentId = event.target.dataset.commentId
+        const data = {
+          content: document.querySelector(`#comment-edit-form-${commentId}>p>textarea`).value,
+        }
+        if (window.confirm('댓글 수정하시겠습니까?')) {
+          axios({
+            method:'post',
+            url:`/reviews/${reviewId}/comments/${commentId}/update/`,
+            headers: {'X-CSRFToken': csrftoken,},
+            data: JSON.stringify(data),
+          })
+          .then((response) => {
+            updateBtn.hidden = true
+            document.querySelector(`#comment-content-${commentId}`).textContent = data['content']
+          })
+          .catch((error) => {
+            console.log(error.response)
+          })
+        }
+      })
+    })
+
+    const commentUpdateCancels = document.querySelectorAll('.comment-edit-form>.cancel')
+    commentUpdateCancels.forEach((cancelBtn) => {
+      cancelBtn.addEventListener('click', (event) => {
+        const commentId = event.target.dataset.commentId
+        const commentUpdateForm = document.querySelector(`#comment-edit-form-${commentId}`)
+        commentUpdateForm.hidden = true
+      })
+    })
+  </script>
 {% endblock content %}
