@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from .models import Article, Comment, Review
-from .forms import ArticleForm, CommentForm, ReviewForm
+from .forms import ArticleForm, CommentForm, ReviewForm, ReviewCommentForm
 
 # Create your views here.
 
@@ -120,15 +120,15 @@ def comment_update(request, article_pk, comment_pk):
     return render(request, 'update.html', context)
 
 
-def review_detail(request, review_pk):
+def review_detail(request, article_pk, review_pk):
     review = Review.objects.get(pk=review_pk)
     comments = review.comment_set.all()
-    comment_form = CommentForm()
-    form = CommentForm(request.POST, instance=review)
+    reviewcomment_form = ReviewCommentForm()
+    form = ReviewCommentForm(request.POST, instance=review)
     context = {
         'review': review,
         'comments': comments,
-        'comment_form': comment_form,
+        'reviewcomment_form': reviewcomment_form,
         'form': form,
     }
     return render(request, 'reviews/review_detail.html', context)
@@ -144,7 +144,7 @@ def review_create(request, article_pk):
             review.article = article
             review.user = request.user
             review.save()
-            return redirect('articles:review_detail', review.pk)
+            return redirect('articles:review_detail', article.pk, review.pk)
     else:
         form = ReviewForm()
     
@@ -154,3 +154,33 @@ def review_create(request, article_pk):
     }
 
     return render(request, 'reviews/review_create.html', context)
+
+
+@login_required
+def review_delete(request, article_pk, review_pk):
+    review = Review.objects.get(pk=review_pk)
+    
+    if review.user == request.user:
+        review.delete()
+    
+    return redirect('articles:detail', article_pk)
+
+
+@login_required
+def review_update(request, article_pk, review_pk):
+    review = Review.objects.get(pk=review_pk)
+    if request.user == review.user:
+        if request.method == 'POST':
+            form = ReviewForm(request.POST, request.FILES, instance=review)
+            if form.is_valid():
+                form.save()
+                return redirect('articles:detail', article_pk)
+        else:
+            form = ReviewForm(instance=review)
+    else:
+        return redirect('articles:detail', article_pk)
+    context = {
+        'review': review,
+        'form': form,
+    }
+    return render(request, 'articles/review/review_update.html', context)
