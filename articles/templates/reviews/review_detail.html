@@ -8,6 +8,7 @@
 {% if review.image %}
 <img src="{{review.image.url}}" alt="">
 {% endif %}
+<p>별점 :{{review.score}}</p>
 
 <p>{{review.created_at}}</p>
 <p>{{review.updated_at}}</p>

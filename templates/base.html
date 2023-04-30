@@ -77,13 +77,13 @@
     <div class="menubar">
       <nav class="navbar bg-body-tertiary">
         <div class="container-fluid d-flex justify-content-evenly">
-          <a href="#" class="menubar_text">숙소</a>
-          <a href="#" class="menubar_text">자연명소</a>
-          <a href="#" class="menubar_text">테마파크</a>
-          <a href="#" class="menubar_text">체험관광</a>
-          <a href="#" class="menubar_text">레저 & 액티비티</a>
-          <a href="#" class="menubar_text">맛집</a>
-          <a href="#" class="menubar_text">쇼핑</a>
+          <a href="{% url 'articles:category_name' category_name='숙소' %}" class="menubar_text">숙소</a>
+          <a href="{% url 'articles:category_name' category_name='자연명소' %}" class="menubar_text">자연명소</a>
+          <a href="{% url 'articles:category_name' category_name='테마파크' %}" class="menubar_text">테마파크</a>
+          <a href="{% url 'articles:category_name' category_name='체험관광' %}" class="menubar_text">체험관광</a>
+          <a href="{% url 'articles:category_name' category_name='레저 & 액티비티' %}" class="menubar_text">레저 & 액티비티</a>
+          <a href="{% url 'articles:category_name' category_name='맛집' %}" class="menubar_text">맛집</a>
+          <a href="{% url 'articles:category_name' category_name='쇼핑' %}" class="menubar_text">쇼핑</a>
         </div>
       </nav>
     </div>

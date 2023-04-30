@@ -225,3 +225,11 @@ def review_comment_update(request, review_pk, comment_pk):
     }
 
     return JsonResponse(context)
+
+def category_name(request, category_name):
+    articles = Article.objects.filter(category=category_name)
+    context = {
+        'articles': articles,
+    }
+    
+    return render(request, 'articles/category_name.html', context)
