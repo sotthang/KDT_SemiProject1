@@ -3,7 +3,9 @@
 {% block content %}
 <h1>index</h1>
 <hr>
-
+{% if request.user.is_authenticated %}
+  <a href="{% url 'articles:create'%}">생성하기</a>
+{% endif %}
 <div>1</div>
 <div>2</div>
 <div>3</div>

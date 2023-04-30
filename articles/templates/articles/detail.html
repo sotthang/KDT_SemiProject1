@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block content %}
 <h1>detail</h1>
@@ -12,19 +13,36 @@
 <p>{{article.created_at}}</p>
 <p>{{article.updated_at}}</p>
 
-<a href="{% url 'articles:update' article.pk %}" class="p-2"><button type="button" class="btn btn-primary">수정하기</button></a>
-<form action="{% url 'articles:delete' article.pk %}" METHOD="POST" class="p-2">
-  {% csrf_token %}
-  <button type="submit" value="DELETE" class="btn btn-danger">삭제하기</button>
-</form>
+{% if request.user == article.user %}
+  <a href="{% url 'articles:update' article.pk %}" class="p-2"><button type="button" class="btn btn-primary">수정하기</button></a>
+  <form action="{% url 'articles:delete' article.pk %}" METHOD="POST" class="p-2">
+    {% csrf_token %}
+    <button type="submit" value="DELETE" class="btn btn-danger">삭제하기</button>
+  </form>
+{% endif %}
 
-<hr>
+<p>이 여행지에 대한 의견을 남겨주세요</p>
+  <div class="d-flex text-center">
+    {% for emotion in emotions %}
+    <div class="m-3">
+      {% if request.user.is_authenticated %}
+      {{ emotion.queryset }}
+        <form action="{% url 'articles:emotes' article.pk emotion.value article %}" method="POST">
+          {% csrf_token %}
+          {% if emotion.exsit %}
+            <input type="image" src="{% static 'emotions/' %}{{ emotion.value }}.png" value="{{ emotion.label }} 취소" style="width: 32px; height: 32px;"> 취소하기
+          {% else %}
+            <input type="image" src="{% static 'emotions/' %}{{ emotion.value }}.png" value="{{ emotion.label }}" style="width: 32px; height: 32px;">
+          {% endif %}
+        </form>
+      {% else %}
+        <button value="{{ emotion.label }}" disabled>{{ emotion.label }}</button>
+      {% endif %}
+      {{ emotion.count }}
+    </div>
+    {% endfor %}
+  </div>
 
-<form action="{% url 'articles:comment_create' article.pk %}" method="post">
-  {% csrf_token %}
-  {{ comment_form.as_p }}
-  <input type="submit" value="댓글 작성">
-</form>
 <hr>
 
 리뷰 목록
@@ -71,6 +89,15 @@
   </div>
   <hr>
 {% endfor %}
+
+<form action="{% url 'articles:comment_create' article.pk %}" method="post">
+  {% csrf_token %}
+  {{ comment_form.as_p }}
+  <input type="submit" value="댓글 작성">
+</form>
+
+<hr>
+
 <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
 <script>
   function dis(){
