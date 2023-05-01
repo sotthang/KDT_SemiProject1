@@ -117,7 +117,11 @@
       const commentId = event.target.dataset.commentId
       const commentUpdateDiv = document.querySelector(`#comment-edit-form-${commentId}`)
       const contentTextArea = document.querySelector(`#comment-edit-form-${commentId}>p>textarea`)
-      commentUpdateDiv.hidden = false
+      if (commentUpdateDiv.hidden == true) {
+        commentUpdateDiv.hidden = false
+      } else {
+        commentUpdateDiv.hidden = true
+      }
       contentTextArea.value = document.querySelector(`#comment-content-${commentId}`).textContent
     })
   })

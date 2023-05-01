@@ -21,8 +21,8 @@
 
         {% comment %} search box {% endcomment %}
         <div class="search_box">
-          <form action="" method="">
-            <input type="text" class="search_txt" placeholder="검색어를 입력해 주세요.">
+          <form action="{% url 'articles:search' %}" method="GET" id="searchform">
+            <input type="text" class="search_txt" placeholder="검색어를 입력해 주세요." name="word" id="searchbar">
             <button type="submit" class="search_btn"><i class="bi bi-search"></i></button>
           </form>
         </div>

@@ -21,4 +21,6 @@ urlpatterns = [
     path('reviews/<int:review_pk>/comments/<int:comment_pk>/delete/', views.review_comment_delete, name='review_comment_delete'),
     path('reviews/<int:review_pk>/comments/<int:comment_pk>/update/', views.review_comment_update, name='review_comment_update'),
     path('articles/<int:pk>/emotes/<int:emotion>/<str:page>/', views.emotes, name='emotes'),
+    path('search/', views.search, name='search'),
+    path('search/<str:category>/', views.search_detail, name='search_detail'),
 ]

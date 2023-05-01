@@ -1,6 +1,8 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
+from django.db.models import Q
+from django.core.paginator import Paginator
 from .models import Article, Comment, Review, ReviewComment, Emote
 from .forms import ArticleForm, CommentForm, ReviewForm, ReviewCommentForm
 import json
@@ -151,7 +153,7 @@ def review_detail(request, review_pk):
     review = Review.objects.get(pk=review_pk)
     comments = review.reviewcomment_set.all()
     comment_form = ReviewCommentForm()
-    update_form = ReviewCommentForm()
+    # update_form = ReviewCommentForm()
     emotions = []
     for emotion in EMOTIONS:
         label = emotion['label']
@@ -173,7 +175,7 @@ def review_detail(request, review_pk):
         'review': review,
         'comments': comments,
         'comment_form': comment_form,
-        'update_form': update_form,
+        # 'update_form': update_form,
         'emotions': emotions,
     }
     return render(request, 'reviews/review_detail.html', context)
@@ -298,3 +300,38 @@ def emotes(request, pk, emotion, page):
             Emote.objects.create(review=review, user=request.user, emotion=emotion)
         return redirect('articles:review_detail', pk)
 
+def search(request):
+    search_word = request.GET.get('word', False)
+    result_article = Article.objects.filter(Q(title__icontains=search_word) | Q(content__icontains=search_word)).distinct()[0:5]
+    result_review = Review.objects.filter(Q(title__icontains=search_word) | Q(content__icontains=search_word)).distinct()[0:5]
+
+    context = {
+        'results_article': result_article,
+        'results_review': result_review,
+        'search_word': search_word,
+    }
+    return render(request, 'search/search.html', context)
+
+def search_detail(request, category):
+    search_word = request.GET.get('word')
+
+    if category == 'article':
+        results = Article.objects.filter(Q(title__icontains=search_word) | Q(content__icontains=search_word)).distinct()
+        cat = 'Article'
+    elif category == 'review':
+        results = Review.objects.filter(Q(title__icontains=search_word) | Q(content__icontains=search_word)).distinct()
+        cat = 'Review'
+    
+    page = request.GET.get('page', '1')
+    per_page = 5
+    paginator = Paginator(results, per_page)
+    page_obj = paginator.get_page(page)
+    num_page = paginator.num_pages
+    
+    context = {
+        'results': page_obj,
+        'category': cat,
+        'num_page': num_page,
+        'search_word': search_word,
+    }
+    return render(request, 'search/search_detail.html', context)

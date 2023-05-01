@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <h1>Search detail - {{category}}</h1>
+  {% for result in results %}
+    <a href="{% url 'articles:detail' result.pk %}">{{result.title}}</a>
+    <hr>
+  {% endfor %}
+  <ul class="pagination justify-content-center">
+    {% if results.has_previous %}
+      <li class="page-item">
+        <a class="page-link" href="?word={{search_word}}&page=1">처음</a>
+      </li>
+      <li class="page-item">
+        <a class="page-link" href="?word={{search_word}}&page={{ results.previous_page_number }}">이전</a>
+      </li>
+    {% else %}
+      <li class="page-item disabled">
+        <a class="page-link" tabindex="-1" aria-disabled="true" href="#">이전</a>
+      </li>
+    {% endif %}
+    {% for page_number in results.paginator.page_range %}
+    {% if page_number >= results.number|add:-5 and page_number <= results.number|add:5 %}
+        {% if page_number == results.number %}
+          <li class="page-item active" aria-current="page">
+            <a class="page-link" href="?word={{search_word}}&page={{ page_number }}">{{ page_number }}</a>
+          </li>
+        {% else %}
+          <li class="page-item">
+            <a class="page-link" href="?word={{search_word}}&page={{ page_number }}">{{ page_number }}</a>
+          </li>
+        {% endif %}
+      {% endif %}
+    {% endfor %}
+    {% if results.has_next %}
+      <li class="page-item">
+        <a href="?word={{search_word}}&page={{ results.next_page_number }}" class="page-link" name="word">다음</a>
+      </li>
+      <li class="page-item">
+        <a href="?word={{search_word}}&page={{ num_page }}" class="page-link">마지막으로</a>
+      </li>
+    {% else %}
+      <li class="page-item disabled">
+        <a href="#" class="page-link" tabindex='-1' aria-disabled='true'>다음</a>
+      </li>
+    {% endif %}
+    
+  </ul>
+{% endblock content %}  
