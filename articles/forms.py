@@ -1,4 +1,5 @@
 from django import forms
+from django.forms import ClearableFileInput
 from .models import Article, Comment, Review, ReviewComment, Emote
 
 
@@ -15,7 +16,12 @@ class ArticleForm(forms.ModelForm):
     ]
     category = forms.ChoiceField(
         label = '카테고리',
-        widget = forms.Select(attrs = {'class': 'my-category form-control',}),
+        widget = forms.Select(
+            attrs = {
+                'class': 'my-category form-control',
+                'style': 'border:none;'
+            }
+        ),
         choices = CATEGORY_CHOICES,
     )
     class Meta:
@@ -27,9 +33,27 @@ class ArticleForm(forms.ModelForm):
             'image': '이미지',
         }
         widgets = {
-            'title': forms.TextInput(attrs={'class':'form-control',}),
-            'category': forms.TextInput(attrs={'class':'form-control',}),
-            'content': forms.Textarea(attrs={'class':'form-control', 'rows':'5',}),
+            'title': forms.TextInput(
+                attrs={
+                    'class':'form-control',
+                    'placeholder' : '제목을 입력해 주세요',
+                    'style': 'border:none;',
+                }
+            ),
+            'content': forms.Textarea(
+                attrs={
+                    'class':'form-control',
+                    'placeholder' : '내용을 입력해 주세요',
+                    'rows':'5',
+                    'style': 'border:none;'
+                }
+            ),
+            'image': ClearableFileInput(
+                attrs={
+                    'class': 'form-control',
+                    'style': 'width: 400px;'
+                }
+            ),
         }
 
 

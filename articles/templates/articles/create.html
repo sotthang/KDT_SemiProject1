@@ -1,10 +1,37 @@
 {% extends 'base.html' %}
 
+{% load static %}
+
+{% block head %}
+<link rel="stylesheet" href="{% static '/CSS/create.css' %}">
+{% endblock head %}
+
 {% block content %}
-<h1>create</h1>
-<form action="{% url 'articles:create' %}" method="POST" enctype="multipart/form-data">
-  {% csrf_token %}
-  {{ form.as_p }}
-  <input type="submit" value="작성하기" class="btn btn-outline-success">
-</form>
+<div class="d-flex justify-content-center background">
+  <form action="{% url 'articles:create' %}" method="POST" enctype="multipart/form-data">
+    <h2 class="mb-4 title fw-bold">여행 일정 생성</h2>
+    {% csrf_token %}
+    {% comment %} {{ form.as_p }} {% endcomment %}
+    <div class="mb-3 main">
+      제목 : {{ form.title }}
+    </div>
+    <div class="mb-3 main">
+      카테고리 : {{ form.category }}
+    </div>
+    <div class="mb-3 main">
+      내용 : {{ form.content }}
+    </div>
+    <div class="mb-3">
+      사진 : {{ form.image }}
+    </div>
+    <p style="margin:0;"><img id="id_image-preview" style="width:400px;"></p>
+    <hr>
+    <input type="submit" value="작성하기" class="btn btn-outline-success" style="width:400px;">
+  </form>
+</div>
+
+
+{% block script %}
+<script type="text/javascript" src="/static/JS/create.js"></script>
+{% endblock script %}
 {% endblock content %}
