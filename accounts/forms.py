@@ -16,27 +16,69 @@ class CustomUserCreationForm(UserCreationForm):
     username = forms.CharField(
         label='아이디',
         label_suffix='',
-        widget=forms.TextInput(attrs={'class': 'form-control', 'style': 'width: 250px;'}))
+        widget=forms.TextInput(
+            attrs={
+                'class': 'form-control',
+                'placeholder' : 'Username',
+                'style': 'width: 500px;'
+            }
+        )
+    )
     email = forms.EmailField(
         label='이메일',
         label_suffix='',
-        widget=forms.EmailInput(attrs={'class': 'form-control', 'style': 'width: 250px;'}))
+        widget=forms.EmailInput(
+            attrs={
+                'class': 'form-control', 
+                'placeholder' : 'example@email.com',
+                'style': 'width: 500px;'
+            }
+        )
+    )
     first_name = forms.CharField(
         label='이름',
         label_suffix='',
-        widget=forms.TextInput(attrs={'class': 'form-control', 'style': 'width: 250px;'}))
+        widget=forms.TextInput(
+            attrs={
+                'class': 'form-control', 
+                'placeholder' : 'Firstname',
+                'style': 'width: 500px;'
+            }
+        )
+    )
     last_name = forms.CharField(
         label='성',
         label_suffix='',
-        widget=forms.TextInput(attrs={'class': 'form-control', 'style': 'width: 250px;'}))
+        widget=forms.TextInput(
+            attrs={
+                'class': 'form-control', 
+                'placeholder' : 'Lastname',
+                'style': 'width: 500px;'
+            }
+        )
+    )
     password1 = forms.CharField(
         label='비밀번호',
         label_suffix='',
-        widget=forms.PasswordInput(attrs={'class': 'form-control', 'style': 'width: 250px;'}))
+        widget=forms.PasswordInput(
+            attrs={
+                'class': 'form-control', 
+                'placeholder' : '8자 이상의 영문 대소문자와 숫자로만 입력',
+                'style': 'width: 500px;'
+            }
+        )
+    )
     password2 = forms.CharField(
         label='비밀번호 확인',
         label_suffix='',
-        widget=forms.PasswordInput(attrs={'class': 'form-control', 'style': 'width: 250px;'}))
+        widget=forms.PasswordInput(
+            attrs={
+                'class': 'form-control', 
+                'placeholder' : '8자 이상의 영문 대소문자와 숫자로만 입력',
+                'style': 'width: 500px;'
+            }
+        )
+    )
 
 
 class CustomUserChangeForm(UserChangeForm):
