@@ -1,38 +1,64 @@
 {% extends 'base.html' %}
+
+{% load static %}
+
+{% block head %}
+<link rel="stylesheet" href="{% static '/CSS/profile.css' %}">
+{% endblock head %}
+
 {% block content %}
-  <div>
-    <h1>
-      {{ person.username }}님의 프로필 페이지
-    </h1>
-    <div>
-      팔로워 : {{ person.followers.all|length }}
-      <ul>
-        {% for follower in person.followers.all %}
-          <a href="{% url 'accounts:profile' follower %}"><li>{{ follower }}</li></a>
-        {% endfor %}
-      </ul>
-    </div>
-    <div>
-      팔로잉 : {{ person.followings.all|length }}
-      <ul>
-        {% for following in person.followings.all %}
-        <a href="{% url 'accounts:profile' following %}"><li>{{ following }}</li></a>
-        {% endfor %}
-      </ul>
-    </div>
-    {% if not user.is_authenticated %}
-      <div><input type="submit" value="Follow" disabled="disabled"></div>
-    {% elif request.user != person %}
-      <div>
-        <form action="{% url 'accounts:follow' person.pk %}" method="POST">
-          {% csrf_token %}
-          {% if request.user in person.followers.all %}
-            <input type="submit" value="Unfollow">
-          {% else %}
-            <input type="submit" value="Follow">
-          {% endif %}
-        </form>
+  <div class="d-flex justify-content-center">
+    <div class="d-flex flex-column">
+      <h1 class="mb-4" style="text-align:center;">My Profile</h1>
+      <div class="box mb-4">
+        <img class="img" src="{% static '/img/루피.jpg' %}">
       </div>
-    {% endif %}
+      <div style="text-align:center;">
+        {% comment %} username {% endcomment %}
+        <h3>
+          {{ person.username }}
+        </h3>
+
+        {% comment %} 팔로워 & 팔로잉 {% endcomment %}
+        <div class="mt-4">
+          팔로워 : {{ person.followers.all|length }}
+          <ul class="mt-2">
+            {% for follower in person.followers.all %}
+              <a href="{% url 'accounts:profile' follower %}" style="text-decoration:none; color:gray;">
+                <li>{{ follower }}</li>
+              </a>
+            {% endfor %}
+          </ul>
+        </div>
+        <div>
+          팔로잉 : {{ person.followings.all|length }}
+          <ul>
+            {% for following in person.followings.all %}
+            <a href="{% url 'accounts:profile' following %}"><li>{{ following }}</li></a>
+            {% endfor %}
+          </ul>
+        </div>
+        {% if not user.is_authenticated %}
+          <div><input type="submit" value="Follow" disabled="disabled"></div>
+        {% elif request.user != person %}
+          <div>
+            <form action="{% url 'accounts:follow' person.pk %}" method="POST">
+              {% csrf_token %}
+              {% if request.user in person.followers.all %}
+                <input type="submit" value="Unfollow" class="btn btn-outline-info">
+              {% else %}
+                <input type="submit" value="Follow" class="btn btn-outline-info">
+              {% endif %}
+            </form>
+          </div>
+        {% endif %}
+  
+        {% comment %} 이메일 {% endcomment %}
+        <div class="mt-4">
+          {{ user.email }}
+        </div>
+      </div>
+
+    </div>
   </div>
 {% endblock content %}
