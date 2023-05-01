@@ -55,6 +55,12 @@
   </div>
 {% endfor %}
 
+<form action="{% url 'articles:review_comment_create' review.pk %}" method="post">
+  {% csrf_token %}
+  {{ comment_form.as_p }}
+  <input type="submit" value="댓글 작성">
+</form>
+
 {% if request.user == review.user %}
   <a href="{% url 'articles:review_update' review.pk %}" class="p-2"><button type="button" class="btn btn-primary">수정하기</button></a>
   <form action="{% url 'articles:review_delete' review.pk %}" METHOD="POST" class="p-2">

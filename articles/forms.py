@@ -12,16 +12,10 @@ class ArticleForm(forms.ModelForm):
         ('레저 & 액티비티','레저 & 액티비티'),
         ('맛집','맛집'),
         ('쇼핑','쇼핑'),
-
     ]
     category = forms.ChoiceField(
         label = '카테고리',
-        widget = forms.Select(
-            attrs = {
-                'class': 'my-category form-control',
-                
-            }
-        ),
+        widget = forms.Select(attrs = {'class': 'my-category form-control',}),
         choices = CATEGORY_CHOICES,
     )
     class Meta:
@@ -30,15 +24,12 @@ class ArticleForm(forms.ModelForm):
         labels = {
             'title': '제목',
             'content': '내용',
-            'image': '이미지',    
-
-
+            'image': '이미지',
         }
         widgets = {
             'title': forms.TextInput(attrs={'class':'form-control',}),
             'category': forms.TextInput(attrs={'class':'form-control',}),
             'content': forms.Textarea(attrs={'class':'form-control', 'rows':'5',}),
-
         }
 
 
@@ -53,20 +44,29 @@ class CommentForm(forms.ModelForm):
             'content': forms.Textarea(attrs={'class':'form-control', 'rows':'2',})
         }
         
-        
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        if self.errors:
+            for f_name in self.fields:
+                if f_name in self.errors:
+                    self.fields[f_name].widget.attrs.update({'aria-describedby': f"{f_name}_invalid"})
+                    self.fields[f_name].widget.attrs.update({'aria-invalid': 'true'})
+                    self.errors.pop(f_name)
+                else:
+                    self.fields[f_name].widget.attrs.update({'class': 'form-control'})
+                    self.fields[f_name].widget.attrs.update({'aria-describedby': f"{f_name}_help"})
+                    self.fields[f_name].widget.attrs.update({'aria-invalid': 'false'})
+
+
 class ReviewForm(forms.ModelForm):
     class Meta:
-
         model = Review
         exclude = ('user', 'emote_users', 'article',)
-
         labels = {
                 'title': '제목',
                 'content': '내용',
                 'image': '이미지',    
                 'score': '별점',
-
-
             }
         widgets = {
             'title': forms.TextInput(attrs={'class':'form-control',}),

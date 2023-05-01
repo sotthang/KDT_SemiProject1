@@ -22,36 +22,38 @@
 {% endif %}
 
 <p>이 여행지에 대한 의견을 남겨주세요</p>
-  <div class="d-flex text-center">
-    {% for emotion in emotions %}
-    <div class="m-3">
-      {% if request.user.is_authenticated %}
-      {{ emotion.queryset }}
-        <form action="{% url 'articles:emotes' article.pk emotion.value article %}" method="POST">
-          {% csrf_token %}
-          {% if emotion.exsit %}
-            <input type="image" src="{% static 'emotions/' %}{{ emotion.value }}.png" value="{{ emotion.label }} 취소" style="width: 32px; height: 32px;"> 취소하기
-          {% else %}
-            <input type="image" src="{% static 'emotions/' %}{{ emotion.value }}.png" value="{{ emotion.label }}" style="width: 32px; height: 32px;">
-          {% endif %}
-        </form>
-      {% else %}
-        <button value="{{ emotion.label }}" disabled>{{ emotion.label }}</button>
-      {% endif %}
-      {{ emotion.count }}
-    </div>
-    {% endfor %}
+<div class="d-flex text-center">
+  {% for emotion in emotions %}
+  <div class="m-3">
+    {% if request.user.is_authenticated %}
+    {{ emotion.queryset }}
+      <form action="{% url 'articles:emotes' article.pk emotion.value article %}" method="POST">
+        {% csrf_token %}
+        {% if emotion.exsit %}
+          <input type="image" src="{% static 'emotions/' %}{{ emotion.value }}.png" value="{{ emotion.label }} 취소" style="width: 32px; height: 32px;"> 취소하기
+        {% else %}
+          <input type="image" src="{% static 'emotions/' %}{{ emotion.value }}.png" value="{{ emotion.label }}" style="width: 32px; height: 32px;">
+        {% endif %}
+      </form>
+    {% else %}
+      <button value="{{ emotion.label }}" disabled>{{ emotion.label }}</button>
+    {% endif %}
+    {{ emotion.count }}
   </div>
+  {% endfor %}
+</div>
 
+<div id="map" style="width:500px; height:300px;"></div>
+
+<hr>
+<a href="{% url 'articles:review_create' article.pk %}" class="p-2"><button type="button" class="btn btn-primary">리뷰 남기기</button></a>
 <hr>
 
 리뷰 목록
 {% for review in reviews %}
   <div>
     <a href="{% url 'articles:review_detail' review.pk %}"><p>리뷰 제목 - {{ review.title }}</p></a>
-    
     <p>리뷰 내용 - {{ review.content }}</p>
-
   </div>
 {% endfor %}
 
@@ -62,32 +64,22 @@
 </h3>
 
 {% for comment in comments %}
+  <p id="comment-content-{{comment.pk}}">{{comment.content}}</p>
   <div>
-    <p>댓글 번호 -
-      {{ comment.pk }}
-    </p>
-    <p>댓글 작성자 -
-      {{ comment.user }}
-    </p>
-    <p>댓글 내용 -
-      {{comment.content}}
-    </p>
-    {% if request.user == comment.user %}
+    <div class="d-flex">
       <form action="{% url 'articles:comment_delete' article.pk comment.pk %}" method="POST">
         {% csrf_token %}
-        <input type="submit" value="댓글 삭제">
+        <input type="submit" value="댓글 삭제" class="btn btn-sm btn-outline-danger">
       </form>
-      <button onclick="dis()" id="comment_btn">댓글 수정</button>
-      <div id="dis" style="display: none;">
-        <form action="{% url 'articles:comment_update' article.pk comment.pk %}" method="POST">
-          {% csrf_token %}
-          {{ form.as_p }}
-          <input type="submit" value="UPDATE">
-        </form>
-      </div>
-    {% endif %}
+      <input type="button" value="댓글 수정" class="comment-edit-btn btn btn-sm btn-outline-primary" data-article-id="{{ article.pk }}" data-comment-id="{{ comment.pk }}">
+    </div>
+    <form class="comment-edit-form my-3" id="comment-edit-form-{{ comment.pk }}" data-article-id="{{ article.pk }}" data-comment-id="{{ comment.pk }}" hidden>
+      {% csrf_token %}
+      {{comment_form.as_p}}
+      <input type="submit" value="수정" class="update btn btn-sm btn-outline-primary">
+      <input type="button" value="취소" class="cancel btn btn-sm btn-outline-secondary" data-comment-id="{{ comment.pk }}">
+    </form>
   </div>
-  <hr>
 {% endfor %}
 
 <form action="{% url 'articles:comment_create' article.pk %}" method="post">
@@ -99,14 +91,71 @@
 <hr>
 
 <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+{% comment %} 지도 {% endcomment %}
+<script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=test&libraries=services,clusterer,drawing"></script>
 <script>
-  function dis(){
-    if($('#dis').css('display') == 'none'){
-      $('#dis').show();
-      $('#comment_btn').text('댓글 수정 취소');
-    }else{
-      $('#dis').hide();
-      $('#comment_btn').text('댓글 수정');
-    }
+  var container = document.getElementById('map')
+  var options = {
+    center: new kakao.maps.LatLng(33.361666, 126.529167),
+    level: 3
   }
-</script>{% endblock content %}
+  var map = new kakao.maps.Map(container, options)
+  var markerPosition = options.center
+  var marker = new kakao.maps.Marker({
+    position: markerPosition
+  })
+  marker.setMap(map)
+
+</script>
+<script>
+  const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value
+  // 댓글 수정
+  const commentUpdates = document.querySelectorAll('.comment-edit-btn')
+
+  commentUpdates.forEach((comment) => {
+    comment.addEventListener('click', (event) => {
+      const commentId = event.target.dataset.commentId
+      const commentUpdateDiv = document.querySelector(`#comment-edit-form-${commentId}`)
+      const contentTextArea = document.querySelector(`#comment-edit-form-${commentId}>p>textarea`)
+      commentUpdateDiv.hidden = false
+      contentTextArea.value = document.querySelector(`#comment-content-${commentId}`).textContent
+    })
+  })
+  
+  const commentUpdateConfirms = document.querySelectorAll('.comment-edit-form')
+  commentUpdateConfirms.forEach((updateBtn) => {
+    updateBtn.addEventListener('submit', (event) => {
+      event.preventDefault()
+      const articleId = event.target.dataset.articleId
+      const commentId = event.target.dataset.commentId
+      const data = {
+        content: document.querySelector(`#comment-edit-form-${commentId}>p>textarea`).value,
+      }
+      if (window.confirm('댓글 수정하시겠습니까?')) {
+        axios({
+          method:'post',
+          url:`/articles/${articleId}/comments/${commentId}/update/`,
+          headers: {'X-CSRFToken': csrftoken,},
+          data: JSON.stringify(data),
+        })
+        .then((response) => {
+          updateBtn.hidden = true
+          document.querySelector(`#comment-content-${commentId}`).textContent = data['content']
+        })
+        .catch((error) => {
+          console.log(error.response)
+        })
+      }
+    })
+  })
+
+  const commentUpdateCancels = document.querySelectorAll('.comment-edit-form>.cancel')
+  commentUpdateCancels.forEach((cancelBtn) => {
+    cancelBtn.addEventListener('click', (event) => {
+      const commentId = event.target.dataset.commentId
+      const commentUpdateForm = document.querySelector(`#comment-edit-form-${commentId}`)
+      commentUpdateForm.hidden = true
+    })
+  })
+</script>
+{% endblock content %}
