@@ -1,5 +1,4 @@
 {% extends 'base.html' %}
-
 {% load static %}
 
 {% block head %}
@@ -8,7 +7,7 @@
 
 {% block content %}
 <div class="d-flex justify-content-center background">
-  <form action="{% url 'articles:create' %}" method="POST" enctype="multipart/form-data">
+  <form action="{% url 'articles:create' %}" method="POST" enctype="multipart/form-data" id="create">
     <h2 class="mb-4 title fw-bold">여행 일정 생성</h2>
     {% csrf_token %}
     {% comment %} {{ form.as_p }} {% endcomment %}
@@ -25,13 +24,40 @@
       사진 : {{ form.image }}
     </div>
     <p style="margin:0;"><img id="id_image-preview" style="width:400px;"></p>
+    <p>아래 카카오 맵에서 검색 후 마커를 클릭해주세요.</p>
+    <div class="mb-3">
+      Lat : {{ form.lat }}
+    </div>
+    <div class="mb-3">
+      Lng : {{ form.lng }}
+    </div>
     <hr>
-    <input type="submit" value="작성하기" class="btn btn-outline-success" style="width:400px;">
   </form>
 </div>
 
+<div class="map_wrap d-flex justify-content-center">
+  <div id="map" style="width:600px;height:100%;position:relative;overflow:hidden;">
+  </div>
+  <div id="menu_wrap" class="bg_white">
+    <div class="option">
+      <div>
+        <form onsubmit="searchPlaces(); return false;">
+          키워드 : <input type="text" value="제주도" id="keyword" size="15"> 
+          <button type="submit">검색하기</button> 
+        </form>
+      </div>
+    </div>
+    <hr>
+    <ul id="placesList"></ul>
+    <div id="pagination"></div>
+  </div>
+</div>
+<div class="d-flex justify-content-center p-5">
+  <input type="submit" form="create" value="작성하기" class="btn btn-outline-success" style="width:400px;">
+</div>
 
 {% block script %}
+<script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=44fdfd5aea6498bf2814ede3eae827b6&libraries=services"></script>
 <script type="text/javascript" src="/static/JS/create.js"></script>
 {% endblock script %}
 {% endblock content %}
