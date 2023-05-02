@@ -1,7 +1,7 @@
 // image 중간에 추가
 const imageFileInput = document.querySelector('#id_image');
 const imagePreview = document.querySelector('#id_image-preview');
-// const imageGet = document.getElementById('#id_image-preview');
+
 
 imageFileInput.addEventListener('change', () => {
   const file = imageFileInput.files[0];
@@ -16,6 +16,8 @@ imageFileInput.addEventListener('change', () => {
 // 카카오맵
 // 마커를 담을 배열입니다
 var markers = [];
+
+var iwContent = '<div>선택 완료</div>' // 인포윈도우에 표출될 내용으로 HTML 문자열이나 document element가 가능합니다
 
 var mapContainer = document.getElementById('map'), // 지도를 표시할 div 
   mapOption = {
@@ -106,24 +108,48 @@ function displayPlaces(places) {
       // 마커와 검색결과 항목에 mouseover 했을때
       // 해당 장소에 인포윈도우에 장소명을 표시합니다
       // mouseout 했을 때는 인포윈도우를 닫습니다
-      (function(marker, title) {
+      (function(marker, title, lat, lng) {
           kakao.maps.event.addListener(marker, 'mouseover', function() {
               displayInfowindow(marker, title);
           });
-
+    
           kakao.maps.event.addListener(marker, 'mouseout', function() {
-              infowindow.close();
+            infowindow.close();
           });
 
-          itemEl.onmouseover =  function () {
-              displayInfowindow(marker, title);
-          };
+          kakao.maps.event.addListener(marker, 'click', function() {
+            // 값을 설정할 입력란의 ID 값을 가져옵니다.
+            var LatInput = document.getElementById("id_lat")
+            var LngInput = document.getElementById("id_lng")
 
-          itemEl.onmouseout =  function () {
+            // 입력란의 값을 설정합니다.
+            LatInput.value = lat
+            LngInput.value = lng
+
+            displayInfowindow(marker, iwContent)
+          });
+    
+          itemEl.onmouseover = function() {
+            displayInfowindow(marker, title);
+          };
+    
+          itemEl.onmouseout = function() {
               infowindow.close();
           };
-          
-      })(marker, places[i].place_name);
+    
+          itemEl.addEventListener('click', function(event) {
+              // 값을 설정할 입력란의 ID 값을 가져옵니다.
+              var LatInput = document.getElementById("id_lat")
+              var LngInput = document.getElementById("id_lng")
+
+              // 입력란의 값을 설정합니다.
+              LatInput.value = lat
+              LngInput.value = lng
+
+              displayInfowindow(marker, iwContent)
+
+          }.bind(null, places[i].y, places[i].x));
+      })(marker, places[i].place_name, places[i].y, places[i].x);
 
       fragment.appendChild(itemEl);
   }
@@ -177,17 +203,6 @@ function addMarker(position, idx, title) {
 
   marker.setMap(map); // 지도 위에 마커를 표출합니다
   markers.push(marker);  // 배열에 생성된 마커를 추가합니다
-
-  // 마커 클릭시 이벤트
-  kakao.maps.event.addListener(marker, 'click', function() {
-    // 값을 설정할 입력란의 ID 값을 가져옵니다.
-    var LatInput = document.getElementById("id_lat")
-    var LngInput = document.getElementById("id_lng")
-
-    // 입력란의 값을 설정합니다.
-    LatInput.value = position.Ma
-    LngInput.value = position.La
-  });
 
   return marker;
 }

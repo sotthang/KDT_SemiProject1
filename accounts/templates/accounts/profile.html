@@ -13,8 +13,8 @@
 
       {% comment %} 프로필 이미지 {% endcomment %}
       <div class="box mb-4">
-        <input type="file" id="file-input" class="input-image" style="display: none;" />
-        <img class="img" src="profile.jpg" alt="프로필 사진" id="profile-image"/>
+        {% comment %} <input type="file" id="file-input" class="input-image" style="display: none;" /> {% endcomment %}
+        <img class="img" src={% if person.profile_img %} "{{ person.profile_img.url }}" {% else %} "{% static '/img/루피.jpg' %}" {% endif %} alt="프로필 사진" id="profile-image"/>
       </div>
 
       <div style="text-align:center;">
