@@ -104,21 +104,43 @@ class CustomUserChangeForm(UserChangeForm):
         label='프로필 사진',
         label_suffix='',
         widget=forms.ClearableFileInput(
-            attrs={'class': 'form-control', 'style': 'width: 400px;'}),
+            attrs={
+                'class': 'form-control', 
+                'style': 'width: 400px;'
+            }
+        ),
         required=False,
     )
     email = forms.EmailField(
         label='이메일',
         label_suffix='',
-        widget=forms.EmailInput(attrs={'class': 'form-control', 'style': 'width: 250px;'}))
+        widget=forms.EmailInput(
+            attrs={
+                'class': 'form-control', 
+                'style': 'width: 400px;'
+            }
+        )
+    )
     first_name = forms.CharField(
         label='이름',
         label_suffix='',
-        widget=forms.TextInput(attrs={'class': 'form-control', 'style': 'width: 250px;'}))
+        widget=forms.TextInput(
+            attrs={
+                'class': 'form-control', 
+                'style': 'width: 400px;'
+            }
+        )
+    )
     last_name = forms.CharField(
         label='성',
         label_suffix='',
-        widget=forms.TextInput(attrs={'class': 'form-control', 'style': 'width: 250px;'}))
+        widget=forms.TextInput(
+            attrs={
+                'class': 'form-control', 
+                'style': 'width: 400px;'
+            }
+        )
+    )
     password = None
 
 
@@ -141,18 +163,35 @@ class CustomPasswordChangeForm(PasswordChangeForm):
         label='기존 비밀번호',
         label_suffix='',
         required=True,
-        widget=forms.PasswordInput(attrs={'class':'form-control', 'style':'width: 250px'}),
+        widget=forms.PasswordInput(
+            attrs={
+                'class':'form-control', 
+                'style':'width: 400px;'
+            }
+        ),
     )
     new_password1 = forms.CharField(
         label='새로운 비밀번호',
         label_suffix='',
         required=True,
-        widget=forms.PasswordInput(attrs={'class':'form-control', 'style':'width: 250px'}),
+        widget=forms.PasswordInput(
+            attrs={
+                'class':'form-control', 
+                'placeholder' : '8자 이상의 영문 대소문자와 숫자로만 입력',
+                'style':'width: 400px;'
+            }
+        ),
     )
     new_password2 = forms.CharField(
         label='새로운 비밀번호 확인',
         label_suffix='',
         required=True,
-        widget=forms.PasswordInput(attrs={'class':'form-control', 'style':'width: 250px'}),
+        widget=forms.PasswordInput(
+            attrs={
+                'class':'form-control', 
+                'placeholder' : '8자 이상의 영문 대소문자와 숫자로만 입력',
+                'style':'width: 400px;'
+            }
+        ),
     )
 
