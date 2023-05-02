@@ -153,7 +153,6 @@ def review_detail(request, review_pk):
     review = Review.objects.get(pk=review_pk)
     comments = review.reviewcomment_set.all()
     comment_form = ReviewCommentForm()
-    # update_form = ReviewCommentForm()
     emotions = []
     for emotion in EMOTIONS:
         label = emotion['label']
@@ -175,7 +174,6 @@ def review_detail(request, review_pk):
         'review': review,
         'comments': comments,
         'comment_form': comment_form,
-        # 'update_form': update_form,
         'emotions': emotions,
     }
     return render(request, 'reviews/review_detail.html', context)
@@ -290,7 +288,10 @@ def emotes(request, pk, emotion, page):
             filter_query.delete()
         else:
             Emote.objects.create(article=article, user=request.user, emotion=emotion)
-        return redirect('articles:detail', pk)
+        context = {
+            'emotion_count': Emote.objects.filter(article=article, emotion=emotion).count()
+        }
+        return JsonResponse(context)
     elif 'Review' in page:
         review = Review.objects.get(pk=pk)
         filter_query = Emote.objects.filter(review=review, user=request.user, emotion=emotion)
@@ -298,7 +299,10 @@ def emotes(request, pk, emotion, page):
             filter_query.delete()
         else:
             Emote.objects.create(review=review, user=request.user, emotion=emotion)
-        return redirect('articles:review_detail', pk)
+        context = {
+            'emotion_count': Emote.objects.filter(review=review, emotion=emotion).count()
+        }
+        return JsonResponse(context)
 
 def search(request):
     search_word = request.GET.get('word', False)

@@ -3,7 +3,7 @@
 
 {% block content %}
 <h1>Review detail</h1>
-<h4><b>{{review.pk}}. {{review.title}}</b></h4>
+<h4><b><span id="review-pk">{{review.pk}}</span>. {{review.title}}</b></h4>
 <p>{{review.user}}</p>
 
 {% if review.image %}
@@ -17,21 +17,21 @@
 <p>이 여행지에 대한 의견을 남겨주세요</p>
   <div class="d-flex text-center">
     {% for emotion in emotions %}
-    <div class="m-3">
+    <div class="m-3" id="emotion-{{emotion.value}}">
       {% if request.user.is_authenticated %}
       {{ emotion.queryset }}
-        <form action="{% url 'articles:emotes' review.pk emotion.value review %}" method="POST">
+        <form>
           {% csrf_token %}
           {% if emotion.exsit %}
-            <input type="image" src="{% static 'emotions/' %}{{ emotion.value }}.png" value="{{ emotion.label }} 취소" style="width: 32px; height: 32px;"> 취소하기
+            <input type="image" src="{% static 'emotions/' %}{{ emotion.value }}.png" value="{{ emotion.label }} 취소" style="width: 32px; height: 32px;" class="emotion" data-emotion-id="{{emotion.value}}"> 취소하기
           {% else %}
-            <input type="image" src="{% static 'emotions/' %}{{ emotion.value }}.png" value="{{ emotion.label }}" style="width: 32px; height: 32px;">
+            <input type="image" src="{% static 'emotions/' %}{{ emotion.value }}.png" value="{{ emotion.label }}" style="width: 32px; height: 32px;" class="emotion" data-emotion-id="{{emotion.value}}">
           {% endif %}
         </form>
       {% else %}
         <button value="{{ emotion.label }}" disabled>{{ emotion.label }}</button>
       {% endif %}
-      {{ emotion.count }}
+      <span class="emotion-count">{{ emotion.count }}</span>
     </div>
     {% endfor %}
   </div>
@@ -48,7 +48,7 @@
     </div>
     <form class="comment-edit-form my-3" id="comment-edit-form-{{ comment.pk }}" data-review-id="{{ review.pk }}" data-comment-id="{{ comment.pk }}" hidden>
       {% csrf_token %}
-      {{update_form.as_p}}
+      {{comment_form.as_p}}
       <input type="submit" value="수정" class="update btn btn-sm btn-outline-primary">
       <input type="button" value="취소" class="cancel btn btn-sm btn-outline-secondary" data-comment-id="{{ comment.pk }}">
     </form>
@@ -79,7 +79,11 @@
         const commentId = event.target.dataset.commentId
         const commentUpdateDiv = document.querySelector(`#comment-edit-form-${commentId}`)
         const contentTextArea = document.querySelector(`#comment-edit-form-${commentId}>p>textarea`)
-        commentUpdateDiv.hidden = false
+        if (commentUpdateDiv.hidden == true) {
+          commentUpdateDiv.hidden = false
+        } else {
+          commentUpdateDiv.hidden = true
+        }
         contentTextArea.value = document.querySelector(`#comment-content-${commentId}`).textContent
       })
     })
@@ -120,5 +124,28 @@
       })
     })
   </script>
-
+  <script>
+    // emotion
+    const emotions = document.querySelectorAll('.emotion')
+    const pk = document.querySelector('#review-pk').textContent
+  
+    emotions.forEach((emotion) => {
+      emotion.addEventListener('click', (event) => {
+        event.preventDefault()
+        const emotionId = event.target.dataset.emotionId
+        const emotionCount = document.querySelector(`#emotion-${emotionId} > .emotion-count`)
+        axios({
+          method:'post',
+          url:`/articles/${pk}/emotes/${emotionId}/${'Review'}/`,
+          headers:{'X-CSRFToken': csrftoken,},       
+        })
+        .then((response) => {
+          emotionCount.textContent = response.data.emotion_count
+        })
+        .catch((response) => {
+          console.log(error.response)
+        })
+      })
+    }) 
+  </script>
 {% endblock content %}
