@@ -22,6 +22,11 @@
   display: none;
 }
 
-#profile-image:hover {
+/* #profile-image:hover {
   cursor: pointer;
+} */
+
+.userupdate {
+    text-decoration:none; 
+    color: #787878;
 }
