@@ -5,17 +5,17 @@
   <hr>
   <h3>Articles</h3>
   {% for result in results_article %}
-    <a href="{% url 'articles:detail' result.pk %}">{{result.title}}</a>
+    <p><a href="{% url 'articles:detail' result.pk %}">{{result.title}}</a></p>
   {% endfor %}
   <form action="{% url 'articles:search_detail' 'article' %}" method="GET">
-    <button type="submit" name="word" value="{{search_word}}">이동하기</button>
+    <button type="submit" name="word" value="{{search_word}}" class="btn btn-sm">article 결과 더 보기</button>
   </form> 
   <hr>
   <h3>Reviews</h3>
   {% for result in results_review %}
-    <a href="{% url 'articles:review_detail' result.pk %}">{{result.title}}</a>
+    <p><a href="{% url 'articles:review_detail' result.pk %}">{{result.title}}</a></p>
   {% endfor %}
   <form action="{% url 'articles:search_detail' 'review' %}" method="GET">
-    <button type="submit" name="word" value="{{search_word}}">이동하기</button>
+    <button type="submit" name="word" value="{{search_word}}" class="btn btn-sm">review 결과 더 보기</button>
   </form> 
 {% endblock content %}
