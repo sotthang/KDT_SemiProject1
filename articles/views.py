@@ -302,8 +302,8 @@ def emotes(request, pk, emotion, page):
 
 def search(request):
     search_word = request.GET.get('word', False)
-    result_article = Article.objects.filter(Q(title__icontains=search_word) | Q(content__icontains=search_word)).distinct()[0:5]
-    result_review = Review.objects.filter(Q(title__icontains=search_word) | Q(content__icontains=search_word)).distinct()[0:5]
+    result_article = Article.objects.filter(Q(title__icontains=search_word) | Q(content__icontains=search_word)).order_by('-pk').distinct()[0:5]
+    result_review = Review.objects.filter(Q(title__icontains=search_word) | Q(content__icontains=search_word)).order_by('-pk').distinct()[0:5]
 
     context = {
         'results_article': result_article,
@@ -316,10 +316,10 @@ def search_detail(request, category):
     search_word = request.GET.get('word')
 
     if category == 'article':
-        results = Article.objects.filter(Q(title__icontains=search_word) | Q(content__icontains=search_word)).distinct()
+        results = Article.objects.filter(Q(title__icontains=search_word) | Q(content__icontains=search_word)).order_by('-pk').distinct()
         cat = 'Article'
     elif category == 'review':
-        results = Review.objects.filter(Q(title__icontains=search_word) | Q(content__icontains=search_word)).distinct()
+        results = Review.objects.filter(Q(title__icontains=search_word) | Q(content__icontains=search_word)).order_by('-pk').distinct()
         cat = 'Review'
     
     page = request.GET.get('page', '1')
