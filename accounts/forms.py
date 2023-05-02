@@ -24,6 +24,17 @@ class CustomUserCreationForm(UserCreationForm):
             }
         )
     )
+    profile_img = forms.ImageField(
+        label='프로필 사진',
+        label_suffix='',
+        widget=forms.ClearableFileInput(
+            attrs={
+                'class': 'form-control',
+                'style': 'width: 500px;'
+            }
+        ),
+        required=False,
+    )
     email = forms.EmailField(
         label='이메일',
         label_suffix='',
@@ -89,6 +100,13 @@ class CustomUserChangeForm(UserChangeForm):
             'first_name',
             'last_name',
         )
+    profile_img = forms.ImageField(
+        label='프로필 사진',
+        label_suffix='',
+        widget=forms.ClearableFileInput(
+            attrs={'class': 'form-control', 'style': 'width: 400px;'}),
+        required=False,
+    )
     email = forms.EmailField(
         label='이메일',
         label_suffix='',

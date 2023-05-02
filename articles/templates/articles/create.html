@@ -24,7 +24,7 @@
       사진 : {{ form.image }}
     </div>
     <p style="margin:0;"><img id="id_image-preview" style="width:400px;"></p>
-    <p>아래 카카오 맵에서 검색 후 마커를 클릭해주세요.</p>
+    <p>아래 카카오 맵에서 검색 후 <br>마커 또는 목록을 클릭하여 위치를 등록해주세요.</p>
     <div class="mb-3">
       Lat : {{ form.lat }}
     </div>
@@ -56,8 +56,9 @@
   <input type="submit" form="create" value="작성하기" class="btn btn-outline-success" style="width:400px;">
 </div>
 
+{% endblock content %}
+
 {% block script %}
 <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=44fdfd5aea6498bf2814ede3eae827b6&libraries=services"></script>
 <script type="text/javascript" src="/static/JS/create.js"></script>
 {% endblock script %}
-{% endblock content %}

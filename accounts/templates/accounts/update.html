@@ -2,7 +2,7 @@
 
 {% block content %}
 <div class="d-flex justify-content-center">
-  <form action="{% url 'accounts:update' %}" method="POST" class="mb-2">
+  <form action="{% url 'accounts:update' %}" method="POST" class="mb-2" enctype="multipart/form-data">
     {% csrf_token %}
     {{ form.as_p }}
     <a href="{% url 'accounts:change_password' %}" class="btn btn-outline-primary">비밀번호 변경</a>

@@ -33,12 +33,14 @@ def logout(request):
 
 def signup(request):
     if request.user.is_authenticated:    
-        return redirect('articles:main')
+        return redirect('articles:index')
     
     if request.method == 'POST':
-        form = CustomUserCreationForm(request.POST)
+        form = CustomUserCreationForm(request.POST, request.FILES)
         if form.is_valid():
             user = form.save()
+            user.profile_img = form.cleaned_data['profile_img']
+            user.save()
             # 회원 가입 성공 시 바로 로그인
             auth_login(request, user)
             return redirect('articles:index')
@@ -62,10 +64,12 @@ def delete(request):
 @login_required
 def update(request):
     if request.method == 'POST':
-        form = CustomUserChangeForm(request.POST, instance=request.user)
+        form = CustomUserChangeForm(request.POST, request.FILES, instance=request.user)
         if form.is_valid():
-            form.save()
-            return redirect('articles:index')
+            user = form.save()
+            user.profile_img = form.cleaned_data['profile_img']
+            user.save()
+            return redirect('accounts:profile', user.username)
     else:
         form = CustomUserChangeForm(instance=request.user)
     context = {

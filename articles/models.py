@@ -15,8 +15,8 @@ class Article(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     emote_users = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='emote_articles', through='Emote')
-    lat = models.DecimalField(max_digits=16, decimal_places=13)
-    lng = models.DecimalField(max_digits=16, decimal_places=13)
+    lat = models.DecimalField(max_digits=20, decimal_places=16, null=True)
+    lng = models.DecimalField(max_digits=20, decimal_places=16, null=True)
 
 
 class Review(models.Model):
