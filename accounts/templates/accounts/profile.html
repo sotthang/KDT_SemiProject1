@@ -9,15 +9,21 @@
 {% block content %}
   <div class="d-flex justify-content-center">
     <div class="d-flex flex-column">
-      <h1 class="mb-4" style="text-align:center;">My Profile</h1>
+      <h1 class="mb-4 mt-3" style="text-align:center;">My Profile</h1>
+
+      {% comment %} 프로필 이미지 {% endcomment %}
       <div class="box mb-4">
-        <img class="img" src="{% static '/img/루피.jpg' %}">
+        <input type="file" id="file-input" class="input-image" style="display: none;" />
+        <img class="img" src="profile.jpg" alt="프로필 사진" id="profile-image"/>
       </div>
+
       <div style="text-align:center;">
         {% comment %} username {% endcomment %}
         <h3>
-          {{ person.username }}
+          <strong>{{ person.username }}</strong>
         </h3>
+
+        <hr>
 
         {% comment %} 팔로워 & 팔로잉 {% endcomment %}
         <div class="mt-4">
@@ -32,12 +38,14 @@
         </div>
         <div>
           팔로잉 : {{ person.followings.all|length }}
-          <ul>
+          <ul class="mt-2">
             {% for following in person.followings.all %}
-            <a href="{% url 'accounts:profile' following %}"><li>{{ following }}</li></a>
+            <a href="{% url 'accounts:profile' following %}" style="text-decoration:none; color:gray;"><li>{{ following }}</li></a>
             {% endfor %}
           </ul>
         </div>
+
+        {% comment %} 팔로워 & 팔로잉 버튼 {% endcomment %}
         {% if not user.is_authenticated %}
           <div><input type="submit" value="Follow" disabled="disabled"></div>
         {% elif request.user != person %}
@@ -52,13 +60,25 @@
             </form>
           </div>
         {% endif %}
+
+        <hr>
   
         {% comment %} 이메일 {% endcomment %}
         <div class="mt-4">
-          {{ user.email }}
+          <span><i class="bi bi-envelope-at"></i></span> <br>
+          <p>{{ user.email }}</p>
+        </div>
+
+        <hr>
+
+        {% comment %} sns 링크 {% endcomment %}
+        <div class="mt-4">
+          <a class="pe-3" href="#"><img src="{% static '/img/favicon/icon-facebook.png' %}" alt="sns"></a>
+          <a class="pe-3" href="#"><img src="{% static '/img/favicon/icon-kakao.png' %}" alt="sns"></a>
+          <a href="#"><img src="{% static '/img/favicon/icon-twitter.png' %}" alt="sns"></a>
         </div>
       </div>
-
     </div>
   </div>
+  <script type="text/javascript" src="/static/JS/profile.js"></script>
 {% endblock content %}
