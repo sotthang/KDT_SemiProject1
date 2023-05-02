@@ -7,9 +7,21 @@
     margin: auto;
 }
 
+.input-image {
+    display: inline;
+}
+
 .img {
     width: 100%;
     height: 100%;
     object-fit: cover;
     text-align: center;
+}
+
+#file-input {
+  display: none;
+}
+
+#profile-image:hover {
+  cursor: pointer;
 }
