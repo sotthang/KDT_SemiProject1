@@ -2,23 +2,28 @@
 
 {% block content %}
 <div class="d-flex justify-content-center">
-  <form action="{% url 'accounts:update' %}" method="POST" class="mb-2" enctype="multipart/form-data">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <a href="{% url 'accounts:change_password' %}" class="btn btn-outline-primary">비밀번호 변경</a>
-    <div class="mt-2">
-      <input type="submit" class="btn btn-outline-success me-2" value="수정">
-      <button class="btn btn-outline-danger" onclick="confirmDelete(event)">
-        회원탈퇴
-      </button>
-    </div>
-  </form>
-
-  <form action="{% url 'accounts:delete' %}" method="POST" id="delete">
-    {% csrf_token %}
-    <input type="hidden" name="next" value="{{ request.path }}">
-  </form>
-</div>
+  <div class="d-flex flex-column">
+    <form action="{% url 'accounts:update' %}" method="POST" class="mb-2" enctype="multipart/form-data">
+      <h2 class="title mb-4 fw-bold" style="text-align: center;">회원정보 수정</h2>
+      {% csrf_token %}
+      {{ form.as_p }}
+      <div class="mt-5">
+        <a href="{% url 'accounts:change_password' %}" class="btn btn-outline-primary" style="width:400px;">비밀번호 변경</a>
+        <div class="mt-2">
+          <input type="submit" class="btn btn-outline-success" value="수정하기" style="width:197.5px;">
+          <button class="btn btn-outline-danger" onclick="confirmDelete(event)" style="width:197.5px;">
+            회원탈퇴
+          </button>
+        </div>
+      </div>
+    </form>
+  
+    <form action="{% url 'accounts:delete' %}" method="POST" id="delete">
+      {% csrf_token %}
+      <input type="hidden" name="next" value="{{ request.path }}">
+    </form>
+  </div>
+  </div>
 <script>
   function confirmDelete(event) {
     event.preventDefault()
