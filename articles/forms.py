@@ -130,4 +130,5 @@ class ArticlePlanForm(forms.ModelForm):
     class Meta:
         model = ArticlePlan
         fields = ('day',)
-
+    day = forms.IntegerField(label='총 일수', label_suffix='', widget=forms.NumberInput(
+        attrs={'class': 'form-control', 'style': 'width: 400px;'}))

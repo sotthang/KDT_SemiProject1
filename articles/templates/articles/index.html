@@ -1,22 +1,38 @@
 {% extends 'base.html' %}
+{% load static %}
+{% block head %}
+<style>
+  .customoverlay {position:relative;bottom:85px;border-radius:6px;border: 1px solid #ccc;border-bottom:2px solid #ddd;float:left;}
+  .customoverlay:nth-of-type(n) {border:0; box-shadow:0px 1px 2px #888;}
+  .customoverlay a {display:block;text-decoration:none;color:#000;text-align:center;border-radius:6px;font-size:14px;font-weight:bold;overflow:hidden;background: #4bd84b;background: #4bd84b url(https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/arrow_white.png) no-repeat right 14px center;}
+  .customoverlay .title {display:block;text-align:center;background:#fff;margin-right:35px;padding:10px 15px;font-size:14px;font-weight:bold;}
+  .customoverlay:after {content:'';position:absolute;margin-left:-12px;left:50%;bottom:-12px;width:22px;height:12px;background:url('https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/vertex_white.png')}
+  </style>
+{% endblock head %}
 
 {% block content %}
-<h1>index</h1>
+<div class="row">
+  <h4 class="col-10">제주도에서 가볼 만한 곳</h4>
+  {% if request.user.is_authenticated %}
+    <a class="col-1 offset-1 d-inline-block justify-content-center align-items-center btn btn-sm btn-outline-success" href="{% url 'articles:create'%}">생성하기</a>
+  {% endif %}
+</div>
 <hr>
-{% if request.user.is_authenticated %}
-  <a href="{% url 'articles:create'%}">생성하기</a>
-{% endif %}
 
-<div id="map" style="width:1200px; height:800px;">
 
-  {% comment %} {% for article in articles %}
+<div id="map" style="width:1200px; height:800px">
+
+  
+</div>
+
+{% comment %} {% for article in articles %}
   <div>
     <h4><a href="{% url 'articles:detail' article.pk %}">{{ article.title }}</a></h4>
     <p>작성자 - <a href="{% url 'accounts:profile' article.user %}">{{ article.user }}</a></p>
+    <img src="{{article.image.url}}" alt="">
   </div>
   <hr>
   {% endfor %} {% endcomment %}
-</div>
 <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
 <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=44fdfd5aea6498bf2814ede3eae827b6&libraries=services,clusterer,drawing"></script>
 
@@ -30,72 +46,54 @@
 
   }
   var map = new kakao.maps.Map(container, options)
-  {% comment %} var markerPosition = options.center
-  var marker = new kakao.maps.Marker({
-    position: markerPosition
-  })
-  marker.setMap(map) {% endcomment %}
 
-
-  // 마커를 표시할 위치와 title 객체 배열입니다 
-
-
+  // 마커 표시 위치
   var positions = [
 
   {% for article in articles %}
-    { title : '<div class="container"><a href="{% url "articles:detail" article.pk %}" style="color:blue" target="_blank"> {{article.title}} </a> <br> {{article.category}}',
-    latlng: new kakao.maps.LatLng({{article.lat}}, {{article.lng}})
+    { title : '<div class="customoverlay">' +
+      '  <a href="{% url "articles:detail" article.pk %}" target="_blank">' +
+      '    <span class="title">{{article.title}}</span>' +
+      '  </a>' +
+      '</div>',
+    latlng: new kakao.maps.LatLng({{article.lat}}, {{article.lng}}),
+    markerImage: new kakao.maps.MarkerImage('<img src="{{article.image.url}}" alt="">', new kakao.maps.Size(64, 69), imageOption= {offset: new kakao.maps.Point(27, 69)})
     },
   {% endfor %},
-    
+  
 
 ];
 
 
-// 마커 이미지의 이미지 주소입니다
-var imageSrc = "https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/markerStar.png"; 
 
 for (var i = 0; i < positions.length; i ++) {
-
-// 마커 이미지의 이미지 크기 입니다
-var imageSize = new kakao.maps.Size(24, 35); 
-
-// 마커 이미지를 생성합니다    
-var markerImage = new kakao.maps.MarkerImage(imageSrc, imageSize); 
 
 // 마커를 생성합니다
 var marker = new kakao.maps.Marker({
     map: map, // 마커를 표시할 지도
     position: positions[i].latlng, // 마커를 표시할 위치
-    image : markerImage // 마커 이미지 
-
+    image : positions[i].markerImage, // 마커 이미지 
+    zIndex : 4
 
 });
 
-// 인포윈도우를 생성합니다
-var infowindow = new kakao.maps.InfoWindow({
+marker.setMap(map);  
+
+// 커스텀 오버레이를 생성합니다
+var customOverlay = new kakao.maps.CustomOverlay({
+  map: map,
   position : positions[i].latlng, 
-  content : positions[i].title, // 인포윈도우에 표출될 내용으로 HTML 문자열이나 document element가 가능합니다
+  content : positions[i].title, // 커스텀 오버레이에 표출될 내용으로 HTML 문자열이나 document element가 가능합니다
+  zIndex : 5,
+  yAnchor : 1
 });
 
 // 마커 위에 인포윈도우를 표시합니다. 두번째 파라미터인 marker를 넣어주지 않으면 지도 위에 표시됩니다
-infowindow.open(map, marker); 
+// customOverlay.open(map, marker); 
 
 
 }
 
-{% comment %} {% for article in articles %}
-  var iwContent = '<div style="padding:5px;"> <a href="{% url "articles:detail" article.pk %}" style="color:blue" target="_blank"> {{article.title}} </a> <br> {{article.category}} </div>', // 인포윈도우에 표출될 내용으로 HTML 문자열이나 document element가 가능합니다
-    iwPosition = new kakao.maps.LatLng({{article.lat}}, {{article.lng}}); //인포윈도우 표시 위치입니다
 
-  // 인포윈도우를 생성합니다
-  var infowindow = new kakao.maps.InfoWindow({
-      position : iwPosition, 
-      content : iwContent 
-  });
-
-  // 마커 위에 인포윈도우를 표시합니다. 두번째 파라미터인 marker를 넣어주지 않으면 지도 위에 표시됩니다
-  infowindow.open(map, marker); 
-{% endfor %} {% endcomment %}
 </script>
 {% endblock content %}
