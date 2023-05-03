@@ -149,12 +149,22 @@ class LoginForm(AuthenticationForm):
         label='아이디',
         label_suffix='',
         required=True,
-        widget=forms.TextInput(attrs={'class':'form-control', 'style':'width: 250px'}),
+        widget=forms.TextInput(
+            attrs={
+                'class':'form-control', 
+                'style':'width: 300px'
+            }
+        ),
     )
     password = forms.CharField(
         label='비밀번호',
         label_suffix='',
-        widget=forms.PasswordInput(attrs={'class':'form-control', 'style':'width: 250px'}),
+        widget=forms.PasswordInput(
+            attrs={
+                'class':'form-control', 
+                'style':'width: 300px'
+            }
+        ),
     )
 
 
