@@ -52,3 +52,16 @@ class Emote(models.Model):
     emotion = models.CharField(max_length=50)
     article = models.ForeignKey(Article, null=True, on_delete=models.CASCADE)
     review = models.ForeignKey(Review, null=True, on_delete=models.CASCADE)
+
+
+class Plan(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    startday_at = models.DateField()
+    endday_at = models.DateField()
+
+
+class ArticlePlan(models.Model):
+    plan = models.ForeignKey(Plan, on_delete=models.CASCADE)
+    article = models.ForeignKey(Article, on_delete=models.CASCADE)
+    day = models.IntegerField()
+

@@ -3,19 +3,17 @@ from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from django.db.models import Q
 from django.core.paginator import Paginator
-from .models import Article, Comment, Review, ReviewComment, Emote
-from .forms import ArticleForm, CommentForm, ReviewForm, ReviewCommentForm
+from .models import Article, Comment, Review, ReviewComment, Emote, Plan, ArticlePlan
+from .forms import ArticleForm, CommentForm, ReviewForm, ReviewCommentForm, PlanForm, ArticlePlanForm
 import json
 
 # Create your views here.
 
 def index(request):
     articles = Article.objects.all()
-    
     context = {
         'articles': articles,
     }
-
     return render(request, 'articles/index.html', context)
 
 
@@ -71,11 +69,9 @@ def create(request):
             return redirect('articles:detail', article.pk)
     else:
         form = ArticleForm()
-    
     context = {
         'form': form,
     }
-
     return render(request, 'articles/create.html', context)
 
 
@@ -339,3 +335,38 @@ def search_detail(request, category):
         'search_word': search_word,
     }
     return render(request, 'search/search_detail.html', context)
+
+
+@login_required
+def plan(request):
+    articles = Article.objects.all()
+    if request.method == 'POST':
+        planform = PlanForm(request.POST)
+        articleplanform = ArticlePlanForm(request.POST)
+        if planform.is_valid():
+            plan = planform.save(commit=False)
+            plan.user = request.user
+            plan.save()
+            articleplan = articleplanform.save(commit=False)
+            articleplan.plan = plan
+            destinations = request.POST.getlist('destination')
+            for destination in destinations:
+                if 'Day' not in destination:
+                    pass
+                else:
+                    destination_day, destination_article = destination.split('_')
+                    destination_day = destination_day[-1]
+                    destination_article = Article.objects.get(id=destination_article)
+                    ArticlePlan.objects.create(plan=plan, day=destination_day, article=destination_article)
+                    
+            return redirect('accounts:profile', request.user)
+    else:
+        planform = PlanForm()
+        articleplanform = ArticlePlanForm()
+    context = {
+        'articles': articles,
+        'planform': planform,
+        'articleplanform': articleplanform,
+    }
+    return render(request, 'articles/plan.html', context)
+
