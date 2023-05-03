@@ -9,40 +9,29 @@
 <h1>plan</h1>
 
 <form action="{% url 'articles:plan' %}" method="post">
-    {% csrf_token %}
+  {% csrf_token %}
+  <p>planform</p>
+  {{planform.as_p}}
+  <p>articleplanform</p>
+  {{articleplanform.as_p}}
+  <input type="submit" value="작성하기">
 
-    {{planform.as_p}}
-    
-    <hr>
+  <div class="clearfix" id="plan">
+    <ul class="ul_list dropzone" id="ul1" >
+      <p>등록 여행지 리스트</p>
+      {% for article in articles %}
+        <li id="item{{ forloop.counter }}" draggable="true">
+          <div>
+            {{ article.title }}
+            <img src="{{ article.image.url }}" alt="{{ article.image }}" style="width:50px; height:50px;">
+          </div>
+          <input type="hidden" class="article-pk" name="destination" value="{{ article.pk }}">
+        </li>
+      {% endfor %}
+    </ul>
+  </div>
 
-    {{articleplanform.as_p}}
-
-    <hr>
-    <h6 class="my-2">여행 일정 추가</h6>
-    <div class="clearfix" id="plan">
-      <ul class="ul_list dropzone" id="ul1" >
-        <p>등록 여행지 리스트</p>
-        {% for article in articles %}
-          <li id="item{{ forloop.counter }}" draggable="true">
-            <div>
-              {{ article.title }}
-              <img src="{{ article.image.url }}" alt="{{ article.image }}" style="width:50px; height:50px;">
-            </div>
-            <input type="hidden" class="article-pk" value="{{ article.pk }}">
-          </li>
-        {% endfor %}
-      </ul>
-    </div>
-
-    <div id="my_list">
-
-    </div>
-
-    <input type="submit" value="작성하기" class="btn btn-sm btn-outline-success">
 </form>
-
-
-
 
 <script type="text/javascript" src="/static/JS/plan.js"></script>
 

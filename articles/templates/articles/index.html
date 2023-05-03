@@ -57,7 +57,7 @@
       '  </a>' +
       '</div>',
     latlng: new kakao.maps.LatLng({{article.lat}}, {{article.lng}}),
-    markerImage: new kakao.maps.MarkerImage('<img src="{{article.image.url}}" alt="">', new kakao.maps.Size(64, 69), imageOption= {offset: new kakao.maps.Point(27, 69)})
+    markerImage: new kakao.maps.MarkerImage('{{article.image.url}}', new kakao.maps.Size(64, 69), imageOption= {offset: new kakao.maps.Point(27, 69)})
     },
   {% endfor %},
   

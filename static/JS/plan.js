@@ -49,16 +49,18 @@ function calculateDifference() {
       // 원래 있던 ul에서 항목 삭제
       li.parentNode.removeChild(li);
 
-      // 새로운 ul에 새로운 항목 추가
-      const newLi = document.createElement('li');
-      newLi.textContent = li.textContent;
-      newLi.id = `${data}`; // 새로운 li 요소에 id 값을 설정
-      newLi.draggable = true; // 새로운 li 요소 draggable 속성 설정
+      // value 변경
       dropzone.appendChild(li);
+
+      // li 태그 안에 있는 input 요소의 값을 해당 ul 태그 안에 있는 p 태그 값으로 변경
+      const input = li.querySelector('input[name="destination"]');
+      const p = dropzone.querySelector('p');
+      if (input && p) {
+        input.value = p.textContent + '_' + input.value;
+      }
     });
   });
   
 }
 
 document.getElementById("id_endday_at").addEventListener("change", calculateDifference);
-
