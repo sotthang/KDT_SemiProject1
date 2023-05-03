@@ -98,8 +98,12 @@ def change_password(request):
 def profile(request, username):
     User = get_user_model()
     person = User.objects.get(username=username)
-    plan = Plan.objects.filter(user_id=request.user.id, user=person).first()
-    articleplans = ArticlePlan.objects.filter(plan_id=plan.id).select_related('article')
+    if Plan.objects.filter(user_id=request.user.id, user=person):
+        plan = Plan.objects.filter(user_id=request.user.id, user=person).first()
+        articleplans = ArticlePlan.objects.filter(plan_id=plan.id).select_related('article')
+    else:
+        plan = None
+        articleplans = None
     context = {
         'person': person,
         'plan': plan,
