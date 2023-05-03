@@ -5,7 +5,7 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth import update_session_auth_hash
 from articles.models import Article, Plan, ArticlePlan
 from .forms import CustomUserCreationForm, CustomUserChangeForm, CustomPasswordChangeForm, LoginForm
-from articles.models import Article
+
 # Create your views here.
 
 def login(request):
@@ -98,9 +98,7 @@ def change_password(request):
 def profile(request, username):
     User = get_user_model()
     person = User.objects.get(username=username)
-    article_count = Article.objects.filter(user=person).count()
-    
-    if Plan.objects.filter(user_id=request.user.id, user=person):
+    if Plan.objects.filter(user_id=request.user.id):
         plan = Plan.objects.filter(user=request.user, user_id=person.id)
         articleplans = ArticlePlan.objects.filter(plan__in=plan).select_related('article')
     else:
@@ -108,7 +106,6 @@ def profile(request, username):
     context = {
         'person': person,
         'articleplans': articleplans,
-        'article_count': article_count,
     }
     return render(request, 'accounts/profile.html', context)
 
