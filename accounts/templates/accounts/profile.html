@@ -14,7 +14,7 @@
       {% comment %} 프로필 이미지 {% endcomment %}
       <div class="box mb-4">
         {% comment %} <input type="file" id="file-input" class="input-image" style="display: none;" /> {% endcomment %}
-        <img class="img" src={% if person.profile_img %} "{{ person.profile_img.url }}" {% else %} "{% static '/img/루피.jpg' %}" {% endif %} alt="프로필 사진" id="profile-image"/>
+        <img class="img" src={% if person.profile_img %} "{{ person.profile_img.url }}" {% else %} "{% static '/img/user_image.png' %}" {% endif %} alt="프로필 사진" id="profile-image"/>
       </div>
 
       <div style="text-align:center;">
@@ -30,41 +30,41 @@
 
         <hr>
 
-        {% comment %} 팔로워 & 팔로잉 {% endcomment %}
+        {% comment %} 게시물 & 팔로워 & 팔로잉 {% endcomment %}
         <div class="mt-4">
-          팔로워 : {{ person.followers.all|length }}
-          <ul class="mt-2">
-            {% for follower in person.followers.all %}
-              <a href="{% url 'accounts:profile' follower %}" style="text-decoration:none; color:gray;">
-                <li>{{ follower }}</li>
-              </a>
-            {% endfor %}
-          </ul>
-        </div>
-        <div>
-          팔로잉 : {{ person.followings.all|length }}
-          <ul class="mt-2">
-            {% for following in person.followings.all %}
-            <a href="{% url 'accounts:profile' following %}" style="text-decoration:none; color:gray;"><li>{{ following }}</li></a>
-            {% endfor %}
-          </ul>
+          <strong>게시물</strong>
+          <strong><a href="#" class="pe-3" style="text-decoration:none; color:black;">
+            {{ articles.title|length }}
+          </a></strong>
+
+          <strong>팔로워</strong>  
+          <strong><a href="#" data-bs-toggle="modal" data-bs-target="#followerModal" class="pe-3" style="text-decoration:none; color:black;">
+            {{ person.followers.all|length }}
+          </a></strong>
+      
+          <strong>팔로잉</strong>
+          <strong><a href="#" data-bs-toggle="modal" data-bs-target="#followingModal" style="text-decoration:none; color:black;">
+            {{ person.followings.all|length }}
+          </a></strong>
         </div>
 
         {% comment %} 팔로워 & 팔로잉 버튼 {% endcomment %}
-        {% if not user.is_authenticated %}
-          <div><input type="submit" value="Follow" disabled="disabled"></div>
-        {% elif request.user != person %}
-          <div>
-            <form action="{% url 'accounts:follow' person.pk %}" method="POST">
-              {% csrf_token %}
-              {% if request.user in person.followers.all %}
-                <input type="submit" value="Unfollow" class="btn btn-outline-info">
-              {% else %}
-                <input type="submit" value="Follow" class="btn btn-outline-info">
-              {% endif %}
-            </form>
-          </div>
-        {% endif %}
+        <div class="mt-3">
+          {% if not user.is_authenticated %}
+            <div><input type="submit" value="Follow" disabled="disabled"></div>
+          {% elif request.user != person %}
+            <div>
+              <form action="{% url 'accounts:follow' person.pk %}" method="POST">
+                {% csrf_token %}
+                {% if request.user in person.followers.all %}
+                  <input type="submit" value="Unfollow" class="btn btn-outline-info">
+                {% else %}
+                  <input type="submit" value="Follow" class="btn btn-outline-info">
+                {% endif %}
+              </form>
+            </div>
+          {% endif %}
+        </div>
 
         <hr>
   
@@ -81,6 +81,46 @@
           <a class="pe-3" href="https://ko-kr.facebook.com/"><img src="{% static '/img/favicon/icon-facebook.png' %}" alt="sns"></a>
           <a class="pe-3" href="https://www.instagram.com/"><img src="{% static '/img/favicon/icon-instagram.png' %}" alt="sns"></a>
           <a href="https://twitter.com/"><img src="{% static '/img/favicon/icon-twitter.png' %}" alt="sns"></a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  {% comment %} 팔로워 모달 {% endcomment %}
+  <div class="modal fade" id="followerModal" tabindex="-1" aria-labelledby="followerModalLabel" aria-hidden="true">
+    <div class="modal-dialog" style="width:350px;">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5 fw-bold" id="followerModalLabel" style="">Followers</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body" style="background-color:whitesmoke;">
+          <ul class="mt-2">
+            {% for follower in person.followers.all %}
+              <a href="{% url 'accounts:profile' follower %}" style="text-decoration:none; color:#353535;">
+                <li><span>{{ follower }}</span></li>
+              </a>
+            {% endfor %}
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  {% comment %} 팔로잉 모달 {% endcomment %}
+  <div class="modal fade" id="followingModal" tabindex="-1" aria-labelledby="followingModalLabel" aria-hidden="true">
+    <div class="modal-dialog" style="width:350px;">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5 fw-bold" id="followingModalLabel" style="">Following</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body" style="background-color:whitesmoke;">
+          <ul class="mt-2">
+            {% for following in person.followings.all %}
+            <a href="{% url 'accounts:profile' following %}" style="text-decoration:none; color:#353535;"><li>{{ following }}</li></a>
+            {% endfor %}
+          </ul>
         </div>
       </div>
     </div>
