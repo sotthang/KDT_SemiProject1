@@ -342,14 +342,24 @@ def plan(request):
     articles = Article.objects.all()
     if request.method == 'POST':
         planform = PlanForm(request.POST)
-        articleplanform = ArticlePlanForm()
-        # print(planform.is_valid())
+        articleplanform = ArticlePlanForm(request.POST)
         if planform.is_valid():
             plan = planform.save(commit=False)
-            # plan.save()
-            # articleplan = articleplanform.save(commit=False)
-            # articleplan.save()
-            return render(request, 'accounts:profile')
+            plan.user = request.user
+            plan.save()
+            articleplan = articleplanform.save(commit=False)
+            articleplan.plan = plan
+            destinations = request.POST.getlist('destination')
+            for destination in destinations:
+                if 'Day' not in destination:
+                    pass
+                else:
+                    destination_day, destination_article = destination.split('_')
+                    destination_day = destination_day[-1]
+                    destination_article = Article.objects.get(id=destination_article)
+                    ArticlePlan.objects.create(plan=plan, day=destination_day, article=destination_article)
+                    
+            return redirect('accounts:profile', request.user)
     else:
         planform = PlanForm()
         articleplanform = ArticlePlanForm()

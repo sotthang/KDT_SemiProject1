@@ -86,6 +86,23 @@
     </div>
   </div>
 
+
+
+  <p>내 여행 일정</p>
+
+  {% for articleplan in articleplans %}
+  <div>
+    {{ articleplan.day }} 일차
+    {{ articleplan.article.title }}
+    {{ articleplan.article.content }}
+    <img src="{{ articleplan.article.image.url}}" alt="{{ articleplan.article.title }}">
+  </div>
+  {% endfor %}
+
+
+
+
+
   {% comment %} 팔로워 모달 {% endcomment %}
   <div class="modal fade" id="followerModal" tabindex="-1" aria-labelledby="followerModalLabel" aria-hidden="true">
     <div class="modal-dialog" style="width:350px;">
