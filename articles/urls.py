@@ -23,4 +23,5 @@ urlpatterns = [
     path('articles/<int:pk>/emotes/<int:emotion>/<str:page>/', views.emotes, name='emotes'),
     path('search/', views.search, name='search'),
     path('search/<str:category>/', views.search_detail, name='search_detail'),
+    path('plan/', views.plan, name='plan'),
 ]
