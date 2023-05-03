@@ -4,7 +4,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth import get_user_model
 from django.contrib.auth import update_session_auth_hash
 from .forms import CustomUserCreationForm, CustomUserChangeForm, CustomPasswordChangeForm, LoginForm
-
+from articles.models import Article
 # Create your views here.
 
 def login(request):
@@ -97,8 +97,10 @@ def change_password(request):
 def profile(request, username):
     User = get_user_model()
     person = User.objects.get(username=username)
+    article_count = Article.objects.filter(user=person).count()
     context = {
         'person': person,
+        'article_count': article_count,
     }
     return render(request, 'accounts/profile.html', context)
 
