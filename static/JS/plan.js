@@ -1,4 +1,28 @@
+function resetUL() {
+  const mylist = document.getElementById("plan");
+  const ul1 = document.getElementById("ul1");
+
+  // Move li elements from other ul elements to ul1
+  const uls = mylist.querySelectorAll("ul:not(#ul1)");
+  for (const ul of uls) {
+    const lis = ul.querySelectorAll("li");
+    for (const li of lis) {
+      ul.removeChild(li);
+      ul1.appendChild(li);
+    }
+  }
+
+  // Remove other ul elements
+  const otherULs = mylist.querySelectorAll("ul:not(#ul1)");
+  for (const ul of otherULs) {
+    mylist.removeChild(ul);
+  }
+}
+
+
 function calculateDifference() {
+  resetUL();
+  // 시작일, 종료일 선택하면 날짜 계산
   const start = new Date(document.getElementById("id_startday_at").value);
   const end = new Date(document.getElementById("id_endday_at").value);
   const differenceInTime = end.getTime() - start.getTime();
@@ -56,11 +80,28 @@ function calculateDifference() {
       const input = li.querySelector('input[name="destination"]');
       const p = dropzone.querySelector('p');
       if (input && p) {
-        input.value = p.textContent + '_' + input.value;
+        input.value = p.textContent + '_' + input.value.slice(-1);
       }
     });
+  });
+
+
+  document.getElementById("plan_form").addEventListener("submit", function(event) {
+    const uls = document.querySelectorAll("#plan ul:not(#ul1)");
+    for (const ul of uls) {
+      const lis = ul.querySelectorAll("li");
+      if (lis.length === 0) {
+        event.preventDefault();
+        Swal.fire(
+          '모든 여행 날짜에 여행지를 등록해주세요!'
+        );
+        break;
+      }
+    }
   });
   
 }
 
 document.getElementById("id_endday_at").addEventListener("change", calculateDifference);
+
+

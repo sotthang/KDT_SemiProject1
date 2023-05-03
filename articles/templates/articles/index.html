@@ -19,9 +19,7 @@
 </div>
 <hr>
 
-
 <div id="map" style="width:1300px; height:800px">
-
   
 </div>
 
@@ -49,48 +47,43 @@
 
   // 마커 표시 위치
   var positions = [
-
-  {% for article in articles %}
-    { title : '<div class="customoverlay">' +
-      '  <a href="{% url "articles:detail" article.pk %}" target="_blank">' +
-      '    <span class="title">{{article.title}}</span>' +
-      '  </a>' +
-      '</div>',
-    latlng: new kakao.maps.LatLng({{article.lat}}, {{article.lng}}),
-    markerImage: new kakao.maps.MarkerImage('{{article.image.url}}', new kakao.maps.Size(64, 69), imageOption= {offset: new kakao.maps.Point(27, 69)})
-    },
-  {% endfor %},
-  
-
-];
-
+    {% for article in articles %}
+      { title : '<div class="customoverlay">' +
+        '  <a href="{% url "articles:detail" article.pk %}" target="_blank">' +
+        '    <span class="title">{{article.title}}</span>' +
+        '  </a>' +
+        '</div>',
+      latlng: new kakao.maps.LatLng({{article.lat}}, {{article.lng}}),
+      markerImage: new kakao.maps.MarkerImage('{{article.image.url}}', new kakao.maps.Size(64, 69), imageOption= {offset: new kakao.maps.Point(27, 69)})
+      },
+    {% endfor %}
+  ];
 
 
 for (var i = 0; i < positions.length; i ++) {
 
-// 마커를 생성합니다
-var marker = new kakao.maps.Marker({
-    map: map, // 마커를 표시할 지도
-    position: positions[i].latlng, // 마커를 표시할 위치
-    image : positions[i].markerImage, // 마커 이미지 
-    zIndex : 4
+  // 마커를 생성합니다
+  var marker = new kakao.maps.Marker({
+      map: map, // 마커를 표시할 지도
+      position: positions[i].latlng, // 마커를 표시할 위치
+      image : positions[i].markerImage, // 마커 이미지 
+      zIndex : 4
 
-});
+  });
 
-marker.setMap(map);  
+  marker.setMap(map);  
 
-// 커스텀 오버레이를 생성합니다
-var customOverlay = new kakao.maps.CustomOverlay({
-  map: map,
-  position : positions[i].latlng, 
-  content : positions[i].title, // 커스텀 오버레이에 표출될 내용으로 HTML 문자열이나 document element가 가능합니다
-  zIndex : 5,
-  yAnchor : 1
-});
+  // 커스텀 오버레이를 생성합니다
+  var customOverlay = new kakao.maps.CustomOverlay({
+    map: map,
+    position : positions[i].latlng, 
+    content : positions[i].title, // 커스텀 오버레이에 표출될 내용으로 HTML 문자열이나 document element가 가능합니다
+    zIndex : 5,
+    yAnchor : 1
+  });
 
-// 마커 위에 인포윈도우를 표시합니다. 두번째 파라미터인 marker를 넣어주지 않으면 지도 위에 표시됩니다
-// customOverlay.open(map, marker); 
-
+  // 마커 위에 인포윈도우를 표시합니다. 두번째 파라미터인 marker를 넣어주지 않으면 지도 위에 표시됩니다
+  // customOverlay.open(map, marker); 
 
 }
 
