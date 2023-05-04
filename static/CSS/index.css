@@ -1,0 +1,27 @@
+.create-title {
+    font-family: 'Montserrat';
+    font-weight: 900;
+    margin-bottom: 0;
+}
+
+.create-subtitle {
+    font-family: 'Montserrat';
+    font-size: 1.2rem;
+}
+
+.create-content {
+    color: #727272;
+}
+
+.create-btn {
+    margin-top: 50px;
+}
+
+.box {
+    box-sizing: border-box;
+    /* border: 1px solid black; */
+    width: 100px;
+    height: 80px;
+    /* background-color: aliceblue; */
+    box-shadow: 0 4px 10px 0 rgba(0,0,0,.14);
+}
