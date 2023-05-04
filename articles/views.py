@@ -1,5 +1,6 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth import get_user_model
 from django.http import JsonResponse
 from django.db.models import Q
 from django.core.paginator import Paginator
@@ -147,6 +148,8 @@ def comment_update(request, article_pk, comment_pk):
 
 def review_detail(request, review_pk):
     review = Review.objects.get(pk=review_pk)
+    User = get_user_model()
+    person = User.objects.get(username=request.user)
     comments = review.reviewcomment_set.all()
     comment_form = ReviewCommentForm()
     comment_count = comments.count()
@@ -168,6 +171,7 @@ def review_detail(request, review_pk):
             }
         )
     context = {
+        'person': person,
         'review': review,
         'comments': comments,
         'comment_form': comment_form,
@@ -371,4 +375,14 @@ def plan(request):
         'articleplanform': articleplanform,
     }
     return render(request, 'articles/plan.html', context)
+
+
+@login_required
+def plan_delete(request, plan_pk):
+    plan = Plan.objects.get(pk=plan_pk)
+    
+    if plan.user == request.user:
+        plan.delete()
+    
+    return redirect('articles:index')
 

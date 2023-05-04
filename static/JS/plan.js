@@ -80,7 +80,7 @@ function calculateDifference() {
       const input = li.querySelector('input[name="destination"]');
       const p = dropzone.querySelector('p');
       if (input && p) {
-        input.value = p.textContent + '_' + input.value.slice(-1);
+        input.value = p.textContent + '_' + input.value.match(/_(\d+)$/)[1];
       }
     });
   });
