@@ -1,5 +1,6 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth import get_user_model
 from django.http import JsonResponse
 from django.db.models import Q
 from django.core.paginator import Paginator
@@ -157,6 +158,9 @@ def comment_update(request, article_pk, comment_pk):
 
 def review_detail(request, review_pk):
     review = Review.objects.get(pk=review_pk)
+    article = Article.objects.get(pk=review.article_id)
+    User = get_user_model()
+    person = User.objects.get(username=request.user)
     comments = review.reviewcomment_set.all()
     comment_form = ReviewCommentForm()
     comment_count = comments.count()
@@ -178,7 +182,9 @@ def review_detail(request, review_pk):
             }
         )
     context = {
+        'person': person,
         'review': review,
+        'article': article,
         'comments': comments,
         'comment_form': comment_form,
         'emotions': emotions,
@@ -280,8 +286,17 @@ def review_comment_update(request, review_pk, comment_pk):
 
 def category_name(request, category_name):
     articles = Article.objects.filter(category=category_name)
+
+    page = request.GET.get('page', '1')
+    per_page = 5
+    paginator = Paginator(articles, per_page)
+    page_obj = paginator.get_page(page)
+    num_page = paginator.num_pages
+
     context = {
-        'articles': articles,
+        'articles': page_obj,
+        'category_name': category_name,
+        'num_page': num_page,
     }
     
     return render(request, 'articles/category_name.html', context)
@@ -381,4 +396,14 @@ def plan(request):
         'articleplanform': articleplanform,
     }
     return render(request, 'articles/plan.html', context)
+
+
+@login_required
+def plan_delete(request, plan_pk):
+    plan = Plan.objects.get(pk=plan_pk)
+    
+    if plan.user == request.user:
+        plan.delete()
+    
+    return redirect('articles:index')
 
