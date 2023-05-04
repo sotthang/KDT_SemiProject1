@@ -21,6 +21,7 @@ function resetUL() {
 
 
 function calculateDifference() {
+  document.getElementById("plan").style.visibility = "visible";
   resetUL();
   // 시작일, 종료일 선택하면 날짜 계산
   const start = new Date(document.getElementById("id_startday_at").value);
@@ -32,13 +33,14 @@ function calculateDifference() {
   // Create ul elements
   for (let i = 1; i <= differenceInDays; i++) {
     const ul = document.createElement("ul");
-    ul.classList.add("ul_list", "dropzone");
+    ul.classList.add("ul_list", "dropzone", "bg-body-tertiary", "col");
     ul.id = `ul${i+1}`;
     const mylist = document.getElementById("plan")
 
-    const p = document.createElement("p");
-    p.textContent = `Day ${i}`;
-    ul.appendChild(p);
+    const div = document.createElement("div");
+    div.classList.add("text-center")
+    div.textContent = `Day ${i}`;
+    ul.appendChild(div);
     mylist.appendChild(ul);
   };
 
@@ -78,9 +80,9 @@ function calculateDifference() {
 
       // li 태그 안에 있는 input 요소의 값을 해당 ul 태그 안에 있는 p 태그 값으로 변경
       const input = li.querySelector('input[name="destination"]');
-      const p = dropzone.querySelector('p');
-      if (input && p) {
-        input.value = p.textContent + '_' + input.value.match(/_(\d+)$/)[1];
+      const div = dropzone.querySelector('div');
+      if (input && div) {
+        input.value = div.textContent + '_' + input.value.match(/_(\d+)$/)[1];
       }
     });
   });

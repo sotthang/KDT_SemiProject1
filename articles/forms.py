@@ -150,9 +150,9 @@ class PlanForm(forms.ModelForm):
     class Meta:
         model = Plan
         fields = ('startday_at', 'endday_at')
-    startday_at = forms.DateField(label='시작일', label_suffix='', widget=forms.DateInput(
+    startday_at = forms.DateField(label='여행 시작일', label_suffix='', widget=forms.DateInput(
         attrs={'class': 'form-control', 'type': 'date',  'style': 'width: 400px;'}))
-    endday_at = forms.DateField(label='종료일', label_suffix='', widget=forms.DateInput(
+    endday_at = forms.DateField(label='여행 종료일', label_suffix='', widget=forms.DateInput(
         attrs={'class': 'form-control', 'type': 'date',  'style': 'width: 400px;'}))
         
 

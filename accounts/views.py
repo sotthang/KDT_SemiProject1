@@ -101,16 +101,16 @@ def profile(request, username):
     article_count = Article.objects.filter(user=person).count()
     
     if Plan.objects.filter(user_id=request.user.id, user=person):
-        plan = Plan.objects.filter(user=request.user, user_id=person.id)
-        articleplans = ArticlePlan.objects.filter(plan__in=plan).select_related('article')
+        plans = Plan.objects.filter(user=request.user, user_id=person.id)
+        articleplans = ArticlePlan.objects.filter(plan__in=plans).select_related('article')
     else:
         articleplans = None
-        plan = None
+        plans = None
     context = {
         'person': person,
         'articleplans': articleplans,
         'article_count': article_count,
-        'plan': plan,
+        'plans': plans,
     }
     return render(request, 'accounts/profile.html', context)
 
