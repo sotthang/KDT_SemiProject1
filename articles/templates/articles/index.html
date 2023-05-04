@@ -2,14 +2,60 @@
 {% load static %}
 {% block head %}
 <link rel="stylesheet" href="{% static '/CSS/map.css' %}">
+<link rel="stylesheet" href="{% static '/CSS/index.css' %}">
 {% endblock head %}
 
 {% block content %}
-<div class="row">
-  <h4 class="col-10">제주도에서 가볼 만한 곳</h4>
-  {% if request.user.is_authenticated %}
-    <a class="col-1 offset-1 d-inline-block justify-content-center align-items-center btn btn-sm btn-outline-success" href="{% url 'articles:create'%}">생성하기</a>
-  {% endif %}
+{% comment %} 제목 {% endcomment %}
+<h2 class="col-10 fw-bold">어디로 여행을 가시나요?</h2>
+<p style="color:#727272;">여행지를 생성해 보세요.</p>
+
+{% comment %} 여행지 생성 {% endcomment %}
+<div class="d-flex row">
+  <div class="col-8">
+    <h2 class="create-title">JEJU</h2>
+    <p class="create-subtitle">대한민국 제주도</p>
+    <p class="create-content mt-4">대한민국에서 가장 큰 섬인 제주도(濟州島) 본섬을 비롯하여 마라도, 우도, 추자군도 등을 포함한 유인도 8개, 무인도 55개로 구성되어 있다. 한라산 일대의 아름다운 자연 경관으로 관광업 등 서비스업과 어업이 발달하였고, 제주 화산섬과 용암 동굴은 유네스코 세계 자연 유산에 등재되었다.</p>
+    <div class="create-btn">
+      {% comment %} <p class="m-0">여행지를 생성해 보세요.</p> {% endcomment %}
+      {% if request.user.is_authenticated %}
+        <a class="btn btn-outline-success mt-2" href="{% url 'articles:create'%}">여행지 생성</a>
+      {% endif %}
+    </div>
+  </div>
+  <div class="col-4" style="padding-left:0;">
+    <img src="{% static '/img/제주도.png' %}" alt="background-img" style="width:100%;">
+  </div>
+</div>
+<hr>
+
+{% comment %} 일정 생성 {% endcomment %}
+<h2 class="col-10 fw-bold mt-5">계획을 세워 여행을 즐겨보세요!</h2>
+<p style="color:#727272;">일정을 생성해 보세요.</p>
+
+<div class="d-flex row">
+  <div class="col-8">
+    <h2 class="create-title">PLAN</h2>
+    <p class="create-content mt-4">내가 원하는 장소를 골라 여행지를 생성한 후, 여행 일자에 맞추어 직접 여행 일정을 계획해 보세요!</p>
+    <div class="d-flex">
+      <div class="box me-5">
+        <p class="fw-bold" style="text-align:center;">step 1</p>
+        <p style="text-align:center;">여행지 생성</p>
+      </div>
+      <div class="box">
+        <p class="fw-bold" style="text-align:center;">step 2</p>
+        <p style="text-align:center;">일정 생성</p>
+      </div>
+    </div>
+    <div class="create-btn">
+      {% if request.user.is_authenticated %}
+        <a class="btn btn-outline-success mt-2" href="{% url 'articles:plan'%}">일정 생성</a>
+      {% endif %}
+    </div>
+  </div>
+  <div class="col-4">
+    <img src="{% static '/img/돌하르방.png' %}" alt="background-img" style="width:100%;">
+  </div>
 </div>
 <hr>
 
