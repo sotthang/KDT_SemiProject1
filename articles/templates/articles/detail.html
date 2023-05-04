@@ -1,95 +1,199 @@
 {% extends 'base.html' %}
 {% load static %}
 
+{% block head %}
+<link rel="stylesheet" href="{% static '/CSS/review_detail.css' %}">
+{% endblock head %}
+
 {% block content %}
-<h1>detail</h1>
-<h4><b><span id="article-pk">{{article.pk}}</span>. {{article.title}}</b></h4>
-<p>{{article.user}}</p>
-<p>{{article.content}}</p>
+<h6 class="small">제주도 > {{article.category}}</h6>
 
-{% if article.image %}
-<img src="{{article.image.url}}" alt="">
-{% endif %}
-
-<p>{{article.created_at}}</p>
-<p>{{article.updated_at}}</p>
-
-{% if request.user == article.user %}
-  <a href="{% url 'articles:update' article.pk %}" class="p-2"><button type="button" class="btn btn-primary">수정하기</button></a>
-  <form action="{% url 'articles:delete' article.pk %}" METHOD="POST" class="p-2">
-    {% csrf_token %}
-    <button type="submit" value="DELETE" class="btn btn-danger">삭제하기</button>
-  </form>
-{% endif %}
-
-<p>이 여행지에 대한 의견을 남겨주세요</p>
-<div class="d-flex text-center">
-  {% for emotion in emotions %}
-  <div class="m-3" id="emotion-{{emotion.value}}">
-    {% if request.user.is_authenticated %}
-    {{ emotion.queryset }}
-      <form>
-        {% csrf_token %}
-        {% if emotion.exsit %}
-          <input type="image" src="{% static 'emotions/' %}{{ emotion.value }}.png" value="{{ emotion.label }} 취소" style="width: 32px; height: 32px;" class="emotion" data-emotion-id="{{emotion.value}}"> 취소하기
-        {% else %}
-          <input type="image" src="{% static 'emotions/' %}{{ emotion.value }}.png" value="{{ emotion.label }}" style="width: 32px; height: 32px;" class="emotion" data-emotion-id="{{emotion.value}}">
-        {% endif %}
-      </form>
-    {% else %}
-      <button value="{{ emotion.label }}" disabled>{{ emotion.label }}</button>
-    {% endif %}
-    <span class="emotion-count">{{ emotion.count }}</span>
+<div class="row">
+  <div class="col-10">
+    <h4><strong>{{article.title}}</strong></h4>
+  </div> 
+  <div class="col-2 d-flex justify-content-end align-items-end"> 
+    <a href="{% url 'accounts:profile' username=article.user %}" style="text-decoration:none;"> <img style="color: black; width:32px; height:32px; border-radius:50%;" src={% if person.profile_img %} "{{ person.profile_img.url }}" {% else %} "{% static '/img/user_image.png' %}" {% endif %} alt="프로필 사진" id="profile-image"/>
+      <span class="small" style='color:black;'><strong>{{article.user}}</strong></span>
+    </a> 
+    
   </div>
-  {% endfor %}
+</div>
+<hr>
+<p class="small d-flex justify-content-end">생성 날짜 : {{article.created_at|date:"Y-m-d"}}</p>
+
+{% comment %} <h4><b><span id="article-pk">{{article.pk}}</span>. </b></h4>
+ {% endcomment %}
+
+ <div class="row d-flex justify-content-center mt-2 p-2 mb-5">
+    <div class="col-7 text-center shadow rounded border-light m-2 p-4" style="width:600px;"> 
+      <div class="row-6" style="width:100%">
+        {% if article.image %}
+        <img src="{{article.image.url}}" class="object-fit-cover" alt="">
+        {% endif %}
+      </div>
+      <div class="row-6 d-flex justify-content-center">
+        <div id="map" style="width:500px; height:300px;" class="object-fit-cover"> </div>
+      </div>
+      
+    </div>
+    <div class="col-5 mx-3 shadow rounded border-light my-2 p-4" style="width: 600px"> 
+      <p><strong>기본 정보</strong></p>
+      <hr>
+      <table class="table" style="">
+        <tbody>
+          <tr>
+            <th scope="row" style="width:150px;">주소</th>
+            <td>{{address}}</td>
+          </tr>
+          <tr>
+            <th scope="row" style="width:150px;">내용</th>
+            <td style="width: 600px;">{{article.content}}</td>
+          </tr>
+          
+        </tbody>
+      </table>
+
+      <div class="row">
+        <div class="col-6">
+          <div class="d-flex text-center">
+            {% for emotion in emotions %}
+            <div class="m-3" id="emotion-{{emotion.value}}">
+              {% if request.user.is_authenticated %}
+              {{ emotion.queryset }}
+                <form>
+                  {% csrf_token %}
+                  {% if emotion.exsit %}
+                    <input type="image" src="{% static 'emotions/' %}{{ emotion.value }}.png" value="{{ emotion.label }} 취소" style="width: 25px; height: 25px;" class="emotion" data-emotion-id="{{emotion.value}}"> 취소하기
+                  {% else %}
+                    <input type="image" src="{% static 'emotions/' %}{{ emotion.value }}.png" value="{{ emotion.label }}" style="width: 25px; height: 25px;" class="emotion" data-emotion-id="{{emotion.value}}">
+                  {% endif %}
+                </form>
+              {% else %}
+                <button value="{{ emotion.label }}" disabled>{{ emotion.label }}</button>
+              {% endif %}
+              <span class="emotion-count small">{{ emotion.count }}</span>
+            </div>
+            {% endfor %}
+          </div>
+    
+        </div>
+      
+      <div class="col-6">
+        {% if request.user == article.user %}
+          <div class="d-inline-block d-flex justify-content-end align-items-end">
+            <a href="{% url 'articles:update' article.pk %}" class="p-2"><button type="button" class="btn btn-outline-primary">수정하기</button></a>
+            <form action="{% url 'articles:delete' article.pk %}" METHOD="POST" class="p-2">
+              {% csrf_token %}
+              <button type="submit" value="DELETE" class="btn btn-outline-danger">삭제하기</button>
+            </form>
+          </div>
+        {% endif %}
+      </div>
+      
+    </div>
+
+  </div>
+
 </div>
 
-<div id="map" style="width:500px; height:300px;"></div>
 
-<hr>
-<a href="{% url 'articles:review_create' article.pk %}" class="p-2"><button type="button" class="btn btn-primary">리뷰 남기기</button></a>
-<hr>
+{% comment %} 리뷰 목록 {% endcomment %}
+<div class="row mt-4" >
+  <hr>
+  <h5 class="col-6 fw-bold">리뷰 <span style="color:green;">{{review_count}}</span></h5>
+  <a href="{% url 'articles:review_create' article.pk %}" class="col-6 p-2  d-flex justify-content-end align-items-start " style="text-decoration:none;"><button type="button" class="btn btn-sm btn-outline-primary">리뷰 남기기</button></a>
 
-리뷰 목록
-{% for review in reviews %}
-  <div>
-    <a href="{% url 'articles:review_detail' review.pk %}"><p>리뷰 제목 - {{ review.title }}</p></a>
-    <p>리뷰 내용 - {{ review.content }}</p>
-  </div>
-{% endfor %}
+</div>
 
-<hr>
+  {% for review in reviews %}
+    <div class="row shadow rounded border-light p-2 mb-3" style=" cursor: pointer;" onclick="location.href='{% url 'articles:review_detail' review.pk %}';" >
+      <div class="col-1" style="top:50%">
+        <div class="row-6 d-flex justify-content-center align-items-center mt-2">
+          <img class="" style="width:50px; height:50px; border-radius:50%;" src={% if person.profile_img %} "{{ person.profile_img.url }}" {% else %} "{% static '/img/user_image.png' %}" {% endif %} alt="프로필 사진" id="profile-image"/>
+        </div>
+        <div class="row-6 text-center">
+          <p class="">
+            <strong>{{review.user}}</strong>        
+          </p>
+          <p class="small">{{review.created_at|date:"Y-m-d"}}</p>
+          <div id="stars" class="mt-3 mb-3 text-center">
+          </div>
+        </div>
+        
+      </div>
 
-<h3>
-  댓글 목록
-</h3>
-
-{% for comment in comments %}
-  <p id="comment-content-{{comment.pk}}">{{comment.content}}</p>
-  <div>
-    <div class="d-flex">
-      <form action="{% url 'articles:comment_delete' article.pk comment.pk %}" method="POST">
-        {% csrf_token %}
-        <input type="submit" value="댓글 삭제" class="btn btn-sm btn-outline-danger">
-      </form>
-      <input type="button" value="댓글 수정" class="comment-edit-btn btn btn-sm btn-outline-primary" data-article-id="{{ article.pk }}" data-comment-id="{{ comment.pk }}">
+      <div class="col-11">
+        <div class="row-4">
+          <p><strong>{{ review.title }}</strong></p>
+        </div>
+        <hr class="row-1">
+        <div class="row-7">
+          {% if review.image %}
+            <img src="{{review.image.url}}" alt="travel_review_image" style="width:200px;">
+          {% endif %}          
+        <p class="my-2">{{ review.content }}</p>        
+        </div>
+      </div>
     </div>
-    <form class="comment-edit-form my-3" id="comment-edit-form-{{ comment.pk }}" data-article-id="{{ article.pk }}" data-comment-id="{{ comment.pk }}" hidden>
-      {% csrf_token %}
-      {{comment_form.as_p}}
-      <input type="submit" value="수정" class="update btn btn-sm btn-outline-primary">
-      <input type="button" value="취소" class="cancel btn btn-sm btn-outline-secondary" data-comment-id="{{ comment.pk }}">
-    </form>
-  </div>
-{% endfor %}
-
-<form action="{% url 'articles:comment_create' article.pk %}" method="post">
-  {% csrf_token %}
-  {{ comment_form.as_p }}
-  <input type="submit" value="댓글 작성">
-</form>
+       
+    
+  {% endfor %}
 
 <hr>
+
+{% comment %} 댓글 목록 {% endcomment %}
+<div class="mt-4" style="">
+  <h5 class="mb-4 fw-bold">댓글 
+    <span style="color:green;">{{comment_count}}</span></h5>
+  <hr>
+
+  {% for comment in comments %}
+    <div class="d-flex">
+      <img style="width:32px; height:32px; border-radius:50%;" src={% if person.profile_img %} "{{ person.profile_img.url }}" {% else %} "{% static '/img/user_image.png' %}" {% endif %} alt="프로필 사진" id="profile-image"/>
+      <p id="comment-content-{{comment.pk}}" class="ps-2">
+        <strong class="comment-user">{{comment.user}}</strong>
+      </p>
+    </div>
+    <p id="comment-content-{{comment.pk}}">{{comment.content}}</p>
+    
+    <div class="d-flex justify-content-end">
+      <div class="d-flex">
+        <input type="button" value="댓글 수정" class="comment-edit-btn btn btn-sm btn-outline-primary m-1" data-article-id="{{ article.pk }}" data-comment-id="{{ comment.pk }}">
+        <form class="comment-edit-form m-1" action="{% url 'articles:comment_delete' article.pk comment.pk %}" method="POST">
+          {% csrf_token %}
+          <input type="submit" value="댓글 삭제" class="btn btn-sm btn-outline-danger">
+        </form>
+      </div>
+      <form class="comment-edit-form my-3" id="comment-edit-form-{{ comment.pk }}" data-article-id="{{ article.pk }}" data-comment-id="{{ comment.pk }}" hidden>
+        {% csrf_token %}
+        {{comment_form.as_p}}
+        <input type="submit" value="수정" class="update btn btn-sm btn-outline-primary">
+        <input type="button" value="취소" class="cancel btn btn-sm btn-outline-secondary" data-comment-id="{{ comment.pk }}">
+      </form>
+      <hr>
+    </div>
+  {% endfor %}
+
+  <hr>
+  {% comment %} <form action="{% url 'articles:comment_create' article.pk %}" method="post">
+    {% csrf_token %}
+    {{ comment_form.as_p }}
+    <input type="submit" class="btn btn-sm btn-outline-success mt-3 d-flex justify-content-end" value="댓글 작성">
+  </form>
+ {% endcomment %}
+    <form action="{% url 'articles:comment_create' article.pk %}" method="post">
+      {% csrf_token %}
+      <div class="main" style="border-bottom: 1px solid #198754; width:100%">
+        댓글 작성 : {{ comment_form.content }}
+      </div>
+      <div class="d-flex justify-content-end">
+        <input type="submit" class="btn btn-sm btn-outline-success mt-3" value="댓글 작성">
+
+      </div>
+    
+    </form>
+</div>
 
 <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
 <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=44fdfd5aea6498bf2814ede3eae827b6&libraries=services,clusterer,drawing"></script>
@@ -107,6 +211,8 @@
     position: markerPosition
   })
   marker.setMap(map)
+
+
 </script>
 
 <script>
@@ -188,4 +294,31 @@
     })
   }) 
 </script>
+
+<script>
+{% for review in reviews %}
+  const numStars = {{review.score}}; // 출력할 ⭐ 이모지 개수
+
+  // stars 요소에 ⭐ 이모지 추가
+  const starsEl = document.getElementById("stars");
+  for (let i = 0; i < numStars; i++) {
+    starsEl.innerHTML += "⭐";
+  }
+{% endfor %}
+
+</script>
+
+{% comment %} <script>
+  function zoomIn(event) {
+    event.target.style.width = "600px";
+    event.target.style.height = "336px";
+    event.target.style.transition = "all 0.5s";
+  }
+
+  function zoomOut(event) {
+    event.target.style.width = "500px";
+    event.target.style.height = "280px";
+    event.target.style.transition = "all 0.5s";
+  }
+</script> {% endcomment %}
 {% endblock content %}
