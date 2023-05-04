@@ -7,6 +7,8 @@ from django.core.paginator import Paginator
 from .models import Article, Comment, Review, ReviewComment, Emote, Plan, ArticlePlan
 from .forms import ArticleForm, CommentForm, ReviewForm, ReviewCommentForm, PlanForm, ArticlePlanForm
 import json
+from geopy.geocoders import Nominatim
+
 
 # Create your views here.
 
@@ -27,8 +29,12 @@ EMOTIONS = [
 
 def detail(request, article_pk):
     article = Article.objects.get(pk=article_pk)
+    geolocoder = Nominatim(user_agent = 'South Korea', timeout=None)
+    address = geolocoder.reverse((article.lat, article.lng))
     reviews = Review.objects.filter(article=article_pk)
+    review_count = reviews.count()
     comments = article.comment_set.all()
+    comment_count = comments.count()
     comment_form = CommentForm()
     form = CommentForm(request.POST, instance=article)
     emotions = []
@@ -54,9 +60,13 @@ def detail(request, article_pk):
         'comment_form': comment_form,
         'form': form,
         'reviews': reviews,
+        'review_count': review_count,
+        'comment_count': comment_count,
         'emotions': emotions,
+        'address' : address,
     }
     return render(request, 'articles/detail.html', context)
+
 
 
 @login_required
