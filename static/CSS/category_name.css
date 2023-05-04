@@ -1,0 +1,22 @@
+.category_name {
+  text-align: center;
+  font-size: x-large;
+}
+
+.link {
+  text-decoration: none;
+  color: black;
+}
+
+.link:hover {
+  text-decoration: underline;
+}
+
+.paginator {
+  margin-bottom: 1rem;
+}
+
+.table_image {
+  width: 64px;
+  height: 64px;
+}

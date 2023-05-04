@@ -274,8 +274,17 @@ def review_comment_update(request, review_pk, comment_pk):
 
 def category_name(request, category_name):
     articles = Article.objects.filter(category=category_name)
+
+    page = request.GET.get('page', '1')
+    per_page = 5
+    paginator = Paginator(articles, per_page)
+    page_obj = paginator.get_page(page)
+    num_page = paginator.num_pages
+
     context = {
-        'articles': articles,
+        'articles': page_obj,
+        'category_name': category_name,
+        'num_page': num_page,
     }
     
     return render(request, 'articles/category_name.html', context)
