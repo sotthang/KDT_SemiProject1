@@ -148,6 +148,7 @@ def comment_update(request, article_pk, comment_pk):
 
 def review_detail(request, review_pk):
     review = Review.objects.get(pk=review_pk)
+    article = Article.objects.get(pk=review.article_id)
     User = get_user_model()
     person = User.objects.get(username=request.user)
     comments = review.reviewcomment_set.all()
@@ -173,6 +174,7 @@ def review_detail(request, review_pk):
     context = {
         'person': person,
         'review': review,
+        'article': article,
         'comments': comments,
         'comment_form': comment_form,
         'emotions': emotions,

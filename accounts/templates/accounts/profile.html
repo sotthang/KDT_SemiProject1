@@ -87,30 +87,33 @@
     </div>
   </div>
 
-  {{plan}}
-  {{articleplans}}
+  <hr>
+  <div class="row mt-5 justify-content-center">
+    <div class="col-xxl-7" id="map" style="width:700px; height:500px;"></div>
+    <div class="col-xxl-5 text-center" id="plan" style="height:500px; overflow: auto;">
+      <h2 class="sticky-top bg-white">내 여행 일정</h2>
+      <hr>
+      {% for plan in plans %}
+        <h5>{{ forloop.counter }}번째 여행 일정</h5>
+        <h6>{{plan.startday_at|date:"Y-m-d"}} ~ {{plan.endday_at|date:"Y-m-d"}}</h6>
 
-  <p>내 여행 일정</p>
-
-  <div class="row">
-    <div class="col-7">
-      <div id="map" style="width:700px; height:500px;">
-      </div>
-
-    </div>
-    <div class="col-5 text-center">
-      {% for articleplan in articleplans %}
-        <p> {{ articleplan.day }} 일차
-            <a href="{% url 'articles:detail' articleplan.article.pk %}"> {{ articleplan.article.title }} </a>
-            {{ articleplan.article.content }}
-        </p>
+        {% for articleplan in articleplans %}
+          {% if plan.id == articleplan.plan.id %}
+          <div class="row">
+            <div class="col-3">{{ articleplan.day }}일차</div>
+            <div class="col-9"><a href="{% url 'articles:detail' articleplan.article.pk %}"> {{ articleplan.article.title }} </a></div>
+          </div>
+          {% endif %}
+        {% endfor %}
+        <div class="d-flex align-items-end flex-column">
+          <form action="{% url 'articles:plan_delete' plan.pk %}" METHOD="POST" class="pt-2">
+            {% csrf_token %}
+            <button type="submit" value="DELETE" class="btn btn-danger" style="font-size:12px;">일정 삭제하기</button>
+          </form>
+        </div>
         <hr>
-
       {% endfor %}
-
     </div>
-
-    
   </div>
 
 

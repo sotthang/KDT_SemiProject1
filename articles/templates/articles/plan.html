@@ -7,31 +7,37 @@
 {% endblock head %}
 
 {% block content %}
-<h1>plan</h1>
-
-<form action="{% url 'articles:plan' %}" method="post" id="plan_form">
-  {% csrf_token %}
-  <p>planform</p>
-  {{planform.as_p}}
-  <p>articleplanform</p>
-  {{articleplanform.as_p}}
-
-  <div class="clearfix" id="plan">
-    <ul class="ul_list dropzone" id="ul1" >
-      <p>등록 여행지 리스트</p>
-      {% for article in articles %}
-        <li id="item{{ forloop.counter }}" draggable="true">
-          <div>
-            {{ article.title }}
-            <img src="{{ article.image.url }}" alt="{{ article.image }}" style="width:50px; height:50px;">
-          </div>
-          <input type="hidden" class="article-pk" name="destination" value="destination_{{ article.pk }}">
-        </li>
-      {% endfor %}
-    </ul>
-  </div>
-  <input type="submit" value="작성하기">
-</form>
+<div class="d-flex justify-content-center background">
+  <form action="{% url 'articles:plan' %}" method="post" id="plan_form" class="d-flex flex-column">
+    <h2 class="mb-4 title fw-bold">여행 일정 생성</h2>
+    {% csrf_token %}
+    <div class="d-flex justify-content-center">
+      <div>{{planform.as_p}}</div>
+    </div>
+    <div style="display:none">{{articleplanform.as_p}}</div>
+    <div class="d-flex justify-content-center mt-5">
+      <div>
+        <ul class="ul_list dropzone d-inline-block bg-body-tertiary" id="ul1" >
+          <div class="text-center">여행지 리스트</div>
+          {% for article in articles %}
+            <li class="col" id="item{{ forloop.counter }}" draggable="true">
+              <div>
+                <img src="{{ article.image.url }}" alt="{{ article.image }}" style="width:50px; height:50px;">
+                {{ article.title }}
+              </div>
+              <input type="hidden" class="article-pk" name="destination" value="destination_{{ article.pk }}">
+            </li>
+          {% endfor %}
+        </ul>
+      </div>
+      <div class="row d-flex justify-content-center" id="plan">
+      </div>
+    </div>
+    <div class="d-flex justify-content-center pt-3">
+      <button type="submit" form="plan_form" class="btn btn-secondary" value="작성하기">일정 생성</button>
+    </div>
+  </form>
+</div>
 
 <script type="text/javascript" src="/static/JS/plan.js"></script>
 

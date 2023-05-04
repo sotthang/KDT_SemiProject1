@@ -1,16 +1,19 @@
+p {
+  width: 400px;
+}
+
 .ul_list {
   list-style-type: none;
   padding: 0;
-  margin: 0;
-  border: 1px solid #ccc;
-  min-height: 100px;
-  width: 200px;
+  margin: 3px;
+  width: 250px;
+  height: 500px;
   float: left;
-  margin-right: 20px;
+  overflow-y: auto;
+  overflow-x: hidden;
 }
 
 .li_list {
-  background-color: #f1f1f1;
   padding: 10px;
   margin: 5px;
   cursor: pointer;
@@ -20,15 +23,31 @@ li:hover {
   background-color: #ddd;
 }
 
-ul#ul1 li, ul#ul2 li {
-  margin-top: 20px; /* ul 사이의 간격 조정 */
+ul > li {
+  margin-top: 20px;
 }
 
 ul.dropzone {
-  background-color: #eee;
-  border-style: dashed;
-  border-color: #ccc;
   padding: 10px;
   min-height: 120px;
-  margin-top: 10px;
+}
+
+.title {
+  text-align: center;
+}
+
+.main {
+  border-bottom: 1px solid #198754;
+}
+
+#plan {
+  visibility: hidden;
+  height: 506px;
+  margin: 3px;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.col {
+  flex: none;
 }

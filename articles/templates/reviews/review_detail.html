@@ -31,6 +31,8 @@
   <div class="col-8 mt-4" style="">
     {% if review.image %}
       <img src="{{review.image.url}}" alt="travel_review_image" style="width:100%;">
+    {% elif article.image %}
+      <img src="{{article.image.url}}" alt="travel_article_image" style="width:100%;">
     {% endif %}
   </div>
   {% comment %} 리뷰 내용 & 별점 & emote {% endcomment %}
