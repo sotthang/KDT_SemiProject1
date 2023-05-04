@@ -86,6 +86,7 @@ body {
     position: fixed;
     right: 1rem;
     bottom: 5rem;
+    z-index: 999;
 }
 
 .topBtn > div {
