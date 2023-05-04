@@ -141,19 +141,18 @@ def comment_delete(request, article_pk, comment_pk):
 @login_required
 def comment_update(request, article_pk, comment_pk):
     comment = Comment.objects.get(pk=comment_pk)
-    article = Article.objects.get(pk=article_pk)
-    if request.method == 'POST':
-        form = CommentForm(request.POST, instance=comment)
-        if form.is_valid():
-            form.save()
-            return redirect('articles:detail', article.pk)
-    else:
-        form = CommentForm(instance=comment)
+    if request.user == comment.user:
+        if request.method == 'POST':
+            r = list(request.POST.keys())
+            js = json.loads(r[0])
+            comment.content = js['content']
+            comment.save()
+            
     context = {
-        'comment': comment,
-        'form': form,
+        'content': comment.content,
     }
-    return render(request, 'update.html', context)
+
+    return JsonResponse(context)
 
 
 def review_detail(request, review_pk):

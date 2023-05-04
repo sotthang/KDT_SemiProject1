@@ -150,15 +150,16 @@
   {% for comment in comments %}
     <div class="d-flex">
       <img style="width:32px; height:32px; border-radius:50%;" src={% if person.profile_img %} "{{ person.profile_img.url }}" {% else %} "{% static '/img/user_image.png' %}" {% endif %} alt="프로필 사진" id="profile-image"/>
-      <p id="comment-content-{{comment.pk}}" class="ps-2">
+      <p class="ps-2">
         <strong class="comment-user">{{comment.user}}</strong>
       </p>
     </div>
     <p id="comment-content-{{comment.pk}}">{{comment.content}}</p>
     
-    <div class="d-flex justify-content-end">
+    {% comment %} <div class="d-flex justify-content-end"> {% endcomment %}
+      <div>
       <div class="d-flex">
-        <input type="button" value="댓글 수정" class="comment-edit-btn btn btn-sm btn-outline-primary m-1" data-article-id="{{ article.pk }}" data-comment-id="{{ comment.pk }}">
+        <input type="button" value="댓글 수정" class="comment-edit-btn btn btn-sm btn-outline-primary me-4" data-article-id="{{ article.pk }}" data-comment-id="{{ comment.pk }}">
         <form class="comment-edit-form m-1" action="{% url 'articles:comment_delete' article.pk comment.pk %}" method="POST">
           {% csrf_token %}
           <input type="submit" value="댓글 삭제" class="btn btn-sm btn-outline-danger">
@@ -170,7 +171,6 @@
         <input type="submit" value="수정" class="update btn btn-sm btn-outline-primary">
         <input type="button" value="취소" class="cancel btn btn-sm btn-outline-secondary" data-comment-id="{{ comment.pk }}">
       </form>
-      <hr>
     </div>
   {% endfor %}
 

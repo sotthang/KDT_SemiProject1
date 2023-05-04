@@ -65,7 +65,7 @@ class CommentForm(forms.ModelForm):
             'content': '댓글',
         }
         widgets = {
-            'content': forms.Textarea(attrs={'class':'form-control', 'rows':'2',})
+            'content': forms.Textarea(attrs={'class':'form-control', 'rows':'2','style': 'border:none;'})
         }
         
     def __init__(self, *args, **kwargs):
