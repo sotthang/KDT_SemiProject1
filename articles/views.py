@@ -149,6 +149,7 @@ def review_detail(request, review_pk):
     review = Review.objects.get(pk=review_pk)
     comments = review.reviewcomment_set.all()
     comment_form = ReviewCommentForm()
+    comment_count = comments.count()
     emotions = []
     for emotion in EMOTIONS:
         label = emotion['label']
@@ -171,6 +172,7 @@ def review_detail(request, review_pk):
         'comments': comments,
         'comment_form': comment_form,
         'emotions': emotions,
+        'comment_count': comment_count,
     }
     return render(request, 'reviews/review_detail.html', context)
 

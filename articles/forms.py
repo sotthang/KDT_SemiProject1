@@ -93,9 +93,33 @@ class ReviewForm(forms.ModelForm):
                 'score': '별점',
             }
         widgets = {
-            'title': forms.TextInput(attrs={'class':'form-control',}),
-            'content': forms.Textarea(attrs={'class':'form-control', 'rows':'5',}),
-            'score': forms.NumberInput(attrs={'class':'form-control',}),
+            'title': forms.TextInput(
+                attrs={
+                    'class':'form-control',
+                    'placeholder' : '제목을 입력해 주세요',
+                    'style': 'border:none;',
+                }
+            ),
+            'content': forms.Textarea(
+                attrs={
+                    'class':'form-control',
+                    'placeholder' : '내용을 입력해 주세요',
+                    'style': 'border:none;',
+                    'rows':'5',
+                }
+            ),
+            'image': ClearableFileInput(
+                attrs={
+                    'class': 'form-control',
+                    'style': 'width: 400px;'
+                }
+            ),
+            'score': forms.NumberInput(
+                attrs={
+                    'class':'form-control',
+                    'style': 'border:none;'
+                }
+            ),
         }
 
 
@@ -107,7 +131,13 @@ class ReviewCommentForm(forms.ModelForm):
             'content': '댓글',
         }
         widgets = {
-            'content': forms.Textarea(attrs={'class':'form-control', 'rows':'2',})
+            'content': forms.Textarea(
+                attrs={
+                    'class':'form-control', 
+                    'rows':'2',
+                    'style': 'border:none;'
+                }
+            )
         }
         
 class EmoteForm(forms.ModelForm):
