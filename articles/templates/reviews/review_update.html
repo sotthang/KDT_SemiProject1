@@ -1,10 +1,28 @@
 {% extends 'base.html' %}
+{% load static %}
+
+{% block head %}
+<link rel="stylesheet" href="{% static '/CSS/review_update.css' %}">
+{% endblock head %}
 
 {% block content %}
-<h1>update</h1>
-<form action="{% url 'articles:review_update' review.pk %}" method="POST" enctype="multipart/form-data">
-  {% csrf_token %}
-  {{ form.as_p }}
-  <input type="submit" value="작성하기" class="btn btn-outline-success">
-</form>
+<div class="d-flex justify-content-center">
+  <form action="{% url 'articles:review_update' review.pk %}" method="POST" enctype="multipart/form-data">
+    <h2 class="mb-4 title fw-bold">리뷰 수정</h2>
+    {% csrf_token %}
+    <div class="mb-3 main">
+      제목 : {{ form.title }}
+    </div>
+    <div class="mb-3 main">
+      내용 : {{ form.content }}
+    </div>
+    <div class="mb-3">
+      사진 : {{ form.image }}
+    </div>
+    <div class="mb-3 main">
+      별점 : {{ form.score }}
+    </div>
+    <input type="submit" value="수정하기" class="btn btn-outline-success mt-4" style="width:400px;">
+  </form>
+</div>
 {% endblock content %}

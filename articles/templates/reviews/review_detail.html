@@ -2,73 +2,116 @@
 {% load static %}
 
 {% block content %}
+{% comment %} 제목 & 수정, 삭제 버튼 {% endcomment %}
 <h1>Review detail</h1>
-<h4><b><span id="review-pk">{{review.pk}}</span>. {{review.title}}</b></h4>
-<p>{{review.user}}</p>
-<p>{{review.content}}</p>
+<header>
+  <div class="d-flex row">
+    <div class="col-8" style="background-color:yellow;">
+      <h4><b><span id="review-pk">{{review.pk}}</span>. {{review.title}}</b></h4>
+      <p>{{review.user}}</p>
+    </div>
+    <div class="col-4" style="background-color:green;">
+      <div class="d-flex">
+        {% if request.user == review.user %}
+          <a href="{% url 'articles:review_update' review.pk %}" class="p-2"><button type="button" class="btn btn-primary">수정하기</button></a>
+          <form action="{% url 'articles:review_delete' review.pk %}" METHOD="POST" class="p-2">
+            {% csrf_token %}
+            <button type="submit" value="DELETE" class="btn btn-danger">삭제하기</button>
+          </form>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</header>
 
-{% if review.image %}
-<img src="{{review.image.url}}" alt="">
-{% endif %}
-<p>별점 :{{review.score}}</p>
+{% comment %} 메인 {% endcomment %}
+<main>
+<div class="d-flex row">
+  {% comment %} 리뷰 사진 {% endcomment %}
+  <div class="col-8" style="background-color:skyblue;">
+    {% if review.image %}
+      <img src="{{review.image.url}}" alt="travel_review_image" style="width:80%;">
+    {% endif %}
+  </div>
+  {% comment %} 리뷰 내용 & 별점 & emote {% endcomment %}
+  <div class="col-4" style="background-color:#fff3cd;">
+    <h3>내용</h3>
+    <p>{{review.content}}</p>
 
-<p>{{review.created_at}}</p>
-<p>{{review.updated_at}}</p>
+    <br>
 
-<p>이 여행지에 대한 의견을 남겨주세요</p>
-  <div class="d-flex text-center">
-    {% for emotion in emotions %}
-    <div class="m-3" id="emotion-{{emotion.value}}">
-      {% if request.user.is_authenticated %}
-      {{ emotion.queryset }}
-        <form>
+    <h3>별점 & emote</h3>
+    <p>별점 : {{review.score}}</p>
+    <p style="margin:0;">이 여행지에 대한 의견을 남겨주세요</p>
+    <div class="d-flex text-center">
+      {% for emotion in emotions %}
+      <div class="m-3" id="emotion-{{emotion.value}}">
+        {% if request.user.is_authenticated %}
+        {{ emotion.queryset }}
+          <form>
+            {% csrf_token %}
+            {% if emotion.exsit %}
+              <input type="image" src="{% static 'emotions/' %}{{ emotion.value }}.png" value="{{ emotion.label }} 취소" style="width: 32px; height: 32px;" class="emotion" data-emotion-id="{{emotion.value}}"> 취소하기
+            {% else %}
+              <input type="image" src="{% static 'emotions/' %}{{ emotion.value }}.png" value="{{ emotion.label }}" style="width: 32px; height: 32px;" class="emotion" data-emotion-id="{{emotion.value}}">
+            {% endif %}
+          </form>
+        {% else %}
+          <button value="{{ emotion.label }}" disabled>{{ emotion.label }}</button>
+        {% endif %}
+        <span class="emotion-count">{{ emotion.count }}</span>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+
+{% comment %} 리뷰 생성 & 수정 날짜 {% endcomment %}
+<div style="background-color:blue;">
+  <p>리뷰 생성 : {{review.created_at}}</p>
+  <p>리뷰 수정 : {{review.updated_at}}</p>
+</div>
+
+{% comment %} 댓글 목록 {% endcomment %}
+<div style="background-color:aliceblue;">
+  <h4 class="mb-4 fw-bold">댓글 {{comment_count}}</h4>
+  {% for comment in comments %}
+  <div class="d-flex">
+    <img style="width:32px; height:32px; border-radius:50%;" src={% if person.profile_img %} "{{ person.profile_img.url }}" {% else %} "{% static '/img/user_image.png' %}" {% endif %} alt="프로필 사진" id="profile-image"/>
+    <p id="comment-content-{{comment.pk}}" class="ps-2">
+      <strong class="comment-user">{{comment.user}}</strong>
+    </p>
+  </div>
+    <p>{{comment.content}}</p>
+    <div>
+      <div class="d-flex">
+        <form action="{% url 'articles:review_comment_delete' review.pk comment.pk %}" method="POST">
           {% csrf_token %}
-          {% if emotion.exsit %}
-            <input type="image" src="{% static 'emotions/' %}{{ emotion.value }}.png" value="{{ emotion.label }} 취소" style="width: 32px; height: 32px;" class="emotion" data-emotion-id="{{emotion.value}}"> 취소하기
-          {% else %}
-            <input type="image" src="{% static 'emotions/' %}{{ emotion.value }}.png" value="{{ emotion.label }}" style="width: 32px; height: 32px;" class="emotion" data-emotion-id="{{emotion.value}}">
-          {% endif %}
+          <input type="submit" value="댓글 삭제" class="btn btn-sm btn-outline-danger me-4">
         </form>
-      {% else %}
-        <button value="{{ emotion.label }}" disabled>{{ emotion.label }}</button>
-      {% endif %}
-      <span class="emotion-count">{{ emotion.count }}</span>
-    </div>
-    {% endfor %}
-  </div>
-
-{% for comment in comments %}
-  <p id="comment-content-{{comment.pk}}">{{comment.content}}</p>
-  <div>
-    <div class="d-flex">
-      <form action="{% url 'articles:review_comment_delete' review.pk comment.pk %}" method="POST">
+        <input type="button" value="댓글 수정" class="comment-edit-btn btn btn-sm btn-outline-primary" data-review-id="{{ review.pk }}" data-comment-id="{{ comment.pk }}">
+      </div>
+      <hr>
+      <form class="comment-edit-form my-3" id="comment-edit-form-{{ comment.pk }}" data-review-id="{{ review.pk }}" data-comment-id="{{ comment.pk }}" hidden>
         {% csrf_token %}
-        <input type="submit" value="댓글 삭제" class="btn btn-sm btn-outline-danger">
+        {{comment_form.as_p}}
+        <input type="submit" value="수정" class="update btn btn-sm btn-outline-primary">
+        <input type="button" value="취소" class="cancel btn btn-sm btn-outline-secondary" data-comment-id="{{ comment.pk }}">
       </form>
-      <input type="button" value="댓글 수정" class="comment-edit-btn btn btn-sm btn-outline-primary" data-review-id="{{ review.pk }}" data-comment-id="{{ comment.pk }}">
     </div>
-    <form class="comment-edit-form my-3" id="comment-edit-form-{{ comment.pk }}" data-review-id="{{ review.pk }}" data-comment-id="{{ comment.pk }}" hidden>
-      {% csrf_token %}
-      {{comment_form.as_p}}
-      <input type="submit" value="수정" class="update btn btn-sm btn-outline-primary">
-      <input type="button" value="취소" class="cancel btn btn-sm btn-outline-secondary" data-comment-id="{{ comment.pk }}">
-    </form>
-  </div>
-{% endfor %}
-
-<form action="{% url 'articles:review_comment_create' review.pk %}" method="post">
-  {% csrf_token %}
-  {{ comment_form.as_p }}
-  <input type="submit" value="댓글 작성">
-</form>
-
-{% if request.user == review.user %}
-  <a href="{% url 'articles:review_update' review.pk %}" class="p-2"><button type="button" class="btn btn-primary">수정하기</button></a>
-  <form action="{% url 'articles:review_delete' review.pk %}" METHOD="POST" class="p-2">
+  {% endfor %}
+  
+  {% comment %} 댓글 작성 {% endcomment %}
+  <form action="{% url 'articles:review_comment_create' review.pk %}" method="post">
     {% csrf_token %}
-    <button type="submit" value="DELETE" class="btn btn-danger">삭제하기</button>
+    <div class="main" style="border-bottom: 1px solid #198754; width:500px">
+      댓글 작성 : {{ comment_form.content }}
+    </div>
+    <input type="submit" class="btn btn-outline-success mt-3" value="댓글 작성">
   </form>
-{% endif %}
+</div>
+</main>
+
 
   <script>
     const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value
