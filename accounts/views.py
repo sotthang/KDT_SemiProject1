@@ -99,6 +99,7 @@ def profile(request, username):
     User = get_user_model()
     person = User.objects.get(username=username)
     article_count = Article.objects.filter(user=person).count()
+    articles = Article.objects.all()
     
     if Plan.objects.filter(user_id=request.user.id, user=person):
         plan = Plan.objects.filter(user=request.user, user_id=person.id)
@@ -109,6 +110,7 @@ def profile(request, username):
         'person': person,
         'articleplans': articleplans,
         'article_count': article_count,
+        'articles': articles,
     }
     return render(request, 'accounts/profile.html', context)
 
