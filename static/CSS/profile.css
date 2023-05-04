@@ -42,3 +42,16 @@ a {
     width: 700px
   }
 }
+
+.modal_list {
+  list-style-type: none;
+}
+
+.modal_list_item {
+  text-decoration:none; 
+  color:#353535;
+}
+
+.modal_list_item:hover {
+  color:cyan;
+}

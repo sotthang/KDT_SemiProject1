@@ -34,7 +34,7 @@
         {% comment %} 게시물 & 팔로워 & 팔로잉 {% endcomment %}
         <div class="mt-4">
           <strong>게시물</strong>
-          <strong><a href="#" class="pe-3" style="text-decoration:none; color:black;">
+          <strong><a href="#" data-bs-toggle="modal" data-bs-target="#articleModal" class="pe-3" style="text-decoration:none; color:black;">
             {{ article_count }}
           </a></strong>
 
@@ -116,6 +116,26 @@
     </div>
   </div>
 
+  {% comment %} 게시글 모달 {% endcomment %}
+  <div class="modal fade" id="articleModal" tabindex="-1" aria-labelledby="articleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" style="width:350px;">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5 fw-bold" id="articleModalLabel" style="">Articles</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body" style="background-color:whitesmoke;">
+          <ul class="mt-2 modal_list">
+            {% for article in person.article_set.all %}
+              <a href="{% url 'articles:detail' article.pk %}" class="modal_list_item">
+                <li><span>{{ article.title }}</span></li>
+              </a>
+            {% endfor %}
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>  
 
   {% comment %} 팔로워 모달 {% endcomment %}
   <div class="modal fade" id="followerModal" tabindex="-1" aria-labelledby="followerModalLabel" aria-hidden="true">
