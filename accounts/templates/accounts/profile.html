@@ -10,7 +10,7 @@
 {% block content %}
   <div class="d-flex justify-content-center">
     <div class="d-flex flex-column">
-      <h1 class="mb-4 mt-3 fw-bold" style="text-align:center;">My Profile</h1>
+      <h1 class="mb-4 mt-3 fw-bold" style="text-align:center;">내 프로필</h1>
 
       {% comment %} 프로필 이미지 {% endcomment %}
       <div class="box mb-4">
@@ -31,9 +31,9 @@
 
         <hr>
 
-        {% comment %} 게시물 & 팔로워 & 팔로잉 {% endcomment %}
+        {% comment %} 게시글 & 팔로워 & 팔로잉 {% endcomment %}
         <div class="mt-4">
-          <strong>게시물</strong>
+          <strong>게시글</strong>
           <strong><a href="#" data-bs-toggle="modal" data-bs-target="#articleModal" class="pe-3" style="text-decoration:none; color:black;">
             {{ article_count }}
           </a></strong>
@@ -130,7 +130,7 @@
     <div class="modal-dialog" style="width:350px;">
       <div class="modal-content">
         <div class="modal-header">
-          <h1 class="modal-title fs-5 fw-bold" id="articleModalLabel" style="">Articles</h1>
+          <h1 class="modal-title fs-5 fw-bold" id="articleModalLabel" style="">게시글</h1>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body" style="background-color:whitesmoke;">
@@ -151,13 +151,13 @@
     <div class="modal-dialog" style="width:350px;">
       <div class="modal-content">
         <div class="modal-header">
-          <h1 class="modal-title fs-5 fw-bold" id="followerModalLabel" style="">Followers</h1>
+          <h1 class="modal-title fs-5 fw-bold" id="followerModalLabel" style="">팔로워</h1>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body" style="background-color:whitesmoke;">
-          <ul class="mt-2">
+          <ul class="mt-2 modal_list">
             {% for follower in person.followers.all %}
-              <a href="{% url 'accounts:profile' follower %}" style="text-decoration:none; color:#353535;">
+              <a href="{% url 'accounts:profile' follower %}" class="modal_list_item">
                 <li><span>{{ follower }}</span></li>
               </a>
             {% endfor %}
@@ -172,13 +172,15 @@
     <div class="modal-dialog" style="width:350px;">
       <div class="modal-content">
         <div class="modal-header">
-          <h1 class="modal-title fs-5 fw-bold" id="followingModalLabel" style="">Following</h1>
+          <h1 class="modal-title fs-5 fw-bold" id="followingModalLabel" style="">팔로잉</h1>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body" style="background-color:whitesmoke;">
-          <ul class="mt-2">
+          <ul class="mt-2 modal_list">
             {% for following in person.followings.all %}
-            <a href="{% url 'accounts:profile' following %}" style="text-decoration:none; color:#353535;"><li>{{ following }}</li></a>
+            <a href="{% url 'accounts:profile' following %}" class="modal_list_item">
+              <li><span>{{ following }}</span></li>
+            </a>
             {% endfor %}
           </ul>
         </div>
