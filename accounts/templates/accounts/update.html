@@ -17,13 +17,13 @@
         </div>
       </div>
     </form>
-  
     <form action="{% url 'accounts:delete' %}" method="POST" id="delete">
       {% csrf_token %}
       <input type="hidden" name="next" value="{{ request.path }}">
     </form>
   </div>
-  </div>
+</div>
+
 <script>
   function confirmDelete(event) {
     event.preventDefault()
