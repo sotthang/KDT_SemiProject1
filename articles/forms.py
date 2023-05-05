@@ -151,9 +151,9 @@ class PlanForm(forms.ModelForm):
         model = Plan
         fields = ('startday_at', 'endday_at')
     startday_at = forms.DateField(label='여행 시작일', label_suffix='', widget=forms.DateInput(
-        attrs={'class': 'form-control', 'type': 'date',  'style': 'width: 400px;'}))
+        attrs={'class': 'form-control', 'type': 'date',  'style': 'width: 300px;'}))
     endday_at = forms.DateField(label='여행 종료일', label_suffix='', widget=forms.DateInput(
-        attrs={'class': 'form-control', 'type': 'date',  'style': 'width: 400px;'}))
+        attrs={'class': 'form-control', 'type': 'date',  'style': 'width: 300px;'}))
         
 
 class ArticlePlanForm(forms.ModelForm):
