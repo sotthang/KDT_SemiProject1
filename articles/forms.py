@@ -44,7 +44,7 @@ class ArticleForm(forms.ModelForm):
                 attrs={
                     'class':'form-control',
                     'placeholder' : '내용을 입력해 주세요',
-                    'rows':'5',
+                    'rows':'10',
                     'style': 'border:none;'
                 }
             ),

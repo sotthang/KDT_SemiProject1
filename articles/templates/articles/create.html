@@ -8,7 +8,7 @@
 {% block content %}
 <div class="d-flex justify-content-center background">
   <form action="{% url 'articles:create' %}" method="POST" enctype="multipart/form-data" id="create">
-    <h2 class="mb-4 title fw-bold">여행지 생성</h2>
+    <h4 class="mb-4 title fw-bold">여행지 생성</h4>
     {% csrf_token %}
     {% comment %} {{ form.as_p }} {% endcomment %}
     <div class="mb-3 main">
