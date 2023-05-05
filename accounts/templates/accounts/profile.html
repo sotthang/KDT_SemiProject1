@@ -1,5 +1,4 @@
 {% extends 'base.html' %}
-
 {% load static %}
 
 {% block head %}
@@ -14,12 +13,9 @@
 
       {% comment %} 프로필 이미지 {% endcomment %}
       <div class="box mb-4">
-        {% comment %} <input type="file" id="file-input" class="input-image" style="display: none;" /> {% endcomment %}
         <img class="img" src={% if person.profile_img %} "{{ person.profile_img.url }}" {% else %} "{% static '/img/user_image.png' %}" {% endif %} alt="프로필 사진" id="profile-image"/>
       </div>
-
       <div style="text-align:center;">
-        {% comment %} username {% endcomment %}
         <h3>
           <strong>{{ person.username }}</strong>
         </h3>
@@ -37,12 +33,10 @@
           <strong><a href="#" data-bs-toggle="modal" data-bs-target="#articleModal" class="pe-3" style="text-decoration:none; color:black;">
             {{ article_count }}
           </a></strong>
-
           <strong>팔로워</strong>  
           <strong><a href="#" data-bs-toggle="modal" data-bs-target="#followerModal" class="pe-3" style="text-decoration:none; color:black;">
             {{ person.followers.all|length }}
           </a></strong>
-      
           <strong>팔로잉</strong>
           <strong><a href="#" data-bs-toggle="modal" data-bs-target="#followingModal" style="text-decoration:none; color:black;">
             {{ person.followings.all|length }}
@@ -88,6 +82,8 @@
   </div>
 
   <hr>
+
+  {% comment %} 내 여행 일정 {% endcomment %}
   <div class="row mt-5 justify-content-center">
     <div class="col-xxl-7" id="map_wrap">
       <div id="map" style="width:700px; height:500px;"></div>
@@ -95,12 +91,13 @@
     </div>
     <div class="col-xxl-5 text-center" id="plan" style="height:500px; overflow: auto;">
       <h2 class="sticky-top bg-white">내 여행 일정</h2>
+
       <hr>
+
       {% if plans %}
         {% for plan in plans %}
           <h5>{{ forloop.counter }}번째 여행 일정</h5>
           <h6>{{plan.startday_at|date:"Y-m-d"}} ~ {{plan.endday_at|date:"Y-m-d"}}</h6>
-
           {% for articleplan in articleplans %}
             {% if plan.id == articleplan.plan.id %}
             <div class="row">
@@ -187,6 +184,7 @@
       </div>
     </div>
   </div>
+  
   <script type="text/javascript" src="/static/JS/profile.js"></script>
   <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
   <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=44fdfd5aea6498bf2814ede3eae827b6&libraries=services,clusterer,drawing"></script>

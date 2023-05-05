@@ -5,13 +5,9 @@
 <link rel="stylesheet" href="{% static '/CSS/signup.css' %}">
 {% endblock head %}
 
-{% block style %}
-{% endblock style %}
-
 {% block content %}
 <div class="d-flex justify-content-center">
   <form action="{% url 'accounts:signup' %}" method="post" enctype="multipart/form-data">
-    {% comment %} <h2 class="title">Travel Makers</h2> {% endcomment %}
     <img class="title" src="{% static '/img/favicon/logo.png' %}" alt="logo">
     {% csrf_token %}
     <div class="mt-4">
