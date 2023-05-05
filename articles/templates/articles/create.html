@@ -8,7 +8,7 @@
 {% block content %}
 <div class="d-flex justify-content-center background">
   <form action="{% url 'articles:create' %}" method="POST" enctype="multipart/form-data" id="create">
-    <h2 class="mb-4 title fw-bold">여행지 생성</h2>
+    <h4 class="mb-4 title fw-bold">여행지 생성</h4>
     {% csrf_token %}
     {% comment %} {{ form.as_p }} {% endcomment %}
     <div class="mb-3 main">
@@ -24,7 +24,7 @@
       사진 : {{ form.image }}
     </div>
     <p style="margin:0;"><img id="id_image-preview" style="width:400px;"></p>
-    <p>아래 카카오 맵에서 검색 후 <br>마커 또는 목록을 클릭하여 위치를 등록해주세요.</p>
+    <p class="my-3">아래 카카오 맵에서 검색 후 <br>마커 또는 목록을 클릭하여 위치를 등록해주세요.</p>
     <div class="mb-3" hidden>
       Lat : {{ form.lat }}
     </div>
