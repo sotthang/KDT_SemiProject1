@@ -4,6 +4,7 @@
 {% block content %}
 {% comment %} 제목 {% endcomment %}
 <header>
+
   <h6 class="small">제주도 > {{article.category}} > {{review.title}}</h6>
 
   <div class="row">
@@ -14,6 +15,8 @@
       <a href="{% url 'accounts:profile' username=article.user %}" style="text-decoration:none;"> <img style="color: black; width:32px; height:32px; border-radius:50%;" src={% if person.profile_img %} "{{ person.profile_img.url }}" {% else %} "{% static '/img/user_image.png' %}" {% endif %} alt="프로필 사진" id="profile-image"/>
         <span class="small" style='color:black;'><strong>{{article.user}}</strong></span>
       </a> 
+
+ 
     </div>
   </div>
 </header>

@@ -20,9 +20,9 @@
     </tr>
   </thead>
   <tbody>
-    {% for article in articles %}
+    {% for article in articles reversed %}
     <tr>
-      <th scope="row">{{article.pk}}</th>
+      <th scope="row">{{ forloop.revcounter }}</th>
       <td><a href="{% url 'articles:detail' article.pk %}" class="link">{{ article.title|truncatechars:10 }}</a></td>
       <td><img src="{{article.image.url}}" alt="이미지" class="table_image"></td>
       <td><a href="{% url 'accounts:profile' article.user %}" class="link">{{ article.user }}</a></td>

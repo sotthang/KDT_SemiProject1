@@ -11,3 +11,17 @@
     font-size: 12px;
 }
 
+.fixed-table-body {
+    overflow-y: auto;
+}
+
+.box {
+    display: block;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* input[type="text"] {
+    white-space: pre-wrap;
+} */

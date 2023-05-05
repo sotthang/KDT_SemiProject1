@@ -10,7 +10,7 @@ class Article(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     title = models.CharField(max_length=50)
     category = models.CharField(max_length=50, default='체험관광')
-    content = models.CharField(max_length=1000)
+    content = models.CharField(max_length=600)
     image = ProcessedImageField(upload_to='', processors=[ResizeToFill(500, 250)], format='JPEG',options={'quality': 100})
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -22,7 +22,7 @@ class Article(models.Model):
 class Review(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     title = models.CharField(max_length=50)
-    content = models.CharField(max_length=1000)
+    content = models.CharField(max_length=200)
     image = ProcessedImageField(blank=True, upload_to='', processors=[ResizeToFill(500, 250)], format='JPEG',options={'quality': 100})
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
