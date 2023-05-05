@@ -5,14 +5,14 @@
 {% comment %} 제목 {% endcomment %}
 <header>
 
-  <h6 class="small">제주도 > {{article.category}} > {{article.title}}</h6>
+  <h6 class="small">제주도 > {{article.category}} > {{review.title}}</h6>
 
   <div class="row">
     <div class="col-10">
-      <h4><strong>{{review.title}}</strong></h4>
+      <h4><strong>{{article.title}}</strong></h4>
     </div> 
     <div class="col-2 d-flex justify-content-end align-items-end"> 
-      <a href="{% url 'accounts:profile' username=article.user %}" style="text-decoration:none;"> <img style="color: black; width:32px; height:32px; border-radius:50%;" src={% if person.profile_img %} "{{ person.profile_img.url }}" {% else %} "{% static '/img/user_image.png' %}" {% endif %} alt="프로필 사진" id="profile-image"/>
+      <a href="{% url 'accounts:profile' username=article.user %}" style="text-decoration:none;"> <img style="color: black; width:32px; height:32px; border-radius:50%;" src={% if writer.profile_img %} "{{ writer.profile_img.url }}" {% else %} "{% static '/img/user_image.png' %}" {% endif %} alt="프로필 사진" id="profile-image"/>
         <span class="small" style='color:black;'><strong>{{article.user}}</strong></span>
       </a> 
 
@@ -29,15 +29,15 @@
 <main>
 
   <div class="row d-flex justify-content-center mt-2 p-2 mb-5">
-    <div class="col-7 text-center shadow rounded border-light m-2 p-4" style="width:600px;"> 
-      <div class="row-6" style="width:100%">
+    <div class="col-7 text-center shadow rounded d-flex align-items-center border-light m-2 p-4" style="width:600px;"> 
+      <div style="width:100%">
         {% if article.image %}
         <img src="{{article.image.url}}" class="object-fit-cover" alt="">
         {% endif %}
       </div>
     </div>
     <div class="col-5 mx-3 shadow rounded border-light my-2 p-4" style="width: 600px"> 
-      <p><strong>{{review.title}}</strong> <span style="color:#404040;">리뷰</span></p>
+      <p><strong>리뷰 정보</strong></p>
       <hr>
       <table class="table" style="">
         <tbody>
@@ -51,7 +51,7 @@
           </tr>
           <tr>
             <th scope="row" style="width:150px;">내용</th>
-            <td style="width: 600px; height:300px;">{{review.content}}</td>
+            <td style="width: 600px; height:200px;">{{review.content}}</td>
           </tr>
         </tbody>
       </table>
@@ -61,19 +61,19 @@
           <div class="d-flex text-center">
             {% for emotion in emotions %}
             <div class="m-3" id="emotion-{{emotion.value}}">
-              {% if request.user.is_authenticated %}
               {{ emotion.queryset }}
                 <form>
-                  {% csrf_token %}
-                  {% if emotion.exist %}
-                    <input type="image" src="{% static 'emotions/' %}{{ emotion.value }}.png" value="{{ emotion.label }} 취소" style="width: 25px; height: 25px;" class="emotion" data-emotion-id="{{emotion.value}}">
+                  {% if request.user.is_authenticated %}
+                    {% csrf_token %}
+                    {% if emotion.exist %}
+                      <input type="image" src="{% static 'emotions/' %}{{ emotion.value }}.png" value="{{ emotion.label }} 취소" style="width: 25px; height: 25px;" class="emotion" data-emotion-id="{{emotion.value}}">
+                    {% else %}
+                      <input type="image" src="{% static 'emotions/' %}{{ emotion.value }}.png" value="{{ emotion.label }}" style="width: 25px; height: 25px;" class="emotion" data-emotion-id="{{emotion.value}}">
+                    {% endif %}
                   {% else %}
-                    <input type="image" src="{% static 'emotions/' %}{{ emotion.value }}.png" value="{{ emotion.label }}" style="width: 25px; height: 25px;" class="emotion" data-emotion-id="{{emotion.value}}">
+                    <input type="image" src="{% static 'emotions/' %}{{ emotion.value }}.png" value="{{ emotion.label }}" style="width: 25px; height: 25px;" class="emotion" disabled>
                   {% endif %}
                 </form>
-              {% else %}
-                <button value="{{ emotion.label }}" disabled>{{ emotion.label }}</button>
-              {% endif %}
               <span class="emotion-count small">{{ emotion.count }}</span>
             </div>
             {% endfor %}
@@ -84,7 +84,7 @@
         {% if request.user == article.user %}
           <div class="d-inline-block d-flex justify-content-end align-items-end">
             <a href="{% url 'articles:review_update' review.pk %}" class="p-2"><button type="button" class="btn btn-outline-primary">수정하기</button></a>
-            <form action="{% url 'articles:delete' article.pk %}" METHOD="POST" class="p-2">
+            <form action="{% url 'articles:review_delete' review.pk %}" METHOD="POST" class="p-2">
               {% csrf_token %}
               <button type="submit" value="DELETE" class="btn btn-outline-danger">삭제하기</button>
             </form>
@@ -103,27 +103,35 @@
     <hr>
     {% for comment in comments %}
     <div class="d-flex">
-      <img style="width:32px; height:32px; border-radius:50%;" src={% if person.profile_img %} "{{ person.profile_img.url }}" {% else %} "{% static '/img/user_image.png' %}" {% endif %} alt="프로필 사진" id="profile-image"/>
+      {% for user in users %}
+        {% if user.id == comment.user_id %}
+          <img style="width:32px; height:32px; border-radius:50%;" src={% if user.profile_img %} "{{ user.profile_img.url }}" {% else %} "{% static '/img/user_image.png' %}" {% endif %} alt="프로필 사진" id="profile-image"/>
+        {% endif %}
+      {% endfor %}
       <p class="ps-2">
         <strong class="comment-user">{{comment.user}}</strong>
       </p>
     </div>
       <p id="comment-content-{{comment.pk}}">{{comment.content}}</p>
       <div>
-        <div class="d-flex">
-          <input type="button" value="댓글 수정" class="comment-edit-btn btn btn-sm btn-outline-primary me-4" data-review-id="{{ review.pk }}" data-comment-id="{{ comment.pk }}">
-          <form action="{% url 'articles:review_comment_delete' review.pk comment.pk %}" method="POST">
+        {% if user.id == comment.user_id %}
+          <div class="d-flex">
+            <input type="button" value="댓글 수정" class="comment-edit-btn btn btn-sm btn-outline-primary me-4" data-review-id="{{ review.pk }}" data-comment-id="{{ comment.pk }}">
+            <form action="{% url 'articles:review_comment_delete' review.pk comment.pk %}" method="POST">
+              {% csrf_token %}
+              <input type="submit" value="댓글 삭제" class="btn btn-sm btn-outline-danger">
+            </form>
+          </div>
+          <hr>
+          <form class="comment-edit-form my-3" id="comment-edit-form-{{ comment.pk }}" data-review-id="{{ review.pk }}" data-comment-id="{{ comment.pk }}" hidden>
             {% csrf_token %}
-            <input type="submit" value="댓글 삭제" class="btn btn-sm btn-outline-danger">
+            {{comment_form.as_p}}
+            <input type="submit" value="수정" class="update btn btn-sm btn-outline-primary">
+            <input type="button" value="취소" class="cancel btn btn-sm btn-outline-secondary" data-comment-id="{{ comment.pk }}">
           </form>
-        </div>
-        <hr>
-        <form class="comment-edit-form my-3" id="comment-edit-form-{{ comment.pk }}" data-review-id="{{ review.pk }}" data-comment-id="{{ comment.pk }}" hidden>
-          {% csrf_token %}
-          {{comment_form.as_p}}
-          <input type="submit" value="수정" class="update btn btn-sm btn-outline-primary">
-          <input type="button" value="취소" class="cancel btn btn-sm btn-outline-secondary" data-comment-id="{{ comment.pk }}">
-        </form>
+        {% else %}
+          <hr>
+        {% endif %}
       </div>
     {% endfor %}
     
