@@ -66,7 +66,7 @@
                 <form>
                   {% csrf_token %}
                   {% if emotion.exist %}
-                    <input type="image" src="{% static 'emotions/' %}{{ emotion.value }}.png" value="{{ emotion.label }} 취소" style="width: 25px; height: 25px;" class="emotion" data-emotion-id="{{emotion.value}}"> 취소하기
+                    <input type="image" src="{% static 'emotions/' %}{{ emotion.value }}.png" value="{{ emotion.label }} 취소" style="width: 25px; height: 25px;" class="emotion" data-emotion-id="{{emotion.value}}">
                   {% else %}
                     <input type="image" src="{% static 'emotions/' %}{{ emotion.value }}.png" value="{{ emotion.label }}" style="width: 25px; height: 25px;" class="emotion" data-emotion-id="{{emotion.value}}">
                   {% endif %}
