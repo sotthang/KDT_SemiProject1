@@ -1,21 +1,83 @@
 {% extends 'base.html' %}
+{% load static %}
+
+{% block head %}
+<link rel="stylesheet" href="{% static '/CSS/search.css' %}">
+{% endblock head %}
 
 {% block content %}
-  <h1>Search</h1>
+  <h3>여행지 검색 결과
+    <span class="count">
+      {% if article_count > 0 %}
+        ({{article_count}}개)
+      {% endif %}
+    </span>
+  </h3>
+  <table class="table table_hover align-middle">
+    <thead>
+      <tr>
+        <th scope="col" width="20%">여행지</th>
+        <th scope="col" width="10%">이미지</th>
+        <th scope="col" width="15%">작성자</th>
+        <th scope="col" >내용</th>
+        <th scope="col" width="10%">작성일</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for result in results_article %}
+      <tr>
+        <td><a href="{% url 'articles:detail' result.pk %}" class="link">{{ result.title|truncatechars:10 }}</a></td>
+        <td><img src="{{result.image.url}}" alt="이미지" class="table_image"></td>
+        <td><a href="{% url 'accounts:profile' result.user %}" class="link">{{ result.user }}</a></td>
+        <td>{{result.content|truncatechars:25}}</td>
+        <td>{{result.created_at|date:"Y-m-d"}}</td>
+      </tr>
+      {% empty %}
+        <td colspan="6" class="noresult">검색 결과가 없습니다. </td>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% if article_count > 5 %}
+    <form action="{% url 'articles:search_detail' 'article' %}" method="GET" class="search_more">
+      <button type="submit" name="word" value="{{search_word}}" class="btn btn-sm link">여행지 검색 결과 더 보기</button>
+    </form> 
+  {% endif %}
+
   <hr>
-  <h3>Articles</h3>
-  {% for result in results_article %}
-    <p><a href="{% url 'articles:detail' result.pk %}">{{result.title}}</a></p>
-  {% endfor %}
-  <form action="{% url 'articles:search_detail' 'article' %}" method="GET">
-    <button type="submit" name="word" value="{{search_word}}" class="btn btn-sm">article 결과 더 보기</button>
-  </form> 
-  <hr>
-  <h3>Reviews</h3>
-  {% for result in results_review %}
-    <p><a href="{% url 'articles:review_detail' result.pk %}">{{result.title}}</a></p>
-  {% endfor %}
-  <form action="{% url 'articles:search_detail' 'review' %}" method="GET">
-    <button type="submit" name="word" value="{{search_word}}" class="btn btn-sm">review 결과 더 보기</button>
-  </form> 
+  <h3 class="pt-4">리뷰 검색 결과
+    <span class="count">
+      {% if review_count > 0 %}
+        ({{review_count}}개)
+      {% endif %}
+    </span>
+  </h3>
+  <table class="table table_hover align-middle">
+    <thead>
+      <tr>
+        <th scope="col" width="20%">리뷰</th>
+        <th scope="col" width="10%">이미지</th>
+        <th scope="col" width="15%">작성자</th>
+        <th scope="col" >내용</th>
+        <th scope="col" width="10%">작성일</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for result in results_review %}
+      <tr>
+        <td><a href="{% url 'articles:review_detail' result.pk %}" class="link">{{ result.title|truncatechars:10 }}</a></td>
+        <td><img src="{{result.image.url}}" alt="이미지" class="table_image"></td>
+        <td><a href="{% url 'accounts:profile' result.user %}" class="link">{{ result.user }}</a></td>
+        <td>{{result.content|truncatechars:25}}</td>
+        <td>{{result.created_at|date:"Y-m-d"}}</td>
+      </tr>
+      {% empty %}
+        <td colspan="6" class="noresult">검색 결과가 없습니다. </td>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% if review_count > 5 %}
+    <form action="{% url 'articles:search_detail' 'review' %}" method="GET" class="search_more">
+      <button type="submit" name="word" value="{{search_word}}" class="btn btn-sm link">리뷰 검색 결과 더 보기</button>
+    </form> 
+  {% endif %}
 {% endblock content %}

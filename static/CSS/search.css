@@ -1,8 +1,3 @@
-.category_name {
-  text-align: center;
-  font-size: x-large;
-}
-
 .link {
   text-decoration: none;
   color: black;
@@ -21,12 +16,18 @@
   height: 64px;
 }
 
-.count {
+.article_count {
   font-size: smaller;
+}
+
+.search_more {
+  text-align: right;
 }
 
 .noresult {
   text-align: center;
 }
 
-
+.count {
+  font-size: smaller;
+}

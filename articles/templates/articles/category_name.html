@@ -6,13 +6,18 @@
 {% endblock head %}
 
 {% block content %}
-<p class="category_name">{{category_name}}</p>
+<p class="category_name">{{category_name}}
+  <span class="count">
+    {% if length > 0 %}
+      ({{length}}개)
+    {% endif %}
+  </span>
+</p>
 
 <table class="table table_hover align-middle">
   <thead>
     <tr>
-      <th scope="col" width="5%">#</th>
-      <th scope="col" width="25%">게시글</th>
+      <th scope="col" width="20%">여행지</th>
       <th scope="col" width="10%">이미지</th>
       <th scope="col" width="15%">작성자</th>
       <th scope="col" >내용</th>
@@ -22,56 +27,58 @@
   <tbody>
     {% for article in articles %}
     <tr>
-      <th scope="row">{{article.pk}}</th>
-      <td><a href="{% url 'articles:detail' article.pk %}" class="link">{{ article.title|truncatechars:10 }}</a></td>
+      <td ><a href="{% url 'articles:detail' article.pk %}" class="link">{{ article.title|truncatechars:10 }}</a></td>
       <td><img src="{{article.image.url}}" alt="이미지" class="table_image"></td>
       <td><a href="{% url 'accounts:profile' article.user %}" class="link">{{ article.user }}</a></td>
-      <td>{{article.content|truncatechars:2}}</td>
+      <td>{{article.content|truncatechars:25}}</td>
       <td>{{article.created_at|date:"Y-m-d"}}</td>
     </tr>
+    {% empty %}
+      <td colspan="6" class="noresult">{{category_name}} 관련 여행지가 등록되지 않았습니다. </td>
     {% endfor %}
   </tbody>
 </table>
-
-<div class="pagitator">
-  <ul class="pagination justify-content-center">
-    {% if articles.has_previous %}
-      <li class="page-item">
-        <a class="page-link" href="?page=1">처음</a>
-      </li>
-      <li class="page-item">
-        <a class="page-link" href="?page={{ articles.previous_page_number }}">이전</a>
-      </li>
-    {% else %}
-      <li class="page-item disabled">
-        <a class="page-link" tabindex="-1" aria-disabled="true" href="#">이전</a>
-      </li>
-    {% endif %}
-    {% for page_number in articles.paginator.page_range %}
-    {% if page_number >= articles.number|add:-5 and page_number <= articles.number|add:5 %}
-        {% if page_number == articles.number %}
-          <li class="page-item active" aria-current="page">
-            <a class="page-link" href="?page={{ page_number }}">{{ page_number }}</a>
-          </li>
-        {% else %}
-          <li class="page-item">
-            <a class="page-link" href="?page={{ page_number }}">{{ page_number }}</a>
-          </li>
-        {% endif %}
+{% if articles %}
+  <div class="pagitator">
+    <ul class="pagination justify-content-center">
+      {% if articles.has_previous %}
+        <li class="page-item">
+          <a class="page-link" href="?page=1">처음</a>
+        </li>
+        <li class="page-item">
+          <a class="page-link" href="?page={{ articles.previous_page_number }}">이전</a>
+        </li>
+      {% else %}
+        <li class="page-item disabled">
+          <a class="page-link" tabindex="-1" aria-disabled="true" href="#">이전</a>
+        </li>
       {% endif %}
-    {% endfor %}
-    {% if articles.has_next %}
-      <li class="page-item">
-        <a href="?page={{ articles.next_page_number }}" class="page-link" name="word">다음</a>
-      </li>
-      <li class="page-item">
-        <a href="?page={{ num_page }}" class="page-link">마지막으로</a>
-      </li>
-    {% else %}
-      <li class="page-item disabled">
-        <a href="#" class="page-link" tabindex='-1' aria-disabled='true'>다음</a>
-      </li>
-    {% endif %}
-  </ul>
-</div>
+      {% for page_number in articles.paginator.page_range %}
+      {% if page_number >= articles.number|add:-5 and page_number <= articles.number|add:5 %}
+          {% if page_number == articles.number %}
+            <li class="page-item active" aria-current="page">
+              <a class="page-link" href="?page={{ page_number }}">{{ page_number }}</a>
+            </li>
+          {% else %}
+            <li class="page-item">
+              <a class="page-link" href="?page={{ page_number }}">{{ page_number }}</a>
+            </li>
+          {% endif %}
+        {% endif %}
+      {% endfor %}
+      {% if articles.has_next %}
+        <li class="page-item">
+          <a href="?page={{ articles.next_page_number }}" class="page-link" name="word">다음</a>
+        </li>
+        <li class="page-item">
+          <a href="?page={{ num_page }}" class="page-link">마지막으로</a>
+        </li>
+      {% else %}
+        <li class="page-item disabled">
+          <a href="#" class="page-link" tabindex='-1' aria-disabled='true'>다음</a>
+        </li>
+      {% endif %}
+    </ul>
+  </div>
+{% endif %}
 {% endblock content %}

@@ -1,11 +1,51 @@
 {% extends 'base.html' %}
+{% load static %}
+
+{% block head %}
+<link rel="stylesheet" href="{% static '/CSS/search.css' %}">
+{% endblock head %}
 
 {% block content %}
-  <h1>Search detail - {{category}}</h1>
-  {% for result in results %}
-    <a href="{% url 'articles:detail' result.pk %}">{{result.title}}</a>
-    <hr>
-  {% endfor %}
+  <h3>
+    {% if category == "Article" %}
+      여행지
+    {% else %}
+      리뷰
+    {% endif %}
+    상세 검색 결과
+  </h3>
+  <table class="table table_hover align-middle">
+    <thead>
+      <tr>
+        {% comment %} <th scope="col" width="5%"></th> {% endcomment %}
+        <th scope="col" width="20%">
+        {% if category == "Article" %}
+          여행지
+        {% else %}
+          리뷰
+        {% endif %}</th>
+        <th scope="col" width="10%">이미지</th>
+        <th scope="col" width="15%">작성자</th>
+        <th scope="col" >내용</th>
+        <th scope="col" width="10%">작성일</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for result in results %}
+      <tr>
+        {% comment %} <th scope="row">{{results.start_index|add:forloop.counter0}}</th> {% endcomment %}
+        <td><a href="{% url 'articles:review_detail' result.pk %}" class="link">{{ result.title|truncatechars:10 }}</a></td>
+        <td><img src="{{result.image.url}}" alt="이미지" class="table_image"></td>
+        <td><a href="{% url 'accounts:profile' result.user %}" class="link">{{ result.user }}</a></td>
+        <td>{{result.content|truncatechars:25}}</td>
+        <td>{{result.created_at|date:"Y-m-d"}}</td>
+      </tr>
+      {% empty %}
+        <td colspan="6" class="noresult">검색 결과가 없습니다. </td>
+      {% endfor %}
+    </tbody>
+  </table>
+
   <ul class="pagination justify-content-center">
     {% if results.has_previous %}
       <li class="page-item">
@@ -44,6 +84,5 @@
         <a href="#" class="page-link" tabindex='-1' aria-disabled='true'>다음</a>
       </li>
     {% endif %}
-    
   </ul>
 {% endblock content %}  
