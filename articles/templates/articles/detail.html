@@ -40,20 +40,22 @@
     <div class="col-5 mx-3 shadow rounded border-light my-2 p-4" style="width: 600px"> 
       <p><strong>기본 정보</strong></p>
       <hr>
-      <table class="table" style="">
-        <tbody>
-          <tr>
-            <th scope="row" style="width:150px;">주소</th>
-            <td>{{address}}</td>
-          </tr>
-          <tr>
-            <th scope="row" style="width:150px;">내용</th>
-            <td style="width: 600px; height:300px;">{{article.content}}</td>
-          </tr>
-          
-        </tbody>
-      </table>
+      <div style="overflow: auto;">
 
+        <table class="table" style="">
+          <tbody>
+            <tr>
+              <th scope="row" style="width:150px;">주소</th>
+              <td>{{address}}</td>
+            </tr>
+            <tr>
+              <th scope="row" style="width:150px;">내용</th>
+              <td style="width: 600px; height:300px;">{{article.content}}</td>
+            </tr>
+            
+          </tbody>
+        </table>
+      </div>
       <div class="row">
         <div class="col-6">
           <div class="d-flex text-center">
