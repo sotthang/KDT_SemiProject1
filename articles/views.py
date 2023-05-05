@@ -7,6 +7,7 @@ from django.core.paginator import Paginator
 from .models import Article, Comment, Review, ReviewComment, Emote, Plan, ArticlePlan
 from .forms import ArticleForm, CommentForm, ReviewForm, ReviewCommentForm, PlanForm, ArticlePlanForm
 import json
+import random
 from geopy.geocoders import Nominatim
 
 
@@ -163,6 +164,8 @@ def comment_update(request, article_pk, comment_pk):
 def review_detail(request, review_pk):
     review = Review.objects.get(pk=review_pk)
     article = Article.objects.get(pk=review.article_id)
+    geolocoder = Nominatim(user_agent = 'South Korea', timeout=None)
+    address = geolocoder.reverse((article.lat, article.lng))
     User = get_user_model()
     users = User.objects.all()
     writer = User.objects.get(id=review.user_id)
@@ -195,6 +198,7 @@ def review_detail(request, review_pk):
         'comment_form': comment_form,
         'emotions': emotions,
         'comment_count': comment_count,
+        'address': address,
     }
     return render(request, 'reviews/review_detail.html', context)
 
@@ -378,6 +382,7 @@ def search_detail(request, category):
 @login_required
 def plan(request):
     articles = Article.objects.all()
+    randomarticles = random.sample(list(Article.objects.all()), 3)
     if request.method == 'POST':
         planform = PlanForm(request.POST)
         articleplanform = ArticlePlanForm(request.POST)
@@ -403,6 +408,7 @@ def plan(request):
         articleplanform = ArticlePlanForm()
     context = {
         'articles': articles,
+        'randomarticles': randomarticles,
         'planform': planform,
         'articleplanform': articleplanform,
     }

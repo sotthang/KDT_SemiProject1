@@ -11,12 +11,12 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
     {% block head %}{% endblock head %}
   </head>
-  <body class="container">
+  <body class="container d-flex flex-column min-vh-100">
     {% comment %} navbar {% endcomment %}
     <nav class="navbar navbar-expand-lg bg-body-tertiary sticky-top">
       <div class="container-fluid">
         <div>
-          <a class="navbar-brand" href="{% url 'articles:index' %}">🛫<img src="{% static '/img/favicon/logo.png' %}" alt="logo" style="width:12rem; height:1.1rem;"></a>
+          <a class="navbar-brand" href="javascript:void(window.open('{% url 'articles:index' %}', '_self'))">🛫<img src="{% static '/img/favicon/logo.png' %}" alt="logo" style="width:12rem; height:1.1rem;"></a>
         </div>
 
         {% comment %} search box {% endcomment %}
@@ -30,45 +30,38 @@
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
         </button>
-        <div class="collapse navbar-collapse" id="navbarText">
-          {% if request.user.is_authenticated %}
-          <ul class="navbar-nav me-auto mb-2 mb-lg-0"></ul>
+        <div>
+          <div class="collapse navbar-collapse" id="navbarText">
+            {% if request.user.is_authenticated %}
+              <div class="d-flex flex-row align-items-center">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                  <li class="nav-item">
+                    <a class="nav-link pe-3" href="javascript:void(window.open('{% url 'accounts:profile' user %}', '_self'))"><i class="bi bi-person-check"></i> 내 프로필</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link" href="javascript:void(window.open('{% url 'accounts:logout' %}', '_self'))"><i class="bi bi-box-arrow-right"></i> 로그아웃</a>
+                </ul>
+              </div>
+            {% else %}
             <div class="d-flex flex-row align-items-center">
               <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                 <li class="nav-item">
-                  <a class="nav-link pe-3" href="{% url 'accounts:profile' user %}"><i class="bi bi-person-check"></i> 내 프로필</a>
+                  {% comment %} <a class="nav-link pe-3" href="{% url 'accounts:login' %}"><i class="bi bi-box-arrow-in-right"></i> 로그인</a> {% endcomment %}
+
+                  {% comment %} login {% endcomment %}
+                  <a class="nav-link pe-3" data-bs-toggle="modal" data-bs-target="#exampleModal" style="cursor: pointer;">
+                    <i class="bi bi-box-arrow-in-right"></i> 
+                    로그인
+                  </a>
                 </li>
                 <li class="nav-item">
-                  <a class="nav-link" href="{% url 'accounts:logout' %}"><i class="bi bi-box-arrow-right"></i> 로그아웃</a>
+                  <a class="nav-link" href="javascript:void(window.open('{% url 'accounts:signup' %}', '_self'))"><i class="bi bi-person-add"></i> 회원가입</a>
                 </li>
               </ul>
             </div>
-          {% else %}
-          <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-            <li class="nav-item">
-              {% comment %} <a class="nav-link active" aria-current="page" href="{% url 'accounts:login' %}">로그인</a> {% endcomment %}
-            </li>
-            <li class="nav-item">
-              {% comment %} <a class="nav-link" href="{% url 'accounts:signup' %}">회원가입</a> {% endcomment %}
-            </li>
-          </ul>
-          <div class="d-flex flex-row align-items-center">
-            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-              <li class="nav-item">
-                {% comment %} <a class="nav-link pe-3" href="{% url 'accounts:login' %}"><i class="bi bi-box-arrow-in-right"></i> 로그인</a> {% endcomment %}
+            {% endif %}
 
-                {% comment %} login {% endcomment %}
-                <a class="nav-link pe-3" data-bs-toggle="modal" data-bs-target="#exampleModal" style="cursor: pointer;">
-                  <i class="bi bi-box-arrow-in-right"></i> 
-                  로그인
-                </a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link" href="{% url 'accounts:signup' %}"><i class="bi bi-person-add"></i> 회원가입</a>
-              </li>
-            </ul>
           </div>
-          {% endif %}
         </div>
       </div>
     </nav>
@@ -77,13 +70,13 @@
     <div class="menubar">
       <nav class="navbar bg-body-tertiary">
         <div class="container-fluid d-flex justify-content-evenly">
-          <a href="{% url 'articles:category_name' category_name='숙소' %}" class="menubar_text">숙소</a>
-          <a href="{% url 'articles:category_name' category_name='자연명소' %}" class="menubar_text">자연명소</a>
-          <a href="{% url 'articles:category_name' category_name='테마파크' %}" class="menubar_text">테마파크</a>
-          <a href="{% url 'articles:category_name' category_name='체험관광' %}" class="menubar_text">체험관광</a>
-          <a href="{% url 'articles:category_name' category_name='레저 & 액티비티' %}" class="menubar_text">레저 & 액티비티</a>
-          <a href="{% url 'articles:category_name' category_name='맛집' %}" class="menubar_text">맛집</a>
-          <a href="{% url 'articles:category_name' category_name='쇼핑' %}" class="menubar_text">쇼핑</a>
+          <a href="javascript:void(window.open('{% url 'articles:category_name' category_name='숙소' %}', '_self'))" class="menubar_text">숙소</a>
+          <a href="javascript:void(window.open('{% url 'articles:category_name' category_name='자연명소' %}', '_self'))" class="menubar_text">자연명소</a>
+          <a href="javascript:void(window.open('{% url 'articles:category_name' category_name='테마파크' %}', '_self'))" class="menubar_text">테마파크</a>
+          <a href="javascript:void(window.open('{% url 'articles:category_name' category_name='체험관광' %}', '_self'))" class="menubar_text">체험관광</a>
+          <a href="javascript:void(window.open('{% url 'articles:category_name' category_name='레저 & 액티비티' %}', '_self'))" class="menubar_text">레저 & 액티비티</a>
+          <a href="javascript:void(window.open('{% url 'articles:category_name' category_name='맛집' %}', '_self'))" class="menubar_text">맛집</a>
+          <a href="javascript:void(window.open('{% url 'articles:category_name' category_name='쇼핑' %}', '_self'))" class="menubar_text">쇼핑</a> 
         </div>
       </nav>
     </div>
@@ -108,7 +101,7 @@
             </form>
           </div>
           <div class="modal-footer d-flex justify-content-center">
-            <a href="{% url 'accounts:signup' %}" class="text_signup">계정이 없으신가요?</a>
+            <a href="javascript:void(window.open('{% url 'accounts:signup' %}', '_self'))" class="text_signup">계정이 없으신가요?</a>
           </div>
         </div>
       </div>
@@ -127,16 +120,25 @@
     </div>
 
     {% comment %} footer {% endcomment %}
-    <footer>
+    <footer class="py-2 bg-body-tertiary mt-auto">
       <div class="inner">
-        <div class="footer-message d-flex">
-          <p class="pe-3">감수지</p>
-          <p class="pe-3">권준혁</p>
-          <p class="pe-3">박지현</p>
-          <p class="pe-3">소현섭</p>
+        <div class="footer-message d-flex justify-content-center">
+          <p class="pe-3"><a href="#" style="text-decoration:none; color:#545e6f;">감수지</a></p>
+          <p class="pe-3"><a href="#" style="text-decoration:none; color:#545e6f;">권준혁</a></p>
+          <p class="pe-3"><a href="#" style="text-decoration:none; color:#545e6f;">박지현</a></p>
+          <p class="pe-3"><a href="#" style="text-decoration:none; color:#545e6f;">소현섭</a></p>
         </div>
-        <div class="footer-contact">~~~~</div>
-        <div class="footer-copyright">Copyright 2023 All ⓒ rights reserved.</div>
+        <div class="footer-contact text-center">
+          <address>github : https://github.com/sotthang/KDT_SemiProject1</address>
+          <ul class="footer-contact-list">
+            <li>
+              <a href="#" style="text-decoration:none; color:#545e6f;">이용약관</a> ㅣ
+              <a href="#" style="text-decoration:none; color:#545e6f;">개인정보취급방침</a> ㅣ
+              <a href="#" style="text-decoration:none; color:#545e6f;">사이트맵</a> ㅣ
+            </li>
+          </ul>
+        </div>
+        <div class="footer-copyright text-center">Copyright © 2023 Travel Makers.co.,Ltd. All rights reserved.</div>
       </div>
     </footer>
 

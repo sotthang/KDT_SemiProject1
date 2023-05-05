@@ -4,6 +4,7 @@ body {
     height: 100%;
     margin: 0;
     padding: 0;
+    min-width: 768px;
 }
 
 #wrapper{
@@ -13,10 +14,10 @@ body {
 }
 
 .search_box {
-    position: absolute;
+    /* position: absolute;
     top: 50%;
     left: 50%;
-    transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%); */
     background-color: white;
     border: 1px solid black;
     width: 270px;
@@ -144,4 +145,9 @@ footer{
     font-size:0.9rem;
     color:#545e6f;
     margin:0.6rem;
+}
+
+.footer-contact-list {
+    list-style-type: none;
+    padding: 0;
 }

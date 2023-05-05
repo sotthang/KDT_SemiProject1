@@ -19,7 +19,7 @@
     <div class="create-btn">
       {% comment %} <p class="m-0">여행지를 생성해 보세요.</p> {% endcomment %}
       {% if request.user.is_authenticated %}
-        <a class="btn btn-outline-success mt-4" href="{% url 'articles:create'%}">여행지 생성</a>
+        <a class="btn btn-outline-success mt-4" href="javascript:void(window.open('{% url 'articles:create' %}', '_self'))">여행지 생성</a> 
       {% endif %}
     </div>
   </div>
@@ -39,17 +39,17 @@
     <p class="create-content mt-4">내가 원하는 장소를 골라 여행지를 생성한 후, 여행 일자에 맞추어 직접 여행 일정을 계획해 보세요!</p>
     <div class="d-flex">
       <div class="box me-5">
-        <p class="fw-bold" style="text-align:center;">step 1</p>
+        <p class="fw-bold mt-2" style="text-align:center;">step 1</p>
         <p style="text-align:center;">여행지 생성</p>
       </div>
       <div class="box">
-        <p class="fw-bold" style="text-align:center;">step 2</p>
+        <p class="fw-bold mt-2" style="text-align:center;">step 2</p>
         <p style="text-align:center;">일정 생성</p>
       </div>
     </div>
     <div class="create-btn2">
       {% if request.user.is_authenticated %}
-        <a class="btn btn-outline-success mt-2" href="{% url 'articles:plan'%}">일정 생성</a>
+        <a class="btn btn-outline-success mt-2" href="javascript:void(window.open('{% url 'articles:plan' %}', '_self'))">일정 생성</a>
       {% endif %}
     </div>
   </div>
@@ -62,7 +62,7 @@
 <h2 class="col-10 fw-bold mt-5">추가된 여행지를 확인해 보세요!</h2>
 <p class="mb-3" style="color:#727272;">
   선택한 장소들이 지도에 표시되어집니다. <br>
-  장소 핀을 클릭하면 상세정보 확인이 가능합니다.
+  장소핀을 클릭하면 상세정보 확인이 가능합니다.
 </p>
 <div id="map" style="width:100%; height:800px;"></div>
 
@@ -92,7 +92,7 @@
   var positions = [
     {% for article in articles %}
       { title : '<div class="customoverlay">' +
-        '  <a href="{% url "articles:detail" article.pk %}" target="_blank">' +
+        '  <a href="{% url "articles:detail" article.pk %}" target="_self">' +
         '    <span class="title">{{article.title}}</span>' +
         '  </a>' +
         '</div>',
