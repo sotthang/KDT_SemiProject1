@@ -19,7 +19,6 @@ function resetUL() {
   }
 }
 
-
 function calculateDifference() {
   document.getElementById("plan").style.visibility = "visible";
   resetUL();
@@ -38,12 +37,11 @@ function calculateDifference() {
     const mylist = document.getElementById("plan")
 
     const div = document.createElement("div");
-    div.classList.add("text-center")
+    div.classList.add("text-center", "text-success")
     div.textContent = `Day ${i}`;
     ul.appendChild(div);
     mylist.appendChild(ul);
   };
-
 
   const dropzones = document.querySelectorAll('.dropzone');
 
@@ -57,7 +55,6 @@ function calculateDifference() {
     });
   });
   
-
   // 드롭 가능한 영역으로 들어왔을 때
   dropzones.forEach((dropzone) => {
     dropzone.addEventListener('dragover', (event) => {
@@ -87,7 +84,7 @@ function calculateDifference() {
     });
   });
 
-
+  // 여행 날짜에 여행지가 없는 경우 modal
   document.getElementById("plan_form").addEventListener("submit", function(event) {
     const uls = document.querySelectorAll("#plan ul:not(#ul1)");
     for (const ul of uls) {
@@ -95,7 +92,7 @@ function calculateDifference() {
       if (lis.length === 0) {
         event.preventDefault();
         Swal.fire(
-          '모든 여행 날짜에 여행지를 등록해주세요!'
+          `여행 날짜에 여행지를 등록해주세요! <br>${ul.textContent}`
         );
         break;
       }
