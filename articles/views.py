@@ -244,7 +244,7 @@ def review_update(request, review_pk):
             form = ReviewForm(request.POST, request.FILES, instance=review)
             if form.is_valid():
                 form.save()
-                return redirect('articles:review_detail', article_pk)
+                return redirect('articles:review_detail', review_pk)
         else:
             form = ReviewForm(instance=review)
     else:

@@ -62,10 +62,10 @@ class CommentForm(forms.ModelForm):
         model = Comment
         fields = ('content',)
         labels = {
-            'content': '댓글',
+            'content': '',
         }
         widgets = {
-            'content': forms.Textarea(attrs={'class':'form-control', 'rows':'2','style': 'border:none;'})
+            'content': forms.Textarea(attrs={'class':'form-control', 'rows':'2'})
         }
         
     def __init__(self, *args, **kwargs):
@@ -128,14 +128,13 @@ class ReviewCommentForm(forms.ModelForm):
         model = ReviewComment
         fields = ('content',)
         labels = {
-            'content': '댓글',
+            'content': '',
         }
         widgets = {
             'content': forms.Textarea(
                 attrs={
                     'class':'form-control', 
                     'rows':'2',
-                    'style': 'border:none;'
                 }
             )
         }
