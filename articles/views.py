@@ -295,18 +295,20 @@ def review_comment_update(request, review_pk, comment_pk):
 
 
 def category_name(request, category_name):
-    articles = Article.objects.filter(category=category_name)
-
+    articles = Article.objects.filter(category=category_name).order_by('-pk')
+    length = articles.count()
     page = request.GET.get('page', '1')
     per_page = 5
     paginator = Paginator(articles, per_page)
     page_obj = paginator.get_page(page)
     num_page = paginator.num_pages
-
+    
     context = {
         'articles': page_obj,
         'category_name': category_name,
         'num_page': num_page,
+        'length': length,
+    
     }
     
     return render(request, 'articles/category_name.html', context)
@@ -339,12 +341,15 @@ def emotes(request, pk, emotion, page):
 
 def search(request):
     search_word = request.GET.get('word', False)
-    result_article = Article.objects.filter(Q(title__icontains=search_word) | Q(content__icontains=search_word)).order_by('-pk').distinct()[0:5]
-    result_review = Review.objects.filter(Q(title__icontains=search_word) | Q(content__icontains=search_word)).order_by('-pk').distinct()[0:5]
-
+    result_article = Article.objects.filter(Q(title__icontains=search_word) | Q(content__icontains=search_word)).order_by('-pk')
+    result_review = Review.objects.filter(Q(title__icontains=search_word) | Q(content__icontains=search_word)).order_by('-pk')
+    article_count = result_article.count()
+    review_count = result_review.count()
     context = {
-        'results_article': result_article,
-        'results_review': result_review,
+        'results_article': result_article[0:5],
+        'results_review': result_review[0:5],
+        'article_count': article_count,
+        'review_count': review_count,
         'search_word': search_word,
     }
     return render(request, 'search/search.html', context)
