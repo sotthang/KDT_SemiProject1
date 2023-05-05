@@ -29,6 +29,9 @@ EMOTIONS = [
 
 def detail(request, article_pk):
     article = Article.objects.get(pk=article_pk)
+    User = get_user_model()
+    users = User.objects.all()
+    writer = User.objects.get(id=article.user_id)
     geolocoder = Nominatim(user_agent = 'South Korea', timeout=None)
     address = geolocoder.reverse((article.lat, article.lng))
     reviews = Review.objects.filter(article=article_pk)
@@ -56,6 +59,8 @@ def detail(request, article_pk):
         )
     context = {
         'article': article,
+        'writer': writer,
+        'users': users,
         'comments': comments,
         'comment_form': comment_form,
         'form': form,
@@ -159,7 +164,8 @@ def review_detail(request, review_pk):
     review = Review.objects.get(pk=review_pk)
     article = Article.objects.get(pk=review.article_id)
     User = get_user_model()
-    person = User.objects.get(username=request.user)
+    users = User.objects.all()
+    writer = User.objects.get(id=review.user_id)
     comments = review.reviewcomment_set.all()
     comment_form = ReviewCommentForm()
     comment_count = comments.count()
@@ -181,7 +187,8 @@ def review_detail(request, review_pk):
             }
         )
     context = {
-        'person': person,
+        'writer': writer,
+        'users': users,
         'review': review,
         'article': article,
         'comments': comments,
@@ -404,5 +411,5 @@ def plan_delete(request, plan_pk):
     if plan.user == request.user:
         plan.delete()
     
-    return redirect('articles:index')
+    return redirect('accounts:profile', request.user)
 

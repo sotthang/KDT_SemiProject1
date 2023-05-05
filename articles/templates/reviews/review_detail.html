@@ -8,7 +8,7 @@
   <div class="d-flex row">
     <div class="col-8" style="">
       <h2><b><span id="review-pk">{{review.pk}}</span>. {{review.title}}</b></h2>
-      <p class="mt-3"><img style="width:32px; height:32px; border-radius:50%;" src={% if person.profile_img %} "{{ person.profile_img.url }}" {% else %} "{% static '/img/user_image.png' %}" {% endif %} alt="프로필 사진" id="profile-image"/> <strong>{{review.user}}</strong></p>
+      <p class="mt-3"><img style="width:32px; height:32px; border-radius:50%;" src={% if writer.profile_img %} "{{ writer.profile_img.url }}" {% else %} "{% static '/img/user_image.png' %}" {% endif %} alt="프로필 사진" id="profile-image"/> <strong>{{review.user}}</strong></p>
     </div>
     {% comment %} <div class="col-4 mt-3" style="">
       <div class="d-flex justify-content-center">
@@ -95,7 +95,11 @@
   <hr>
   {% for comment in comments %}
   <div class="d-flex">
-    <img style="width:32px; height:32px; border-radius:50%;" src={% if person.profile_img %} "{{ person.profile_img.url }}" {% else %} "{% static '/img/user_image.png' %}" {% endif %} alt="프로필 사진" id="profile-image"/>
+    {% for user in users %}
+      {% if user.id == comment.user_id %}
+        <img style="width:32px; height:32px; border-radius:50%;" src={% if user.profile_img %} "{{ user.profile_img.url }}" {% else %} "{% static '/img/user_image.png' %}" {% endif %} alt="프로필 사진" id="profile-image"/>
+      {% endif %}
+    {% endfor %}
     <p class="ps-2">
       <strong class="comment-user">{{comment.user}}</strong>
     </p>

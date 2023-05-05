@@ -89,30 +89,39 @@
 
   <hr>
   <div class="row mt-5 justify-content-center">
-    <div class="col-xxl-7" id="map" style="width:700px; height:500px;"></div>
+    <div class="col-xxl-7" id="map_wrap">
+      <div id="map" style="width:700px; height:500px;"></div>
+      <div id="menu"></div>
+    </div>
     <div class="col-xxl-5 text-center" id="plan" style="height:500px; overflow: auto;">
       <h2 class="sticky-top bg-white">내 여행 일정</h2>
       <hr>
-      {% for plan in plans %}
-        <h5>{{ forloop.counter }}번째 여행 일정</h5>
-        <h6>{{plan.startday_at|date:"Y-m-d"}} ~ {{plan.endday_at|date:"Y-m-d"}}</h6>
+      {% if plans %}
+        {% for plan in plans %}
+          <h5>{{ forloop.counter }}번째 여행 일정</h5>
+          <h6>{{plan.startday_at|date:"Y-m-d"}} ~ {{plan.endday_at|date:"Y-m-d"}}</h6>
 
-        {% for articleplan in articleplans %}
-          {% if plan.id == articleplan.plan.id %}
-          <div class="row">
-            <div class="col-3">{{ articleplan.day }}일차</div>
-            <div class="col-9"><a href="{% url 'articles:detail' articleplan.article.pk %}"> {{ articleplan.article.title }} </a></div>
+          {% for articleplan in articleplans %}
+            {% if plan.id == articleplan.plan.id %}
+            <div class="row">
+              <div class="col-3">{{ articleplan.day }}일차</div>
+              <div class="col-9"><a href="{% url 'articles:detail' articleplan.article.pk %}"> {{ articleplan.article.title }} </a></div>
+            </div>
+            {% endif %}
+          {% endfor %}
+          <div class="d-flex align-items-end flex-column">
+            <form action="{% url 'articles:plan_delete' plan.pk %}" METHOD="POST" class="pt-2">
+              {% csrf_token %}
+              <button type="submit" value="DELETE" class="btn btn-danger" style="font-size:12px;">일정 삭제하기</button>
+            </form>
           </div>
-          {% endif %}
+          <hr>
         {% endfor %}
-        <div class="d-flex align-items-end flex-column">
-          <form action="{% url 'articles:plan_delete' plan.pk %}" METHOD="POST" class="pt-2">
-            {% csrf_token %}
-            <button type="submit" value="DELETE" class="btn btn-danger" style="font-size:12px;">일정 삭제하기</button>
-          </form>
-        </div>
-        <hr>
-      {% endfor %}
+      {% else %}
+        <h5>등록된 여행 일정이 없습니다.</h5>
+        <h5>아래에서 일정을 생성해보세요.</h5>
+        <a class="btn btn-outline-success mt-2" href="{% url 'articles:plan'%}">일정 생성</a>
+      {% endif %}
     </div>
   </div>
 
@@ -180,84 +189,99 @@
   <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
   <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=44fdfd5aea6498bf2814ede3eae827b6&libraries=services,clusterer,drawing"></script>
   <script>
+    
     // 카카오맵
     var container = document.getElementById('map')
     var options = {
       center: new kakao.maps.LatLng(33.3846, 126.5535), // 제주도 중심지의 lat, lng값 
       level: 10,
-      
     }
     var map = new kakao.maps.Map(container, options)
   
     // 마커 표시 위치
     var positions = [
+      {% for plan in plans %}
+        {% for articleplan in articleplans %}
+          {% if plan.id == articleplan.plan_id %}
+            {
+              title : '<div class="customoverlay">' +
+              '  <a href="{% url "articles:detail" articleplan.article.pk %}" target="_blank">' +
+              '    <span class="title">{{articleplan.article.title}}</span>' +
+              '  </a>' +
+              '</div>',
+              latlng: new kakao.maps.LatLng({{articleplan.article.lat}}, {{articleplan.article.lng}}),
+              markerImage: new kakao.maps.MarkerImage('{{articleplan.article.image.url}}', new kakao.maps.Size(64, 69), imageOption= {offset: new kakao.maps.Point(27, 69)})
+            },
+          {% endif %}
+        {% endfor %}
+      {% endfor %}
+    ];
   
-    {% for articleplan in articleplans %}
-      { title : '<div class="customoverlay">' +
-        '  <a href="{% url "articles:detail" articleplan.article.pk %}" target="_blank">' +
-        '    <span class="title">{{articleplan.article.title}}</span>' +
-        '  </a>' +
-        '</div>',
-      latlng: new kakao.maps.LatLng({{articleplan.article.lat}}, {{articleplan.article.lng}}),
-      markerImage: new kakao.maps.MarkerImage('{{articleplan.article.image.url}}', new kakao.maps.Size(64, 69), imageOption= {offset: new kakao.maps.Point(27, 69)})
-      },
-    {% endfor %},
+    for (var i = 0; i < positions.length; i ++) {
     
-  
-  ];
-  
-  
-  for (var i = 0; i < positions.length; i ++) {
-  
-    // 마커를 생성합니다
-    var marker = new kakao.maps.Marker({
-        map: map, // 마커를 표시할 지도
-        position: positions[i].latlng, // 마커를 표시할 위치
-        image : positions[i].markerImage, // 마커 이미지 
-        zIndex : 4
+      // 마커를 생성합니다
+      var marker = new kakao.maps.Marker({
+          map: map, // 마커를 표시할 지도
+          position: positions[i].latlng, // 마커를 표시할 위치
+          image : positions[i].markerImage, // 마커 이미지 
+          zIndex : 4
+      
+      });
+      
+      marker.setMap(map);  
+      
+      // 커스텀 오버레이를 생성합니다
+      var customOverlay = new kakao.maps.CustomOverlay({
+        map: map,
+        position : positions[i].latlng, 
+        content : positions[i].title, // 커스텀 오버레이에 표출될 내용으로 HTML 문자열이나 document element가 가능합니다
+        zIndex : 5,
+        yAnchor : 1
+      });
+      // 마커 위에 인포윈도우를 표시합니다. 두번째 파라미터인 marker를 넣어주지 않으면 지도 위에 표시됩니다
+      // customOverlay.open(map, marker); 
+    }
+      
+    // 지도에 표시할 선에 들어갈 경로 생성  
+    var linePaths = [
+    {% for plan in plans %}
+      [
+        {% for articleplan in articleplans %}
+          {% if plan.id == articleplan.plan_id %}
+            new kakao.maps.LatLng({{articleplan.article.lat}}, {{articleplan.article.lng}}),
+          {% endif %}
+        {% endfor %}
+      ],
+    {% endfor %}
+    ];
+
+    // 지도에 표시할 선의 색상
+    lineColor = ['#23FF9F', '#FA8C0F', '#E30274', '#0304FB']
+
+    // menu 에 정보 표시
+    var menu = document.getElementById('menu');
     
-    });
+    // 지도에 표시할 선을 생성합니다
+    for (var i = 0; i < linePaths.length; i++) {
+      var polyline = new kakao.maps.Polyline({
+        path: linePaths[i], // 선을 구성하는 좌표배열 입니다
+        strokeWeight: 5, // 선의 두께 입니다
+        strokeColor: lineColor[i], // 선의 색깔입니다
+        strokeOpacity: 0.7, // 선의 불투명도 입니다 1에서 0 사이의 값이며 0에 가까울수록 투명합니다
+        strokeStyle: 'solid', // 선의 스타일입니다
+        zIndex : 3
+      });
+
+      // 지도에 선을 표시합니다 
+      polyline.setMap(map);
+
+      // menu 에 선 정보를 추가합니다
+      const div = document.createElement("div");
+      div.classList.add("text-center", "m-2");
+      div.textContent = `${i+1}번째 일정`;
+      div.style.backgroundColor = lineColor[i];
+      menu.appendChild(div)
+    };
     
-    marker.setMap(map);  
-    
-    // 커스텀 오버레이를 생성합니다
-    var customOverlay = new kakao.maps.CustomOverlay({
-      map: map,
-      position : positions[i].latlng, 
-      content : positions[i].title, // 커스텀 오버레이에 표출될 내용으로 HTML 문자열이나 document element가 가능합니다
-      zIndex : 5,
-      yAnchor : 1
-    });
-
-    // 마커 위에 인포윈도우를 표시합니다. 두번째 파라미터인 marker를 넣어주지 않으면 지도 위에 표시됩니다
-    // customOverlay.open(map, marker); 
-
-    
-  
-  }
-    
- // 지도에 표시할 선에 들어갈 경로 생성  
- var linePath = [
-  {% for articleplan in articleplans %}
-    new kakao.maps.LatLng({{articleplan.article.lat}}, {{articleplan.article.lng}}),
-
-  {% endfor %}
- 
-
-];
-  // 지도에 표시할 선을 생성합니다
-  var polyline = new kakao.maps.Polyline({
-    path: linePath, // 선을 구성하는 좌표배열 입니다
-    strokeWeight: 5, // 선의 두께 입니다
-    strokeColor: '#FFAE00', // 선의 색깔입니다
-    strokeOpacity: 0.7, // 선의 불투명도 입니다 1에서 0 사이의 값이며 0에 가까울수록 투명합니다
-    strokeStyle: 'solid', // 선의 스타일입니다
-    zIndex : 3
-  });
-
-  // 지도에 선을 표시합니다 
-  polyline.setMap(map);  
-
-  
   </script>
 {% endblock content %}
