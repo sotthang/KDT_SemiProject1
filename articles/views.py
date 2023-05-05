@@ -158,6 +158,8 @@ def comment_update(request, article_pk, comment_pk):
 def review_detail(request, review_pk):
     review = Review.objects.get(pk=review_pk)
     article = Article.objects.get(pk=review.article_id)
+    geolocoder = Nominatim(user_agent = 'South Korea', timeout=None)
+    address = geolocoder.reverse((article.lat, article.lng))
     User = get_user_model()
     person = User.objects.get(username=request.user)
     comments = review.reviewcomment_set.all()
@@ -188,6 +190,7 @@ def review_detail(request, review_pk):
         'comment_form': comment_form,
         'emotions': emotions,
         'comment_count': comment_count,
+        'address': address,
     }
     return render(request, 'reviews/review_detail.html', context)
 

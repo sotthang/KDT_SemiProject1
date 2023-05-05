@@ -53,5 +53,7 @@ a {
 }
 
 .modal_list_item:hover {
-  color:cyan;
+  /* color:cyan; */
+  text-decoration: underline;
+  text-decoration-color: #646464;
 }
