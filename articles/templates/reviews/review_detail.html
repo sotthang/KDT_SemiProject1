@@ -5,11 +5,11 @@
 {% comment %} 제목 {% endcomment %}
 <header>
 
-  <h6 class="small">제주도 > {{article.category}} > {{review.title}}</h6>
+  <h6 class="small">제주도 > {{article.category}} > {{article.title}}</h6>
 
   <div class="row">
     <div class="col-10">
-      <h4><strong>{{article.title}}</strong></h4>
+      <h4><strong>{{review.title}}</strong></h4>
     </div> 
     <div class="col-2 d-flex justify-content-end align-items-end"> 
       <a href="{% url 'accounts:profile' username=article.user %}" style="text-decoration:none;"> <img style="color: black; width:32px; height:32px; border-radius:50%;" src={% if person.profile_img %} "{{ person.profile_img.url }}" {% else %} "{% static '/img/user_image.png' %}" {% endif %} alt="프로필 사진" id="profile-image"/>
@@ -35,21 +35,12 @@
         <img src="{{article.image.url}}" class="object-fit-cover" alt="">
         {% endif %}
       </div>
-      <div class="row-6 d-flex justify-content-center">
-        <div id="map" style="width:500px; height:300px;" class="object-fit-cover"> </div>
-      </div>
     </div>
     <div class="col-5 mx-3 shadow rounded border-light my-2 p-4" style="width: 600px"> 
-      <p><strong>리뷰 정보</strong></p>
+      <p><strong>{{review.title}}</strong> <span style="color:#404040;">리뷰</span></p>
       <hr>
       <table class="table" style="">
         <tbody>
-          <tr>
-            <th scope="row" style="width:170px;">
-              <h5><strong>{{review.title}}</strong> <span style="color:#404040;">리뷰</span></h5>
-            </th>
-            <td></td>
-          </tr>
           <tr>
             <th scope="row" style="width:150px;">주소</th>
             <td>{{address}}</td>
@@ -146,23 +137,6 @@
     </form>
   </div>
 </main>
-
-<script>
-  // 카카오맵
-  var container = document.getElementById('map')
-  var options = {
-    center: new kakao.maps.LatLng({{article.lat}}, {{article.lng}}),
-    level: 5
-  }
-  var map = new kakao.maps.Map(container, options)
-  var markerPosition = options.center
-  var marker = new kakao.maps.Marker({
-    position: markerPosition
-  })
-  marker.setMap(map)
-
-
-</script>
 
 <script>
   const numStars = {{review.score}}; // 출력할 ⭐ 이모지 개수
