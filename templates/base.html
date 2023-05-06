@@ -46,9 +46,6 @@
             <div class="d-flex flex-row align-items-center">
               <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                 <li class="nav-item">
-                  {% comment %} <a class="nav-link pe-3" href="{% url 'accounts:login' %}"><i class="bi bi-box-arrow-in-right"></i> 로그인</a> {% endcomment %}
-
-                  {% comment %} login {% endcomment %}
                   <a class="nav-link pe-3" data-bs-toggle="modal" data-bs-target="#exampleModal" style="cursor: pointer;">
                     <i class="bi bi-box-arrow-in-right"></i> 
                     로그인
@@ -92,11 +89,8 @@
           <div class="modal-body d-flex justify-content-center">
             <form action="{% url 'accounts:login' %}" method="post" data-bs-target="login-btn">
               {% csrf_token %}
-              {% comment %} <label for="exampleFormControlInput1" class="form-label">Email address</label> {% endcomment %}
               <input type="text" name="username" class="form-control" style="width: 250px; margin-top:20px; border-radius: 20px;" required id="id_username" placeholder="아이디">
-              {% comment %} <label for="inputPassword5" class="form-label">Password</label> {% endcomment %}
               <input type="password" name="password" class="form-control" style="width: 250px; margin-top:15px; border-radius: 20px;" required id="id_password" placeholder="비밀번호">
-
               <input type="submit" id="login-btn" class="btn btn-secondary" style="width: 250px; margin-top:30px; margin-bottom:30px;" value="로그인">
             </form>
           </div>

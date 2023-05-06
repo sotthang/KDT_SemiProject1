@@ -23,9 +23,7 @@
 
 .box {
     box-sizing: border-box;
-    /* border: 1px solid black; */
     width: 100px;
     height: 80px;
-    /* background-color: aliceblue; */
     box-shadow: 0 4px 10px 0 rgba(0,0,0,.14);
 }

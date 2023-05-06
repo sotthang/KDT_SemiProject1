@@ -10,7 +10,6 @@ import json
 import random
 from geopy.geocoders import Nominatim
 
-
 # Create your views here.
 
 def index(request):
@@ -74,7 +73,6 @@ def detail(request, article_pk):
     return render(request, 'articles/detail.html', context)
 
 
-
 @login_required
 def create(request):
     if request.method == 'POST':
@@ -95,10 +93,8 @@ def create(request):
 @login_required
 def delete(request, article_pk):
     article = Article.objects.get(pk=article_pk)
-    
     if article.user == request.user:
         article.delete()
-    
     return redirect('articles:index')
 
 
@@ -153,11 +149,9 @@ def comment_update(request, article_pk, comment_pk):
             js = json.loads(r[0])
             comment.content = js['content']
             comment.save()
-            
     context = {
         'content': comment.content,
     }
-
     return JsonResponse(context)
 
 
@@ -216,21 +210,19 @@ def review_create(request, article_pk):
             return redirect('articles:review_detail', review.pk)
     else:
         form = ReviewForm()
-    
     context = {
         'form': form,
         'article': article,
     }
-
     return render(request, 'reviews/review_create.html', context)
     
+
 @login_required
 def review_delete(request, review_pk):    
     review = Review.objects.get(pk=review_pk)
     article_pk = review.article.pk
     if review.user == request.user:
         review.delete()
-    
     return redirect('articles:detail', article_pk)
 
 
@@ -238,7 +230,6 @@ def review_delete(request, review_pk):
 def review_update(request, review_pk):
     review = Review.objects.get(pk=review_pk)
     article_pk = review.article.pk
-
     if request.user == review.user:
         if request.method == 'POST':
             form = ReviewForm(request.POST, request.FILES, instance=review)
@@ -249,7 +240,6 @@ def review_update(request, review_pk):
             form = ReviewForm(instance=review)
     else:
         return redirect('articles:review_detail', article_pk)
-        
     context = {
         'review': review,
         'form': form,
@@ -268,14 +258,14 @@ def review_comment_create(request, review_pk):
         comment.save()
         return redirect('articles:review_detail', review.pk)
     
+
 @login_required
 def review_comment_delete(request, review_pk, comment_pk):
     comment = ReviewComment.objects.get(pk=comment_pk)
-    
     if request.user == comment.user:
         comment.delete()
-        
     return redirect('articles:review_detail', review_pk)
+
 
 @login_required
 def review_comment_update(request, review_pk, comment_pk):
@@ -286,11 +276,9 @@ def review_comment_update(request, review_pk, comment_pk):
             js = json.loads(r[0])
             comment.content = js['content']
             comment.save()
-            
     context = {
         'content': comment.content,
     }
-
     return JsonResponse(context)
 
 
@@ -302,15 +290,12 @@ def category_name(request, category_name):
     paginator = Paginator(articles, per_page)
     page_obj = paginator.get_page(page)
     num_page = paginator.num_pages
-    
     context = {
         'articles': page_obj,
         'category_name': category_name,
         'num_page': num_page,
         'length': length,
-    
     }
-    
     return render(request, 'articles/category_name.html', context)
 
 
@@ -339,6 +324,7 @@ def emotes(request, pk, emotion, page):
         }
         return JsonResponse(context)
 
+
 def search(request):
     search_word = request.GET.get('word', False)
     result_article = Article.objects.filter(Q(title__icontains=search_word) | Q(content__icontains=search_word)).order_by('-pk')
@@ -354,22 +340,20 @@ def search(request):
     }
     return render(request, 'search/search.html', context)
 
+
 def search_detail(request, category):
     search_word = request.GET.get('word')
-
     if category == 'article':
         results = Article.objects.filter(Q(title__icontains=search_word) | Q(content__icontains=search_word)).order_by('-pk').distinct()
         cat = 'Article'
     elif category == 'review':
         results = Review.objects.filter(Q(title__icontains=search_word) | Q(content__icontains=search_word)).order_by('-pk').distinct()
         cat = 'Review'
-    
     page = request.GET.get('page', '1')
     per_page = 5
     paginator = Paginator(results, per_page)
     page_obj = paginator.get_page(page)
     num_page = paginator.num_pages
-    
     context = {
         'results': page_obj,
         'category': cat,
@@ -400,8 +384,7 @@ def plan(request):
                     destination_day, destination_article = destination.split('_')
                     destination_day = destination_day[-1]
                     destination_article = Article.objects.get(id=destination_article)
-                    ArticlePlan.objects.create(plan=plan, day=destination_day, article=destination_article)
-                    
+                    ArticlePlan.objects.create(plan=plan, day=destination_day, article=destination_article)      
             return redirect('accounts:profile', request.user)
     else:
         planform = PlanForm()
@@ -418,9 +401,7 @@ def plan(request):
 @login_required
 def plan_delete(request, plan_pk):
     plan = Plan.objects.get(pk=plan_pk)
-    
     if plan.user == request.user:
         plan.delete()
-    
     return redirect('accounts:profile', request.user)
 

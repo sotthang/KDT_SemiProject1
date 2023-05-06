@@ -68,7 +68,6 @@
 
 <script type="text/javascript" src="/static/JS/plan.js"></script>
 <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=44fdfd5aea6498bf2814ede3eae827b6&libraries=services,clusterer,drawing"></script>
-
 <script>
   // 카카오맵
   var container = document.getElementById('map')
@@ -92,7 +91,6 @@
       },
     {% endfor %}
   ];
-
 
 for (var i = 0; i < positions.length; i ++) {
 
@@ -120,8 +118,5 @@ for (var i = 0; i < positions.length; i ++) {
   // customOverlay.open(map, marker); 
 
 }
-
-
 </script>
-
 {% endblock content %}

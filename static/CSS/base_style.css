@@ -14,10 +14,6 @@ body {
 }
 
 .search_box {
-    /* position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%); */
     background-color: white;
     border: 1px solid black;
     width: 270px;
@@ -99,7 +95,6 @@ body {
     justify-content: center;
     align-items: center;
     cursor: pointer;
-    /* border: 1px solid black; */
     border-radius: 50%;
     transition: .2s;
     color: black;
@@ -112,17 +107,10 @@ body {
     background: rgb(241, 241, 241);
 }
 
-/* 안됨 */
-/* .moveTopBtn:active {
-    border: none;
-    outline: none;
-} */
-
 footer{
     border-top: 1px solid #e4e4e4;
     background-color:#f8f9fa;
     padding:1rem 0;
-    /* margin:1rem 0; */
     position: relative;
     transform: translatY(-100%);
 }

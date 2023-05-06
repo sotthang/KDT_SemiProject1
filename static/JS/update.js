@@ -2,7 +2,6 @@
 const imageFileInput = document.querySelector('#id_image');
 const imagePreview = document.querySelector('#id_image-preview');
 
-
 imageFileInput.addEventListener('change', () => {
   const file = imageFileInput.files[0];
   const reader = new FileReader();
@@ -16,9 +15,7 @@ imageFileInput.addEventListener('change', () => {
 // 카카오맵
 // 마커를 담을 배열입니다
 var markers = [];
-
 var iwContent = '<div>선택 완료</div>' // 인포윈도우에 표출될 내용으로 HTML 문자열이나 document element가 가능합니다
-
 var mapContainer = document.getElementById('map'), // 지도를 표시할 div 
   mapOption = {
       center: new kakao.maps.LatLng(33.379777816446165, 126.54587355630036), // 지도의 중심좌표
