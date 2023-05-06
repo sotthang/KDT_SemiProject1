@@ -3,7 +3,6 @@ from django.forms import ClearableFileInput
 from .models import Article, Comment, Review, ReviewComment, Emote, Plan, ArticlePlan
 
 
-
 class ArticleForm(forms.ModelForm):
     CATEGORY_CHOICES = [
         ('숙소','숙소'),
@@ -138,6 +137,7 @@ class ReviewCommentForm(forms.ModelForm):
                 }
             )
         }
+        
         
 class EmoteForm(forms.ModelForm):
     class Meta:

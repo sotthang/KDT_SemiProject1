@@ -102,5 +102,3 @@ function calculateDifference() {
 }
 
 document.getElementById("id_endday_at").addEventListener("change", calculateDifference);
-
-

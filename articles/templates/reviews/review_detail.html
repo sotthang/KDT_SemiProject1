@@ -1,12 +1,14 @@
 {% extends 'base.html' %}
 {% load static %}
 
+{% block head %}
+<script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+{% endblock head %}
+
 {% block content %}
 {% comment %} 제목 {% endcomment %}
 <header>
-
   <h6 class="small">제주도 > {{article.category}} > {{review.title}}</h6>
-
   <div class="row">
     <div class="col-10">
       <h4><strong>{{article.title}}</strong></h4>
@@ -15,8 +17,6 @@
       <a href="{% url 'accounts:profile' username=article.user %}" style="text-decoration:none;"> <img style="color: black; width:32px; height:32px; border-radius:50%;" src={% if writer.profile_img %} "{{ writer.profile_img.url }}" {% else %} "{% static '/img/user_image.png' %}" {% endif %} alt="프로필 사진" id="profile-image"/>
         <span class="small" style='color:black;'><strong>{{article.user}}</strong></span>
       </a> 
-
- 
     </div>
   </div>
 </header>
@@ -27,7 +27,6 @@
 
 {% comment %} 메인 {% endcomment %}
 <main>
-
   <div class="row d-flex justify-content-center mt-2 p-2 mb-5">
     <div class="col-7 text-center shadow rounded d-flex align-items-center border-light m-2 p-4" style="width:600px;"> 
       <div style="width:100%">
@@ -55,7 +54,6 @@
           </tr>
         </tbody>
       </table>
-
       <div class="row">
         <div class="col-6">
           <div class="d-flex text-center">
@@ -78,7 +76,6 @@
             </div>
             {% endfor %}
           </div>
-    
         </div>
       <div class="col-6">
         {% if request.user == article.user %}
@@ -153,9 +150,9 @@
   for (let i = 0; i < numStars; i++) {
     starsEl.innerHTML += "⭐";
   }
-</script>
-<script>
+
   const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value
+
   // 댓글 수정
   const commentUpdates = document.querySelectorAll('.comment-edit-btn')
   commentUpdates.forEach((comment) => {
@@ -172,32 +169,44 @@
     })
   })
   
-  const commentUpdateConfirms = document.querySelectorAll('.comment-edit-form')
+  const commentUpdateConfirms = document.querySelectorAll('.comment-edit-form');
   commentUpdateConfirms.forEach((updateBtn) => {
     updateBtn.addEventListener('submit', (event) => {
-      event.preventDefault()
-      const reviewId = event.target.dataset.reviewId
-      const commentId = event.target.dataset.commentId
+      event.preventDefault();
+      const reviewId = event.target.dataset.reviewId;
+      const commentId = event.target.dataset.commentId;
       const data = {
         content: document.querySelector(`#comment-edit-form-${commentId}>p>textarea`).value,
-      }
-      if (window.confirm('댓글 수정하시겠습니까?')) {
-        axios({
-          method:'post',
-          url:`/reviews/${reviewId}/comments/${commentId}/update/`,
-          headers: {'X-CSRFToken': csrftoken,},
-          data: JSON.stringify(data),
-        })
-        .then((response) => {
-          updateBtn.hidden = true
-          document.querySelector(`#comment-content-${commentId}`).textContent = data['content']
-        })
-        .catch((error) => {
-          console.log(error.response)
-        })
-      }
-    })
-  })
+      };
+      // Sweet Alert을 사용한 수정 확인 메시지
+      Swal.fire({
+        title: '댓글 수정하시겠습니까?',
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: '수정하기',
+        cancelButtonText: '취소',
+      }).then((result) => {
+        if (result.isConfirmed) {
+          axios({
+            method: 'post',
+            url: `/reviews/${reviewId}/comments/${commentId}/update/`,
+            headers: { 'X-CSRFToken': csrftoken, },
+            data: JSON.stringify(data),
+          })
+            .then((response) => {
+              updateBtn.hidden = true;
+              document.querySelector(`#comment-content-${commentId}`).textContent = data['content'];
+            })
+            .catch((error) => {
+              console.log(error.response);
+            });
+        }
+      });
+    });
+  });
+
   const commentUpdateCancels = document.querySelectorAll('.comment-edit-form>.cancel')
   commentUpdateCancels.forEach((cancelBtn) => {
     cancelBtn.addEventListener('click', (event) => {
@@ -206,8 +215,7 @@
       commentUpdateForm.hidden = true
     })
   })
-</script>
-<script>
+
   // emotion
   const emotions = document.querySelectorAll('.emotion')
   const pk = {{review.pk}}

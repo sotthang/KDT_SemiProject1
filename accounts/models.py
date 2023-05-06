@@ -3,7 +3,6 @@ from django.contrib.auth.models import AbstractUser
 from django.conf import settings
 import os
 
-
 # Create your models here.
 
 class User(AbstractUser):

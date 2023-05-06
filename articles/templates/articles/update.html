@@ -7,53 +7,53 @@
 
 {% block content %}
 <div class="d-flex justify-content-center background">
-    <form action="{% url 'articles:update' article.pk %}" method="POST" enctype="multipart/form-data" id="update">
-      <h4 class="mb-4 title fw-bold">여행지 정보 수정</h4>
-      {% csrf_token %}
-      <div class="mb-3 main">
-        제목 : {{ form.title }}
-      </div>
-      <div class="mb-3 main">
-        카테고리 : {{ form.category }}
-      </div>
-      <div class="mb-3 main">
-        내용 : {{ form.content }}
-      </div>
-      <div class="mb-3">
-        사진{{ form.image }}
-      </div>
-      <p style="margin:0;"><img id="id_image-preview" style="width:400px;" src="{{article.image.url}}"></p>
-      <p class="my-3">아래 카카오 맵에서 검색 후 <br>마커 또는 목록을 클릭하여 위치를 등록해주세요.</p>
-      <div class="mb-3" hidden>
-        Lat : {{ form.lat }}
-      </div>
-      <div class="mb-3" hidden>
-        Lng : {{ form.lng }}
-      </div>
-      <hr>
-    </form>
-  </div>
+  <form action="{% url 'articles:update' article.pk %}" method="POST" enctype="multipart/form-data" id="update">
+    <h4 class="mb-4 title fw-bold">여행지 정보 수정</h4>
+    {% csrf_token %}
+    <div class="mb-3 main">
+      제목 : {{ form.title }}
+    </div>
+    <div class="mb-3 main">
+      카테고리 : {{ form.category }}
+    </div>
+    <div class="mb-3 main">
+      내용 : {{ form.content }}
+    </div>
+    <div class="mb-3">
+      사진{{ form.image }}
+    </div>
+    <p style="margin:0;"><img id="id_image-preview" style="width:400px;" src="{{article.image.url}}"></p>
+    <p class="my-3">아래 카카오 맵에서 검색 후 <br>마커 또는 목록을 클릭하여 위치를 등록해주세요.</p>
+    <div class="mb-3" hidden>
+      Lat : {{ form.lat }}
+    </div>
+    <div class="mb-3" hidden>
+      Lng : {{ form.lng }}
+    </div>
+    <hr>
+  </form>
+</div>
   
-  <div class="map_wrap d-flex justify-content-center">
-    <div id="map" style="width:600px;height:100%;position:relative;overflow:hidden;">
-    </div>
-    <div id="menu_wrap" class="bg_white">
-      <div class="option">
-        <div>
-          <form onsubmit="searchPlaces(); return false;">
-            키워드 : <input type="text" value="{{article.title}}" id="keyword" size="15"> 
-            <button type="submit">검색하기</button> 
-          </form>
-        </div>
+<div class="map_wrap d-flex justify-content-center">
+  <div id="map" style="width:600px;height:100%;position:relative;overflow:hidden;">
+  </div>
+  <div id="menu_wrap" class="bg_white">
+    <div class="option">
+      <div>
+        <form onsubmit="searchPlaces(); return false;">
+          키워드 : <input type="text" value="{{article.title}}" id="keyword" size="15"> 
+          <button type="submit">검색하기</button> 
+        </form>
       </div>
-      <hr>
-      <ul id="placesList"></ul>
-      <div id="pagination"></div>
     </div>
+    <hr>
+    <ul id="placesList"></ul>
+    <div id="pagination"></div>
   </div>
-  <div class="d-flex justify-content-center p-5">
-    <input type="submit" form="update" value="수정하기" class="btn btn-outline-success" style="width:400px;">
-  </div>
+</div>
+<div class="d-flex justify-content-center p-5">
+  <input type="submit" form="update" value="수정하기" class="btn btn-outline-success" style="width:400px;">
+</div>
 {% endblock content %}
 
 {% block script %}

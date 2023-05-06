@@ -18,7 +18,6 @@ def login(request):
             return redirect('articles:index')
     else:
         form = LoginForm()
-    
     context = {
         'form': form,
     }
@@ -35,7 +34,6 @@ def logout(request):
 def signup(request):
     if request.user.is_authenticated:    
         return redirect('articles:index')
-    
     if request.method == 'POST':
         form = CustomUserCreationForm(request.POST, request.FILES)
         if form.is_valid():
@@ -47,11 +45,9 @@ def signup(request):
             return redirect('articles:index')
     else:
         form = CustomUserCreationForm()
-    
     context = {
         'form': form,
     }
-
     return render(request, 'accounts/signup.html', context)
 
 
@@ -99,7 +95,6 @@ def profile(request, username):
     User = get_user_model()
     person = User.objects.get(username=username)
     article_count = Article.objects.filter(user=person).count()
-    
     if Plan.objects.filter(user_id=request.user.id, user=person):
         plans = Plan.objects.filter(user=request.user, user_id=person.id)
         articleplans = ArticlePlan.objects.filter(plan__in=plans).select_related('article')
