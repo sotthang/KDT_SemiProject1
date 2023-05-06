@@ -22,7 +22,7 @@ class Article(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     title = models.CharField(max_length=50)
     category = models.CharField(max_length=50, default='체험관광')
-    content = models.CharField(max_length=600)
+    content = models.CharField(max_length=1000)
     image = ProcessedImageField(upload_to=RenameKoreanFileName('article/'), processors=[ResizeToFill(500, 250)], format='JPEG',options={'quality': 100})
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
