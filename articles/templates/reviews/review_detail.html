@@ -14,8 +14,8 @@
       <h4><strong>{{article.title}}</strong></h4>
     </div> 
     <div class="col-2 d-flex justify-content-end align-items-end"> 
-      <a href="{% url 'accounts:profile' username=article.user %}" style="text-decoration:none;"> <img style="color: black; width:32px; height:32px; border-radius:50%;" src={% if writer.profile_img %} "{{ writer.profile_img.url }}" {% else %} "{% static '/img/user_image.png' %}" {% endif %} alt="프로필 사진" id="profile-image"/>
-        <span class="small" style='color:black;'><strong>{{article.user}}</strong></span>
+      <a href="{% url 'accounts:profile' username=article.user %}" style="text-decoration:none;"> <img style="color: black; width:32px; height:32px; border-radius:50%;" src={% if review.user.profile_img %} "{{ review.user.profile_img.url }}" {% else %} "{% static '/img/user_image.png' %}" {% endif %} alt="프로필 사진" id="profile-image"/>
+        <span class="small" style='color:black;'><strong>{{review.user}}</strong></span>
       </a> 
     </div>
   </div>
@@ -50,7 +50,7 @@
           </tr>
           <tr>
             <th scope="row" style="width:150px;">내용</th>
-            <td style="width: 600px; height:200px;">{{review.content}}</td>
+            <td style="width: 600px; height:200px;">{{review.content|linebreaksbr}}</td>
           </tr>
         </tbody>
       </table>
@@ -100,16 +100,12 @@
     <hr>
     {% for comment in comments %}
     <div class="d-flex">
-      {% for user in users %}
-        {% if user.id == comment.user_id %}
-          <img style="width:32px; height:32px; border-radius:50%;" src={% if user.profile_img %} "{{ user.profile_img.url }}" {% else %} "{% static '/img/user_image.png' %}" {% endif %} alt="프로필 사진" id="profile-image"/>
-        {% endif %}
-      {% endfor %}
+      <img style="width:32px; height:32px; border-radius:50%;" src={% if comment.user.profile_img %} "{{ comment.user.profile_img.url }}" {% else %} "{% static '/img/user_image.png' %}" {% endif %} alt="프로필 사진" id="profile-image"/>
       <p class="ps-2">
         <strong class="comment-user">{{comment.user}}</strong>
       </p>
     </div>
-      <p id="comment-content-{{comment.pk}}">{{comment.content}}</p>
+      <p id="comment-content-{{comment.pk}}">{{comment.content|linebreaksbr}}</p>
       <div>
         {% if user.id == comment.user_id %}
           <div class="d-flex">
