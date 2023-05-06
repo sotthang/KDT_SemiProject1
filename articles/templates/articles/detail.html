@@ -14,7 +14,7 @@
     <h4><strong>{{article.title}}</strong></h4>
   </div> 
   <div class="col-2 d-flex justify-content-end align-items-end"> 
-    <a href="{% url 'accounts:profile' username=article.user %}" style="text-decoration:none;"> <img style="color: black; width:32px; height:32px; border-radius:50%;" src={% if writer.profile_img %} "{{ writer.profile_img.url }}" {% else %} "{% static '/img/user_image.png' %}" {% endif %} alt="프로필 사진" id="profile-image"/>
+    <a href="{% url 'accounts:profile' username=article.user %}" style="text-decoration:none;"> <img style="color: black; width:32px; height:32px; border-radius:50%;" src={% if article.user.profile_img %} "{{ article.user.profile_img.url }}" {% else %} "{% static '/img/user_image.png' %}" {% endif %} alt="프로필 사진" id="profile-image"/>
       <span class="small" style='color:black;'><strong>{{article.user}}</strong></span>
     </a> 
     
@@ -49,7 +49,7 @@
           </tr>
           <tr>
             <th scope="row" style="width:150px;">내용</th>
-            <td style="width: 600px; height:300px;">{{article.content}}</td>
+            <td style="width: 600px; height:300px;">{{article.content|linebreaksbr}}</td>
           </tr>
         </tbody>
       </table>
@@ -100,14 +100,10 @@
 </div>
 
 {% for review in reviews %}
-  <div class="row shadow rounded border-light p-2 mb-3" style=" cursor: pointer;" onclick="location.href='{% url 'articles:review_detail' review.pk %}';" >
+  <div class="row shadow rounded border-light p-2 mb-3" style="cursor: pointer;" onclick="location.href='{% url 'articles:review_detail' review.pk %}';" >
     <div class="col-1">
       <div class="row-8 d-flex justify-content-center align-items-center mt-2">
-        {% for user in users %}
-          {% if user.id == review.user_id %}
-            <img class="" style="width:50px; height:50px; border-radius:50%;" src={% if user.profile_img %} "{{ user.profile_img.url }}" {% else %} "{% static '/img/user_image.png' %}" {% endif %} alt="프로필 사진" id="profile-image"/>
-          {% endif %}
-        {% endfor %}
+        <img class="" style="width:50px; height:50px; border-radius:50%;" src={% if review.user.profile_img %} "{{ review.user.profile_img.url }}" {% else %} "{% static '/img/user_image.png' %}" {% endif %} alt="프로필 사진" id="profile-image"/>
       </div>
       <div class="row-4 text-center small">
           <strong>{{review.user}}</strong>  
@@ -125,7 +121,7 @@
         {% if review.image %}
           <img src="{{review.image.url}}" alt="travel_review_image" style="width:200px;">
         {% endif %}          
-      <p class="my-2 box">{{ review.content }}</p>        
+      <p class="my-2 box text-truncate" style="height:100px;">{{ review.content|linebreaksbr }}</p>        
       </div>
     </div>
   </div>
@@ -141,11 +137,7 @@
 
   {% for comment in comments %}
     <div class="d-flex">
-      {% for user in users %}
-        {% if user.id == comment.user_id %}
-          <img style="width:32px; height:32px; border-radius:50%;" src={% if user.profile_img %} "{{ user.profile_img.url }}" {% else %} "{% static '/img/user_image.png' %}" {% endif %} alt="프로필 사진" id="profile-image"/>
-        {% endif %}
-      {% endfor %}
+      <img style="width:32px; height:32px; border-radius:50%;" src={% if comment.user.profile_img %} "{{ comment.user.profile_img.url }}" {% else %} "{% static '/img/user_image.png' %}" {% endif %} alt="프로필 사진" id="profile-image"/>
       <p class="ps-2">
         <strong class="comment-user">{{comment.user}}</strong>
       </p>
