@@ -83,44 +83,46 @@
 
   <hr>
 
-  {% comment %} 내 여행 일정 {% endcomment %}
-  <div class="row mt-5 justify-content-center">
-    <div class="col-xxl-7" id="map_wrap">
-      <div id="map" style="width:700px; height:500px;"></div>
-      <div id="menu"></div>
-    </div>
-    <div class="col-xxl-5 text-center" id="plan" style="height:500px; overflow: auto;">
-      <h2 class="sticky-top bg-white">내 여행 일정</h2>
+  {% if request.user == person %}
+    {% comment %} 내 여행 일정 {% endcomment %}
+    <div class="row mt-5 justify-content-center">
+      <div class="col-xxl-7" id="map_wrap">
+        <div id="map" style="width:700px; height:500px;"></div>
+        <div id="menu"></div>
+      </div>
+      <div class="col-xxl-5 text-center" id="plan" style="height:500px; overflow: auto;">
+        <h2 class="sticky-top bg-white">내 여행 일정</h2>
 
-      <hr>
+        <hr>
 
-      {% if plans %}
-        {% for plan in plans %}
-          <h5>{{ forloop.counter }}번째 여행 일정</h5>
-          <h6>{{plan.startday_at|date:"Y-m-d"}} ~ {{plan.endday_at|date:"Y-m-d"}}</h6>
-          {% for articleplan in articleplans %}
-            {% if plan.id == articleplan.plan.id %}
-            <div class="row">
-              <div class="col-3">{{ articleplan.day }}일차</div>
-              <div class="col-9"><a href="{% url 'articles:detail' articleplan.article.pk %}"> {{ articleplan.article.title }} </a></div>
+        {% if plans %}
+          {% for plan in plans %}
+            <h5>{{ forloop.counter }}번째 여행 일정</h5>
+            <h6>{{plan.startday_at|date:"Y-m-d"}} ~ {{plan.endday_at|date:"Y-m-d"}}</h6>
+            {% for articleplan in articleplans %}
+              {% if plan.id == articleplan.plan.id %}
+              <div class="row">
+                <div class="col-3">{{ articleplan.day }}일차</div>
+                <div class="col-9"><a href="{% url 'articles:detail' articleplan.article.pk %}"> {{ articleplan.article.title }} </a></div>
+              </div>
+              {% endif %}
+            {% endfor %}
+            <div class="d-flex align-items-end flex-column">
+              <form action="{% url 'articles:plan_delete' plan.pk %}" METHOD="POST" class="pt-2">
+                {% csrf_token %}
+                <button type="submit" value="DELETE" class="btn btn-danger" style="font-size:12px;">일정 삭제하기</button>
+              </form>
             </div>
-            {% endif %}
+            <hr>
           {% endfor %}
-          <div class="d-flex align-items-end flex-column">
-            <form action="{% url 'articles:plan_delete' plan.pk %}" METHOD="POST" class="pt-2">
-              {% csrf_token %}
-              <button type="submit" value="DELETE" class="btn btn-danger" style="font-size:12px;">일정 삭제하기</button>
-            </form>
-          </div>
-          <hr>
-        {% endfor %}
-      {% else %}
-        <h5>등록된 여행 일정이 없습니다.</h5>
-        <h5>아래에서 일정을 생성해보세요.</h5>
-        <a class="btn btn-outline-success mt-2" href="{% url 'articles:plan'%}">일정 생성</a>
-      {% endif %}
+        {% else %}
+          <h5>등록된 여행 일정이 없습니다.</h5>
+          <h5>아래에서 일정을 생성해보세요.</h5>
+          <a class="btn btn-outline-success mt-2" href="{% url 'articles:plan'%}">일정 생성</a>
+        {% endif %}
+      </div>
     </div>
-  </div>
+  {% endif %}
 
   {% comment %} 게시글 모달 {% endcomment %}
   <div class="modal fade" id="articleModal" tabindex="-1" aria-labelledby="articleModalLabel" aria-hidden="true">
@@ -185,7 +187,6 @@
     </div>
   </div>
   
-  <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
   <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=44fdfd5aea6498bf2814ede3eae827b6&libraries=services,clusterer,drawing"></script>
   <script>
     
